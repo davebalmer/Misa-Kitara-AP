@@ -1,6 +1,6 @@
 	Misa Kitara AP
 	Company: Misa Digital Instruments
-	Release date: July 2011
+	Date: 10 July 2011
 
 These are the release notes for the Misa Kitara AP source code.
 
@@ -21,4 +21,4 @@ In the Main subdirectory,
 	"make menu"		build the configuration menu
 	"make core"		build core files
 	"make"			build main executable
-	"make cleanall"	clean everything
+	"make cleanall"		clean everything

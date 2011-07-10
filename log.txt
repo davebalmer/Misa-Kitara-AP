@@ -1,0 +1,25 @@
+v0.9.1
+- ADDED drag and drop functionality to the voice screen
+
+v0.9.0
+- IMPROVED graphics mechanism (images directory not needed anymore)
+- IMPROVED ball response to not stop note on release, especially in tap mode
+- FIXED bugs in left handed mode that made it not react the same as in right hand mode
+- FIXED ball to reset in center after configuration screen loaded
+- ADDED filter type, attack, decay and release controls for new version of synth firmware
+- ADDED Dream DSP firmware version to System menu
+
+v0.8.3
+- IMPROVED string reaction to not stop playing when touch pad window pressed
+
+v0.8.2
+- FIXED LCD to always default in correct orientation on AP init (in case USB plug removed while in menu).
+
+v0.8.1
+- FIXED Intermittent Floating Point Exception crash (critical)
+- IMPROVED synth control to keep amplitude envelope consistent (sounds do not ring out of control now)
+- REMOVED Noise Reduction parameter from Distortion screen
+- FIXED SAM3716 bug where channel 16 does not output sound
+- FIXED corruption of preset file when saving
+- FIXED graphic artifacts on some buttons
+- FIXED incorrect pitch load

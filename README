@@ -1,0 +1,24 @@
+	Misa Kitara AP
+	Company: Misa Digital Instruments
+	Release date: July 2011
+
+These are the release notes for the Misa Kitara AP source code.
+
+WHAT IS THE MISA KITARA AP?
+
+The AP or Application Program is the main control software that manages the kitara 
+logic, I/O, graphics and synthesizer control.
+
+ON WHAT HARDWARE DOES IT RUN?
+
+The Misa Kitara AP only runs on the Misa Kitara digital guitar. This is an ARM9 
+architecture.
+
+HOW TO COMPILE?
+
+In the Main subdirectory,
+
+	"make menu"		build the configuration menu
+	"make core"		build core files
+	"make"			build main executable
+	"make cleanall"	clean everything

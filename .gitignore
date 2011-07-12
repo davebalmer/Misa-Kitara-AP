@@ -3,7 +3,6 @@ Main/*.o
 Main/*.so
 Main/ap.tar.gz
 Main/*.a
-Main/core.mak
 Main/presets.tar.gz
 Main/preset_builder/presets.tar.gz
 Main/ap

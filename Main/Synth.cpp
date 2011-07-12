@@ -4,6 +4,8 @@
 #include <sstream>
 #include "Synth.h"
 #include <string>
+#include "tinyxml/tinyxml.h"
+#include "tinyxml/tinystr.h"
 
 extern std::string working_directory;
 

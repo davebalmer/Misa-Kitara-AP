@@ -729,27 +729,40 @@ void Synth::savePresetXMLToFile(struct synth_setting *s, std::string filepath)
 			doc.LinkEndChild(element);
 		}
 
-	for(int i = 0; i < s->AE_touch_x.size(); i++)
+	for(int c = TOUCH_X; c < CONTROL_END; c++)
 	{
-		element = new TiXmlElement("control");
-		element->SetAttribute("type", "touch_x");
-		element->SetAttribute("name", s->AE_touch_x.at(i).name);
-		element->SetAttribute("string", s->AE_touch_x.at(i).str);
-		element->SetAttribute("index", s->AE_touch_x.at(i).voice_index);
-		element->SetAttribute("output", s->AE_touch_x.at(i).output);
-		element->SetAttribute("channel", s->AE_touch_x.at(i).channel);
-		element->SetAttribute("cc", s->AE_touch_x.at(i).cc);
-		element->SetAttribute("inverse", s->AE_touch_x.at(i).inverse);
-		element->SetAttribute("variation_start", s->AE_touch_x.at(i).variation_start);
-		element->SetAttribute("variation_end", s->AE_touch_x.at(i).variation_end);
-		element->SetAttribute("fxb", s->AE_touch_x.at(i).fxb);
-		element->SetAttribute("drag_center", s->AE_touch_x.at(i).drag_center);
-		doc.LinkEndChild(element);
+		std::vector<struct assignable_effect> *control = getControlList(c);
+		for(int i = 0; i < control->size(); i++)
+		{
+			element = new TiXmlElement("control");
+			element->SetAttribute("type", "touch_x");
+			element->SetAttribute("name", control->at(i).name);
+			element->SetAttribute("string", control->at(i).str);
+			element->SetAttribute("index", control->at(i).voice_index);
+			element->SetAttribute("output", control->at(i).output);
+			element->SetAttribute("channel", control->at(i).channel);
+			element->SetAttribute("cc", control->at(i).cc);
+			element->SetAttribute("inverse", control->at(i).inverse);
+			element->SetAttribute("variation_start", control->at(i).variation_start);
+			element->SetAttribute("variation_end", control->at(i).variation_end);
+			element->SetAttribute("fxb", control->at(i).fxb);
+			element->SetAttribute("drag_center", control->at(i).drag_center);
+			doc.LinkEndChild(element);
+		}
 	}
 
-	//fix: do other controls!!
+	for(int i = 0; i < 6; i++)
+		for(int j = 0; j < s->stop_sound_cmds[i].size(); j++)
+	{
+		element = new TiXmlElement("control");
+		element->SetAttribute("type", "stop_sound");
+		element->SetAttribute("string", i);
+		element->SetAttribute("cc", s->stop_sound_cmds[i][j].cc_num);
+		element->SetAttribute("value", s->stop_sound_cmds[i][j].value);
+	}
 
 	doc.SaveFile((filepath+".xml").c_str());
+	system("sync");
 }
 
 void Synth::printCurrentSettings(void)

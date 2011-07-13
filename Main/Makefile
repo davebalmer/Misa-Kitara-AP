@@ -24,7 +24,7 @@ MISAKITARACOREDEP = ControlScreen.cpp Graphics.cpp Midi.cpp Synth.cpp ControlScr
 MISAKITARATOOLOBJCPP = Neck.o Touchpanel.o
 MISAKITARATOOLOBJC = bitmap.o ebmlib.o mapm.o
 MISAKITARAMAINOBJ = main.o
-TINYXML = tinyxml/tinystr.o tinyxml/tinyxmlerror.o tinyxml/tinyxml.o tinyxml/tinyxmlparser.o tinyxml/xmltest.o
+TINYXMLOBJ = tinyxml/tinystr.o tinyxml/tinyxmlerror.o tinyxml/tinyxml.o tinyxml/tinyxmlparser.o
 
 MISAMENU=../Application/misa.a
 ifdef MISA_USED2D
@@ -41,8 +41,8 @@ RES=Resource.so \
 
 all: $(MISAKITARA)
 FORCE:
-$(MISAKITARA): $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES)
-	$(CPP) $(LDFLAG) -o $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES)
+$(MISAKITARA): $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES) $(TINYXMLOBJ)
+	$(CPP) $(LDFLAG) -o $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES) $(TINYXMLOBJ)
 
 $(MISAKITARAMAINOBJ): %.o: %.cpp
 	$(CPP) $(CPPFLAG) $<

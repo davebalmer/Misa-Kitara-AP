@@ -416,7 +416,7 @@ void Synth::loadPresetFromFile(std::string filename)
 }
 
 void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
-{
+{savePresetXMLToFile(s, filepath);
 //filepath = "/tmp/" + filepath;
 
 	std::ofstream ofs(filepath.c_str(), std::ios::binary);
@@ -551,8 +551,205 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 void Synth::savePresetXMLToFile(struct synth_setting *s, std::string filepath)
 {
 	TiXmlDocument doc;
-	TiXmlDeclaration *decl = new TiXmlDeclaration("1.0", "", "");
-	doc.SaveFile(filepath.c_str());
+	TiXmlDeclaration *decl;
+	TiXmlElement *element, *element2;
+
+	decl = new TiXmlDeclaration("1.0", "", "");
+
+	//master settings
+	element = new TiXmlElement("master");
+	element->SetAttribute("volume", s->master_volume);
+	doc.LinkEndChild(decl);
+	doc.LinkEndChild(element);
+
+	//tuning 
+	element = new TiXmlElement("tuning");
+	element->SetAttribute("string_0", s->tuning[0]);
+	element->SetAttribute("string_1", s->tuning[1]);
+	element->SetAttribute("string_2", s->tuning[2]);
+	element->SetAttribute("string_3", s->tuning[3]);
+	element->SetAttribute("string_4", s->tuning[4]);
+	element->SetAttribute("string_5", s->tuning[5]);
+	doc.LinkEndChild(element);
+
+	//midi out channel
+	element = new TiXmlElement("midi_out_channel");
+	element->SetAttribute("string_0", s->string_midi_out_channel[0]);
+	element->SetAttribute("string_1", s->string_midi_out_channel[1]);
+	element->SetAttribute("string_2", s->string_midi_out_channel[2]);
+	element->SetAttribute("string_3", s->string_midi_out_channel[3]);
+	element->SetAttribute("string_4", s->string_midi_out_channel[4]);
+	element->SetAttribute("string_5", s->string_midi_out_channel[5]);
+	doc.LinkEndChild(element);
+
+	//stop sound commands
+	element = new TiXmlElement("stop_sound");
+	element->SetAttribute("string_0", s->string_midi_out_channel[0]);
+	element->SetAttribute("string_1", s->string_midi_out_channel[1]);
+	element->SetAttribute("string_2", s->string_midi_out_channel[2]);
+	element->SetAttribute("string_3", s->string_midi_out_channel[3]);
+	element->SetAttribute("string_4", s->string_midi_out_channel[4]);
+	element->SetAttribute("string_5", s->string_midi_out_channel[5]);
+	doc.LinkEndChild(element);
+
+	//equalizer
+	element = new TiXmlElement("equalizer");
+	element->SetAttribute("on", (int) s->equalizer.on);
+	element->SetAttribute("low_mid_q", s->equalizer.low_mid_q);
+	element->SetAttribute("high_mid_q", s->equalizer.high_mid_q);
+	doc.LinkEndChild(element);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "lowest");
+	element2->SetAttribute("gain", s->equalizer.lowest.gain);
+	element2->SetAttribute("frequency", s->equalizer.lowest.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "lower");
+	element2->SetAttribute("gain", s->equalizer.lower.gain);
+	element2->SetAttribute("frequency", s->equalizer.lower.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "higher");
+	element2->SetAttribute("gain", s->equalizer.higher.gain);
+	element2->SetAttribute("frequency", s->equalizer.higher.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "highest");
+	element2->SetAttribute("gain", s->equalizer.highest.gain);
+	element2->SetAttribute("frequency", s->equalizer.highest.frequency);
+	element->LinkEndChild(element2);
+
+	//reverb
+	element = new TiXmlElement("reverb");
+	element->SetAttribute("type", s->reverb.type);
+	element->SetAttribute("character", s->reverb.character);
+	element->SetAttribute("pre_lpf", s->reverb.pre_lpf);
+	element->SetAttribute("level", s->reverb.level);
+	element->SetAttribute("time", s->reverb.time);
+	element->SetAttribute("delay_feedback", s->reverb.delay_feedback);
+	element->SetAttribute("pre_delay_time", s->reverb.pre_delay_time);
+	doc.LinkEndChild(element);
+
+	//fx blocks
+	for(int fxb = 0; fxb < 2; fxb++)
+	{
+		element = new TiXmlElement("distortion");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].distortion.on);
+		element->SetAttribute("type", s->fx_block[fxb].distortion.type);
+		element->SetAttribute("level", s->fx_block[fxb].distortion.level);
+		element->SetAttribute("drive", s->fx_block[fxb].distortion.drive);
+		element->SetAttribute("tone", s->fx_block[fxb].distortion.tone);
+		element->SetAttribute("booster", s->fx_block[fxb].distortion.booster);
+		doc.LinkEndChild(element);
+
+		element = new TiXmlElement("compression");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].compressor.on);
+		element->SetAttribute("attack", s->fx_block[fxb].compressor.attack);
+		element->SetAttribute("release", s->fx_block[fxb].compressor.release);
+		element->SetAttribute("threshold", s->fx_block[fxb].compressor.threshold);
+		element->SetAttribute("ratio", s->fx_block[fxb].compressor.ratio);
+		element->SetAttribute("boost", s->fx_block[fxb].compressor.boost);
+		element->SetAttribute("knee", s->fx_block[fxb].compressor.knee);
+		doc.LinkEndChild(element);
+
+		element = new TiXmlElement("modulation");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].modulation.on);
+		element->SetAttribute("type", s->fx_block[fxb].modulation.type);
+		element->SetAttribute("level", s->fx_block[fxb].modulation.level);
+		element->SetAttribute("chorus_delay_time", s->fx_block[fxb].modulation.chorus_delay_time);
+		element->SetAttribute("chorus_feedback", s->fx_block[fxb].modulation.chorus_feedback);
+		element->SetAttribute("chorus_hpf", s->fx_block[fxb].modulation.chorus_hpf);
+		element->SetAttribute("delay_feedback_filter", s->fx_block[fxb].modulation.delay_feedback_filter);
+		element->SetAttribute("rate", s->fx_block[fxb].modulation.rate);
+		element->SetAttribute("depth", s->fx_block[fxb].modulation.depth);
+		element->SetAttribute("tremolo", s->fx_block[fxb].modulation.tremolo);
+		doc.LinkEndChild(element);
+
+		element = new TiXmlElement("delay");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].delay.on);
+		element->SetAttribute("mode", s->fx_block[fxb].delay.mode);
+		element->SetAttribute("pre_lp", s->fx_block[fxb].delay.pre_lp);
+		element->SetAttribute("level", s->fx_block[fxb].delay.level);
+		element->SetAttribute("time", s->fx_block[fxb].delay.time);
+		element->SetAttribute("feedback", s->fx_block[fxb].delay.feedback);
+		element->SetAttribute("feedback_filter", s->fx_block[fxb].delay.feedback_filter);
+		doc.LinkEndChild(element);
+
+		element = new TiXmlElement("mixer");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("low_cut_filter_frequency", s->fx_block[fxb].mixer.low_cut_filter_frequency);
+		element->SetAttribute("high_cut_filter_frequency", s->fx_block[fxb].mixer.high_cut_filter_frequency);
+		element->SetAttribute("input_gain", s->fx_block[fxb].mixer.input_gain);
+		element->SetAttribute("output_level", s->fx_block[fxb].mixer.output_level);
+		element->SetAttribute("pan", s->fx_block[fxb].mixer.pan);
+		element->SetAttribute("reverb_send", s->fx_block[fxb].mixer.reverb_send);
+		doc.LinkEndChild(element);
+	}
+
+	//voices
+	for(int str = 0; str < 6; str++)
+		for(int vi = 0; vi < s->voices[str].size(); vi++)
+		{
+			element = new TiXmlElement("voice");
+			element->SetAttribute("string", str);
+			element->SetAttribute("index", vi);
+			element->SetAttribute("channel", s->voices[str].at(vi).channel);
+			element->SetAttribute("wavetable_index", s->voices[str].at(vi).wavetable_index);
+			element->SetAttribute("amplitude_attack", s->voices[str].at(vi).amp_env_attack);
+			element->SetAttribute("amplitude_decay", s->voices[str].at(vi).amp_env_decay);
+			element->SetAttribute("amplitude_release", s->voices[str].at(vi).amp_env_release);
+			element->SetAttribute("detune_course", s->voices[str].at(vi).detune_course);
+			element->SetAttribute("detune_fine", s->voices[str].at(vi).detune_fine);
+			element->SetAttribute("vibrate_rate", s->voices[str].at(vi).vibrate_rate);
+			element->SetAttribute("vibrate_depth", s->voices[str].at(vi).vibrate_depth);
+			element->SetAttribute("vibrate_delay", s->voices[str].at(vi).vibrate_delay);
+			element->SetAttribute("channel_volume", s->voices[str].at(vi).channel_volume);
+			element->SetAttribute("portamento_time", s->voices[str].at(vi).portamento_time);
+			element->SetAttribute("pan", s->voices[str].at(vi).pan);
+			element->SetAttribute("pitch_bend_semitones", s->voices[str].at(vi).pitch_bend_semitones);
+			element->SetAttribute("pitch_wheel", s->voices[str].at(vi).pitch_wheel);
+			element->SetAttribute("velocity", s->voices[str].at(vi).velocity);
+			element->SetAttribute("fxb0_on", s->voices[str].at(vi).insert_fx_block_on[0]);
+			element->SetAttribute("fxb1_on", s->voices[str].at(vi).insert_fx_block_on[1]);
+			element->SetAttribute("reverb_send", s->voices[str].at(vi).reverb_send);
+			element->SetAttribute("filter_frequency", s->voices[str].at(vi).filter_frequency);
+			element->SetAttribute("filter_resonance", s->voices[str].at(vi).filter_resonance);
+			element->SetAttribute("filter_type", s->voices[str].at(vi).filter_type);
+			element->SetAttribute("filter_attack", s->voices[str].at(vi).filter_attack);
+			element->SetAttribute("filter_decay", s->voices[str].at(vi).filter_decay);
+			element->SetAttribute("filter_release", s->voices[str].at(vi).filter_release);
+			doc.LinkEndChild(element);
+		}
+
+	for(int i = 0; i < s->AE_touch_x.size(); i++)
+	{
+		element = new TiXmlElement("control");
+		element->SetAttribute("type", "touch_x");
+		element->SetAttribute("name", s->AE_touch_x.at(i).name);
+		element->SetAttribute("string", s->AE_touch_x.at(i).str);
+		element->SetAttribute("index", s->AE_touch_x.at(i).voice_index);
+		element->SetAttribute("output", s->AE_touch_x.at(i).output);
+		element->SetAttribute("channel", s->AE_touch_x.at(i).channel);
+		element->SetAttribute("cc", s->AE_touch_x.at(i).cc);
+		element->SetAttribute("inverse", s->AE_touch_x.at(i).inverse);
+		element->SetAttribute("variation_start", s->AE_touch_x.at(i).variation_start);
+		element->SetAttribute("variation_end", s->AE_touch_x.at(i).variation_end);
+		element->SetAttribute("fxb", s->AE_touch_x.at(i).fxb);
+		element->SetAttribute("drag_center", s->AE_touch_x.at(i).drag_center);
+		doc.LinkEndChild(element);
+	}
+
+	//fix: do other controls!!
+
+	doc.SaveFile((filepath+".xml").c_str());
 }
 
 void Synth::printCurrentSettings(void)

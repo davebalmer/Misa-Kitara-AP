@@ -548,6 +548,13 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 	system("sync");
 }
 
+void Synth::savePresetXMLToFile(struct synth_setting *s, std::string filepath)
+{
+	TiXmlDocument doc;
+	TiXmlDeclaration *decl = new TiXmlDeclaration("1.0", "", "");
+	doc.SaveFile(filepath.c_str());
+}
+
 void Synth::printCurrentSettings(void)
 {
 	std::cout << " MVol " << current_setting.master_volume;

@@ -78,15 +78,18 @@ rebuild:
 	make
 
 core:
+	cd tinyxml && make
 	make -f core.mak
 
 menu:
 	cd ../Application && make
 
 clean:
-	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISATOOLLIB) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP)
+	cd tinyxml && make clean
+	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISATOOLLIB) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP) $(MISAKITARACOREOBJ)
 
 cleanall:
+	cd tinyxml && make clean
 	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAKITARACOREOBJ) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP)
 
 else

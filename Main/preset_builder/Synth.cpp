@@ -305,7 +305,7 @@ void Synth::loadMeltGuitar(void)
 		setFilterType(s, 0, 5);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 0, false, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
-//		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
+		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 55);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 55);

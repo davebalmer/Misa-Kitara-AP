@@ -420,8 +420,6 @@ public:
 		~Synth(void);
 		void loadPresetFromFile(std::string filename);
 		void savePresetToFile(struct synth_setting *s, std::string filepath);
-		void savePresetXMLToFile(struct synth_setting *s, std::string filepath);
-		void printCurrentSettings(void);
 		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
 		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
 		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);

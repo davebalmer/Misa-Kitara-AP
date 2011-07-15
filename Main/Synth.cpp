@@ -1057,8 +1057,8 @@ void Synth::insertNewVoice(int str, int wave)
 		case 5: control_t = STRING_TOUCH_X_0; control_d = STRING_DRAG_X_5; break;
 	}
 
-	assignSynthVoiceParam(control_t, PARAM_VOICE_VELOCITY, str, v, true, 0, 0);
-	assignSynthVoiceParam(control_d, PARAM_VOICE_PITCH_WHEEL, str, v, false, 0, 0);
+//	assignSynthVoiceParam(control_t, PARAM_VOICE_VELOCITY, str, v, true, 0, 0);
+//	assignSynthVoiceParam(control_d, PARAM_VOICE_PITCH_WHEEL, str, v, false, 0, 0);
 }
 
 void Synth::removeVoice(int str, int voice_index)
@@ -1082,17 +1082,20 @@ void Synth::removeVoice(int str, int voice_index)
 	unAssignSynthVoiceParam(PARAM_VOICE_PITCH_WHEEL, str, voice_index);
 	unAssignSynthVoiceParam(PARAM_VOICE_VELOCITY, str, voice_index);
 	unAssignSynthVoiceParam(PARAM_VOICE_REVERB_SEND, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_ATTACK, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_DECAY, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_RELEASE, str, voice_index);
 
 	current_setting.voices[str].erase(current_setting.voices[str].begin() + voice_index);
 
 	//we must update all references to voice parameter controls
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		std::vector<struct assignable_effect> *control_list = getControlList(touch_control);
 
 		for(int i = 0; i < control_list->size(); i++)
 		{
-			if((control_list->at(i).name >= PARAM_VOICE_AMP_ENV_ATTACK) && (control_list->at(i).name <= PARAM_VOICE_REVERB_SEND))
+			if((control_list->at(i).name >= PARAM_VOICE_AMP_ENV_ATTACK) && (control_list->at(i).name < PARAM_VOICE_END))
 			{
 				if((control_list->at(i).str == str) && (control_list->at(i).voice_index > voice_index))
 				{
@@ -1160,13 +1163,13 @@ void Synth::unAssignSynthEffect(unsigned char synth_param, unsigned char fxb)
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1196,13 +1199,13 @@ std::vector<int> Synth::findAssignSynthEffect(unsigned char synth_param, unsigne
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1264,13 +1267,13 @@ void Synth::unAssignSynthVoiceParam(unsigned char synth_param, unsigned char str
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1300,13 +1303,13 @@ std::vector<int> Synth::findAssignSynthVoiceParam(unsigned char synth_param, uns
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1383,13 +1386,13 @@ std::vector<int> Synth::findAssignMidiVelocity(int str, std::vector<struct assig
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1467,13 +1470,13 @@ std::vector<int> Synth::findAssignMidiPitch(unsigned char channel, std::vector<s
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1552,13 +1555,13 @@ std::vector<int> Synth::findAssignAllCC(unsigned char output, unsigned char chan
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1590,13 +1593,13 @@ std::vector<int> Synth::findAssignCC(unsigned char output, unsigned char channel
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:

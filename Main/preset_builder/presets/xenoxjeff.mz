@@ -1,80 +1,82 @@
 <?xml version="1.0" ?>
-<master volume="127" />
-<tuning string="0" value="64" />
-<tuning string="1" value="59" />
-<tuning string="2" value="55" />
-<tuning string="3" value="50" />
-<tuning string="4" value="33" />
-<tuning string="5" value="28" />
-<midi_out_channel string="0" value="-1" />
-<midi_out_channel string="1" value="-1" />
-<midi_out_channel string="2" value="-1" />
-<midi_out_channel string="3" value="-1" />
-<midi_out_channel string="4" value="-1" />
-<midi_out_channel string="5" value="-1" />
-<equalizer on="0" low_mid_q="64" high_mid_q="64">
-    <eq_band type="lowest" gain="96" frequency="10" />
-    <eq_band type="lower" gain="56" frequency="24" />
-    <eq_band type="higher" gain="56" frequency="104" />
-    <eq_band type="highest" gain="96" frequency="127" />
-</equalizer>
-<reverb type="4" character="4" pre_lpf="0" level="64" time="0" delay_feedback="0" pre_delay_time="0" />
-<distortion fxblock="0" on="0" type="0" level="0" drive="0" tone="0" booster="0" />
-<compression fxblock="0" on="0" attack="0" release="0" threshold="0" ratio="0" boost="0" knee="0" />
-<modulation fxblock="0" on="0" type="1" level="56" chorus_delay_time="20" chorus_feedback="0" chorus_hpf="0" delay_feedback_filter="0" rate="40" depth="30" tremolo="0" />
-<delay fxblock="0" on="0" mode="0" pre_lp="0" level="0" time="0" feedback="0" feedback_filter="0" />
-<mixer fxblock="0" low_cut_filter_frequency="0" high_cut_filter_frequency="127" input_gain="127" output_level="85" pan="64" reverb_send="0" />
-<distortion fxblock="1" on="0" type="0" level="0" drive="0" tone="0" booster="0" />
-<compression fxblock="1" on="0" attack="0" release="0" threshold="0" ratio="0" boost="0" knee="0" />
-<modulation fxblock="1" on="0" type="1" level="56" chorus_delay_time="20" chorus_feedback="0" chorus_hpf="0" delay_feedback_filter="0" rate="40" depth="30" tremolo="0" />
-<delay fxblock="1" on="0" mode="0" pre_lp="0" level="0" time="0" feedback="0" feedback_filter="0" />
-<mixer fxblock="1" low_cut_filter_frequency="127" high_cut_filter_frequency="127" input_gain="127" output_level="127" pan="64" reverb_send="0" />
-<voice string="0" index="0" channel="0" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="1" index="0" channel="1" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="2" index="0" channel="2" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="3" index="0" channel="3" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="4" index="0" channel="4" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="4" index="1" channel="6" wavetable_index="14" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="127" portamento_time="20" pan="64" pitch_bend_semitones="0" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="5" index="0" channel="5" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<voice string="5" index="1" channel="7" wavetable_index="14" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="127" portamento_time="20" pan="64" pitch_bend_semitones="0" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
-<control type="0" name="3" string="1" index="17139968" output="0" channel="0" cc="0" inverse="1" variation_start="0" variation_end="0" fxb="0" drag_center="64" />
-<control type="1" name="75" string="0" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="1" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="2" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="3" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="4" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="5" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="4" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="1" name="75" string="5" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="0" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="1" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="2" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="3" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="4" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="5" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="4" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="2" name="63" string="5" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="0" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="1" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="2" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="3" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="4" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="5" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="4" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="3" name="64" string="5" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="0" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="1" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="2" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="3" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="4" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="5" index="0" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="4" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="4" name="74" string="5" index="1" output="0" channel="137" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="6" name="75" string="0" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="7" name="75" string="1" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="8" name="75" string="2" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="9" name="75" string="3" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="10" name="75" string="4" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="10" name="75" string="4" index="1" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="11" name="75" string="5" index="0" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
-<control type="11" name="75" string="5" index="1" output="0" channel="137" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081604472" drag_center="64" />
+<preset>
+    <master volume="127" />
+    <tuning string="0" value="64" />
+    <tuning string="1" value="59" />
+    <tuning string="2" value="55" />
+    <tuning string="3" value="50" />
+    <tuning string="4" value="33" />
+    <tuning string="5" value="28" />
+    <midi_out_channel string="0" value="-1" />
+    <midi_out_channel string="1" value="-1" />
+    <midi_out_channel string="2" value="-1" />
+    <midi_out_channel string="3" value="-1" />
+    <midi_out_channel string="4" value="-1" />
+    <midi_out_channel string="5" value="-1" />
+    <equalizer on="0" low_mid_q="64" high_mid_q="64">
+        <eq_band type="lowest" gain="96" frequency="10" />
+        <eq_band type="lower" gain="56" frequency="24" />
+        <eq_band type="higher" gain="56" frequency="104" />
+        <eq_band type="highest" gain="96" frequency="127" />
+    </equalizer>
+    <reverb type="4" character="4" pre_lpf="0" level="64" time="0" delay_feedback="0" pre_delay_time="0" />
+    <distortion fxblock="0" on="0" type="0" level="0" drive="0" tone="0" booster="0" />
+    <compression fxblock="0" on="0" attack="0" release="0" threshold="0" ratio="0" boost="0" knee="0" />
+    <modulation fxblock="0" on="0" type="1" level="56" chorus_delay_time="20" chorus_feedback="0" chorus_hpf="0" delay_feedback_filter="0" rate="40" depth="30" tremolo="0" />
+    <delay fxblock="0" on="0" mode="0" pre_lp="0" level="0" time="0" feedback="0" feedback_filter="0" />
+    <mixer fxblock="0" low_cut_filter_frequency="0" high_cut_filter_frequency="127" input_gain="127" output_level="85" pan="64" reverb_send="0" />
+    <distortion fxblock="1" on="0" type="0" level="0" drive="0" tone="0" booster="0" />
+    <compression fxblock="1" on="0" attack="0" release="0" threshold="0" ratio="0" boost="0" knee="0" />
+    <modulation fxblock="1" on="0" type="1" level="56" chorus_delay_time="20" chorus_feedback="0" chorus_hpf="0" delay_feedback_filter="0" rate="40" depth="30" tremolo="0" />
+    <delay fxblock="1" on="0" mode="0" pre_lp="0" level="0" time="0" feedback="0" feedback_filter="0" />
+    <mixer fxblock="1" low_cut_filter_frequency="127" high_cut_filter_frequency="127" input_gain="127" output_level="127" pan="64" reverb_send="0" />
+    <voice string="0" channel="0" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="1" channel="1" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="2" channel="2" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="3" channel="3" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="4" channel="4" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="4" channel="6" wavetable_index="14" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="127" portamento_time="20" pan="64" pitch_bend_semitones="0" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="5" channel="5" wavetable_index="4" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="100" portamento_time="20" pan="64" pitch_bend_semitones="12" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <voice string="5" channel="7" wavetable_index="14" amplitude_attack="0" amplitude_decay="75" amplitude_release="62" detune_course="64" detune_fine="64" vibrate_rate="64" vibrate_depth="64" vibrate_delay="64" channel_volume="127" portamento_time="20" pan="64" pitch_bend_semitones="0" pitch_wheel="8192" velocity="127" fxb0_on="1" fxb1_on="0" reverb_send="0" filter_frequency="64" filter_resonance="64" filter_type="1" filter_attack="64" filter_decay="64" filter_release="64" />
+    <control type="0" name="3" string="1" index="17148928" output="0" channel="0" cc="0" inverse="1" variation_start="0" variation_end="0" fxb="0" drag_center="64" />
+    <control type="1" name="75" string="0" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="1" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="2" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="3" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="4" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="5" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="4" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="1" name="75" string="5" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="0" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="1" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="2" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="3" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="4" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="5" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="4" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="2" name="63" string="5" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="0" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="1" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="2" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="3" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="4" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="5" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="4" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="3" name="64" string="5" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="0" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="1" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="2" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="3" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="4" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="5" index="0" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="4" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="4" name="74" string="5" index="1" output="0" channel="172" cc="5" inverse="0" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="6" name="75" string="0" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="7" name="75" string="1" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="8" name="75" string="2" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="9" name="75" string="3" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="10" name="75" string="4" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="10" name="75" string="4" index="1" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="11" name="75" string="5" index="0" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+    <control type="11" name="75" string="5" index="1" output="0" channel="172" cc="5" inverse="1" variation_start="0" variation_end="0" fxb="-1081676136" drag_center="64" />
+</preset>

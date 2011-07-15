@@ -471,6 +471,7 @@ public:
 		void setDragCenterSynthPitch(unsigned char str, unsigned char voice_index, unsigned int drag_center);
 		void setDragCenterMidiPitch(unsigned char channel, unsigned int drag_center);
 		void setDragCenterCC(unsigned char output, unsigned char channel, unsigned int cc, unsigned int drag_center);
+		void assignMidiStopSound(unsigned char str, unsigned char cc, unsigned char val);
 };
 
 #endif

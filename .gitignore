@@ -5,9 +5,11 @@ Main/ap.tar.gz
 Main/*.a
 Main/presets.tar.gz
 Main/preset_builder/presets.tar.gz
+Main/preset_builder/preset
 Main/ap
 Main/main
 Application/misa.a
 Application/*.o
 Application/*.so
 vssver.scc
+*.mz

@@ -164,6 +164,8 @@ void Synth::run(void)
 {
 		loadMeltGuitar();
 		savePresetToFile(&current_setting, "./presets/meltguitar.mz");
+		loadDigitar();
+		savePresetToFile(&current_setting, "./presets/digitar.mz");
 //		loadTremstar();
 //		savePresetToFile(&current_setting, "./presets/tremstar.mz");
 //		loadRemstar();
@@ -309,6 +311,74 @@ void Synth::loadMeltGuitar(void)
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
+//		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 55);
+//		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 55);
+
+		int control;
+		switch(s)
+		{
+			case 0: control = STRING_DRAG_X_0; break;
+			case 1: control = STRING_DRAG_X_1; break;
+			case 2: control = STRING_DRAG_X_2; break;
+			case 3: control = STRING_DRAG_X_3; break;
+			case 4: control = STRING_DRAG_X_4; break;
+			case 5: control = STRING_DRAG_X_5; break;
+		}
+//		assignSynthVoiceParam(control, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
+
+		switch(s)
+		{
+			case 0: control = STRING_TOUCH_X_0; break;
+			case 1: control = STRING_TOUCH_X_1; break;
+			case 2: control = STRING_TOUCH_X_2; break;
+			case 3: control = STRING_TOUCH_X_3; break;
+			case 4: control = STRING_TOUCH_X_4; break;
+			case 5: control = STRING_TOUCH_X_5; break;
+		}
+//		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
+		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+	}
+
+//	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
+
+	assignSynthEffect(BALL_Y, PARAM_DISTORTION_DRIVE, 0, true, 0, 0);
+
+	setMixerOutputLevel(0, 75);
+	setMixerLowCutFilterFrequency(0, 0);
+	
+	setDistortionOn(0, true);
+	setDistortionType(0, 4);
+	setDistortionDrive(0, 116);
+	setDistortionLevel(0, 38);
+	setDistortionTone(0, 70);
+	setDistortionNoiseReduction(0, 0);
+	setDistortionBooster(0, 0);
+
+	//notice this is incomplete
+	setModulationOn(0, true);
+	setModulationType(0, 9);
+	setModulationLevel(0, 64);
+}
+
+void Synth::loadDigitar(void)
+{
+	resetSettings();
+//	setMasterVolume(127);
+	for(int s = 0; s < 6; s++)
+	{
+		insertNewVoice(s, 23);
+		setFxBlockOn(s, 0, 0, true);
+//		setDetuneCourse(s, 0, 59);
+		setPitchBendSemitones(s, 0, 2);
+//		setReverbSend(s, 0, 127);
+		setAmpEnvDecay(s, 0, 127);
+		setAmpEnvRelease(s, 0, 33);
+		setFilterType(s, 0, 5);
+		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
+		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
+		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 55);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 55);
 

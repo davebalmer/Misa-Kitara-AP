@@ -421,6 +421,7 @@ public:
 		void loadPresetFromFile(std::string filename);
 		void loadSouthpad(void);
 		void loadMeltGuitar(void);
+		void loadDigitar(void);
 		void loadRemstar(void);
 		void loadTremstar(void);
 		void loadPhaseGuitar(void);

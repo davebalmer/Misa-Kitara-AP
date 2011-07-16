@@ -4,6 +4,8 @@
 #include <sstream>
 #include "Synth.h"
 #include <string>
+#include "tinyxml/tinyxml.h"
+#include "tinyxml/tinystr.h"
 
 extern std::string working_directory;
 
@@ -174,7 +176,7 @@ void Synth::resetSettings(void)
 	setMasterVolume(temp_volume);
 }
 
-void Synth::loadPresetFromFile(std::string filename)
+/*void Synth::loadPresetFromFile(std::string filename)
 {
 	std::ifstream ifs((working_directory + "/presets/" + filename).c_str(), std::ios::binary);
 
@@ -409,14 +411,251 @@ void Synth::loadPresetFromFile(std::string filename)
 
 	setMasterVolume(temp_volume);
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
+}
+*/
+void Synth::loadPresetFromFile(std::string filename)
+{
+	TiXmlDocument doc((working_directory + "/presets/" + filename).c_str());
+	if(!doc.LoadFile())
+	{
+		std::cout << "Preset file could not be opened." << std::endl << std::flush;
+		return;
+	}
 
-//	printCurrentSettings();
+	resetSettings();
+
+	//temp mute while loading
+	int temp_volume = master_volume;
+	setMasterVolume(0);
+
+	TiXmlElement *root = doc.RootElement();
+
+	for(TiXmlElement *e = root->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
+	{
+		std::string e_str = e->Value();
+
+		if(e_str == "master")
+		{
+			if(e->Attribute("volume") != NULL)
+				current_setting.master_volume = atoi(e->Attribute("volume"));
+		}
+		else
+		if(e_str == "tuning")
+		{
+			if(e->Attribute("value"))
+				current_setting.tuning[atoi(e->Attribute("string"))] = atoi(e->Attribute("value"));
+		}
+		else
+		if(e_str == "midi_out_channel")
+		{
+			if(e->Attribute("value"))
+				current_setting.string_midi_out_channel[atoi(e->Attribute("string"))] = atoi(e->Attribute("value"));
+		}
+		else
+		if(e_str == "equalizer")
+		{
+			if(e->Attribute("on")) setEQOn(atoi(e->Attribute("on")));
+			if(e->Attribute("low_mid_q")) setEQLowMidQ(atoi(e->Attribute("low_mid_q")));
+			if(e->Attribute("high_mid_q")) setEQHighMidQ(atoi(e->Attribute("high_mid_q")));
+
+			for(TiXmlElement *e2 = e->FirstChildElement(); e2 != NULL; e2 = e2->NextSiblingElement())
+			{
+				if(e2->Value() != "eq_band") continue;
+				if(!e2->Attribute("type")) continue;
+
+				if(e2->Attribute("type") == "lowest")
+				{
+					if(e2->Attribute("gain")) setEQLowestBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) setEQLowestBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "lower")
+				{
+					if(e2->Attribute("gain")) setEQLowerBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) setEQLowerBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "higher")
+				{
+					if(e2->Attribute("gain")) setEQHigherBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) setEQHigherBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "highest")
+				{
+					if(e2->Attribute("gain")) setEQHighestBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) setEQHighestBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+			}
+		}
+		else
+		if(e_str == "reverb")
+		{
+			if(e->Attribute("type")) setReverbType(atoi(e->Attribute("type")));
+			if(e->Attribute("character")) setReverbCharacter(atoi(e->Attribute("character")));
+			if(e->Attribute("pre_lpf")) setReverbPreLpf(atoi(e->Attribute("pre_lpf")));
+			if(e->Attribute("level")) setReverbLevel(atoi(e->Attribute("level")));
+			if(e->Attribute("time")) setReverbTime(atoi(e->Attribute("time")));
+			if(e->Attribute("delay_feedback")) setReverbDelayFeedback(atoi(e->Attribute("delay_feedback")));
+			if(e->Attribute("pre_delay_time")) setReverbPreDelay(atoi(e->Attribute("pre_delay_time")));
+		}
+		else
+		if(e_str == "distortion")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) setDistortionOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("type")) setDistortionType(fxb, atoi(e->Attribute("type")));
+				if(e->Attribute("level")) setDistortionLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("drive")) setDistortionDrive(fxb, atoi(e->Attribute("drive")));
+				if(e->Attribute("tone")) setDistortionTone(fxb, atoi(e->Attribute("tone")));
+				if(e->Attribute("booster")) setDistortionBooster(fxb, atoi(e->Attribute("booster")));
+			}
+		}
+		else
+		if(e_str == "compression")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) setCompressorOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("attack")) setCompressorAttack(fxb, atoi(e->Attribute("attack")));
+				if(e->Attribute("release")) setCompressorRelease(fxb, atoi(e->Attribute("release")));
+				if(e->Attribute("threshold")) setCompressorThreshold(fxb, atoi(e->Attribute("threshold")));
+				if(e->Attribute("ratio")) setCompressorRatio(fxb, atoi(e->Attribute("ratio")));
+				if(e->Attribute("boost")) setCompressorBoost(fxb, atoi(e->Attribute("boost")));
+				if(e->Attribute("knee")) setCompressorKnee(fxb, atoi(e->Attribute("knee")));
+			}
+		}
+		else
+		if(e_str == "modulation")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("type")) setModulationType(fxb, atoi(e->Attribute("type")));
+				if(e->Attribute("on")) setModulationOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("level")) setModulationLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("chorus_delay_time")) setModulationChorusDelayTime(fxb, atoi(e->Attribute("chorus_delay_time")));
+				if(e->Attribute("chorus_feedback")) setModulationChorusFeedback(fxb, atoi(e->Attribute("chorus_feedback")));
+				if(e->Attribute("chorus_hpf")) setModulationChorusHpf(fxb, atoi(e->Attribute("chorus_hpf")));
+				if(e->Attribute("delay_feedback_filter")) setModulationDelayFeedbackFilter(fxb, atoi(e->Attribute("delay_feedback_filter")));
+				if(e->Attribute("rate")) setModulationRate(fxb, atoi(e->Attribute("rate")));
+				if(e->Attribute("depth")) setModulationDepth(fxb, atoi(e->Attribute("depth")));
+				if(e->Attribute("tremolo")) setModulationTremolo(fxb, atoi(e->Attribute("tremolo")));
+			}
+		}
+		else
+		if(e_str == "delay")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) setDelayOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("mode")) setDelayMode(fxb, atoi(e->Attribute("mode")));
+				if(e->Attribute("pre_lp")) setDelayPreLp(fxb, atoi(e->Attribute("pre_lp")));
+				if(e->Attribute("level")) setDelayLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("time")) setDelayTime(fxb, atoi(e->Attribute("time")));
+				if(e->Attribute("feedback")) setDelayFeedback(fxb, atoi(e->Attribute("feedback")));
+				if(e->Attribute("feedback_filter")) setDelayFeedbackFilter(fxb, atoi(e->Attribute("feedback_filter")));
+			}
+		}
+		else
+		if(e_str == "mixer")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock")) 
+			{
+				int fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("low_cut_filter_frequency")) setMixerLowCutFilterFrequency(fxb, atoi(e->Attribute("low_cut_filter_frequency")));
+				if(e->Attribute("high_cut_filter_frequency")) setMixerHighCutFilterFrequency(fxb, atoi(e->Attribute("high_cut_filter_frequency")));
+				if(e->Attribute("input_gain")) setMixerInputGain(fxb, atoi(e->Attribute("input_gain")));
+				if(e->Attribute("output_level")) setMixerOutputLevel(fxb, atoi(e->Attribute("output_level")));
+				if(e->Attribute("pan")) setMixerPan(fxb, atoi(e->Attribute("pan")));
+				if(e->Attribute("reverb_send")) setMixerReverbSend(fxb, atoi(e->Attribute("reverb_send")));
+			}
+		}
+		else
+		if(e_str == "control")
+		{
+			if(atoi(e->Attribute("type")) == 100) //fix: this nasty hack immediately!
+			{
+				if((e->Attribute("string")) && (e->Attribute("cc")) && (e->Attribute("value")))
+					assignMidiStopSound(atoi(e->Attribute("string")), atoi(e->Attribute("cc")), atoi(e->Attribute("value")));
+			}
+			else
+			{
+				std::vector<struct assignable_effect> *control = getControlList(atoi(e->Attribute("type")));
+				struct assignable_effect ae;
+				if(e->Attribute("name")) ae.name = atoi(e->Attribute("name"));
+				if(e->Attribute("string")) ae.str = atoi(e->Attribute("string"));
+				if(e->Attribute("index")) ae.voice_index = atoi(e->Attribute("index"));
+				if(e->Attribute("output")) ae.output = atoi(e->Attribute("output"));
+				if(e->Attribute("channel")) ae.channel = atoi(e->Attribute("channel"));
+				if(e->Attribute("cc")) ae.cc = atoi(e->Attribute("cc"));
+				if(e->Attribute("inverse")) ae.inverse = atoi(e->Attribute("inverse"));
+				if(e->Attribute("variation_start")) ae.variation_start = atoi(e->Attribute("variation_start"));
+				if(e->Attribute("variation_end")) ae.variation_end = atoi(e->Attribute("variation_end"));
+				if(e->Attribute("fxb")) ae.fxb = atoi(e->Attribute("fxb"));
+				if(e->Attribute("drag_center")) ae.drag_center = atoi(e->Attribute("drag_center"));
+				control->push_back(ae);
+			}
+		}
+		else
+		if(e_str == "voice")
+		{
+			if((e->Attribute("string")) && (e->Attribute("channel")) && (e->Attribute("wavetable_index")))
+			{
+				int i = atoi(e->Attribute("string"));
+				int j = current_setting.voices[i].size();
+				insertNewVoice(i, j);
+
+				setChannel(i, j, atoi(e->Attribute("channel")));
+				setWave(i, j, atoi(e->Attribute("wavetable_index")));
+				if(e->Attribute("amplitude_attack")) setAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
+				if(e->Attribute("amplitude_decay")) setAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
+				if(e->Attribute("amplitude_release")) setAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
+				if(e->Attribute("filter_frequency")) setFilterFrequency(i, j, atoi(e->Attribute("filter_frequency")));
+				if(e->Attribute("filter_resonance")) setFilterResonance(i, j, atoi(e->Attribute("filter_resonance")));
+				if(e->Attribute("detune_course")) setDetuneCourse(i, j, atoi(e->Attribute("detune_course")));
+				if(e->Attribute("detune_fine")) setDetuneFine(i, j, atoi(e->Attribute("detune_fine")));
+				if(e->Attribute("vibrate_rate")) setVibrateRate(i, j, atoi(e->Attribute("vibrate_rate")));
+				if(e->Attribute("vibrate_depth")) setVibrateDepth(i, j, atoi(e->Attribute("vibrate_depth")));
+				if(e->Attribute("vibrate_delay")) setVibrateDelay(i, j, atoi(e->Attribute("vibrate_delay")));
+				if(e->Attribute("channel_volume")) setChannelVolume(i, j, atoi(e->Attribute("channel_volume")));
+				if(e->Attribute("portamento_time")) setPortamentoTime(i, j, atoi(e->Attribute("portamento_time")));
+				if(e->Attribute("pan")) setPan(i, j, atoi(e->Attribute("pan")));
+				if(e->Attribute("pitch_bend_semitones")) setPitchBendSemitones(i, j, atoi(e->Attribute("pitch_bend_semitones")));
+				if(e->Attribute("pitch_wheel")) setPitchWheel(i, j, atoi(e->Attribute("pitch_wheel")));
+				if(e->Attribute("velocity")) setVoiceVelocity(i, j, atoi(e->Attribute("velocity")));
+				if(e->Attribute("reverb_send")) setReverbSend(i, j, atoi(e->Attribute("reverb_send")));
+				if(e->Attribute("filter_type")) setFilterType(i, j, atoi(e->Attribute("filter_type")));
+				if(e->Attribute("filter_attack")) setFilterAttack(i, j, atoi(e->Attribute("filter_attack")));
+				if(e->Attribute("filter_decay")) setFilterDecay(i, j, atoi(e->Attribute("filter_decay")));
+				if(e->Attribute("filter_release")) setFilterRelease(i, j, atoi(e->Attribute("filter_release")));
+
+				if((e->Attribute("fxb0_on")) && (atoi(e->Attribute("fxb0_on"))))
+					setFxBlockOn(i, j, 0, true);
+				else
+				if((e->Attribute("fxb1_on")) && (atoi(e->Attribute("fxb1_on"))))
+					setFxBlockOn(i, j, 1, true);
+			}
+		}
+
+	}
+
+	setMasterVolume(temp_volume);
+	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
 }
 
+/*
 void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 {
-//filepath = "/tmp/" + filepath;
-
 	std::ofstream ofs(filepath.c_str(), std::ios::binary);
 
 	ofs.exceptions(ofs.badbit | ofs.failbit);
@@ -539,82 +778,222 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 		std::cout << "savePresetToFile() failed: " << e.what() << std::endl << std::flush;
 	}
 
-//std::string cmd = "mv " + filepath + " " + filepath;
-//system(cmd.c_str());
-
 	std::cout << "File " << filepath << " saved." << std::endl << std::flush;
 	system("sync");
 }
-
-void Synth::printCurrentSettings(void)
+*/
+void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 {
-	std::cout << " MVol " << current_setting.master_volume;
-	std::cout << " LFO R " << current_setting.lfo_rate;
-	std::cout << " LFO FD " << current_setting.lfo_frequency_depth;
-	std::cout << " LFO AD " << current_setting.lfo_amp_depth;
-	std::cout << " LFO PD " << current_setting.lfo_pitch_depth;
+	TiXmlDocument doc;
+	TiXmlDeclaration *decl;
+	TiXmlElement *root, *element, *element2;
 
-	std::cout << " EQ 1G " << (current_setting.equalizer.lowest.gain);
-	std::cout << " EQ 2G " << (current_setting.equalizer.lower.gain);
-	std::cout << " EQ 3G " << (current_setting.equalizer.higher.gain);
-	std::cout << " EQ 4G " << (current_setting.equalizer.highest.gain);
-	std::cout << " EQ 1F " << (current_setting.equalizer.lowest.frequency);
-	std::cout << " EQ 2F " << (current_setting.equalizer.lower.frequency);
-	std::cout << " EQ 3F " << (current_setting.equalizer.higher.frequency);
-	std::cout << " EQ 4F " << (current_setting.equalizer.highest.frequency);
-	std::cout << " EQ LMQ " << (current_setting.equalizer.low_mid_q);
-	std::cout << " EQ HMQ " << (current_setting.equalizer.high_mid_q);
+	decl = new TiXmlDeclaration("1.0", "", "");
 
-	std::cout << " Rvb Typ " << (current_setting.reverb.type);
-	std::cout << " Rvb Chr " << (current_setting.reverb.character);
-	std::cout << " Rvb LPF " << (current_setting.reverb.pre_lpf);
-	std::cout << " Rvb Lvl " << (current_setting.reverb.level);
-	std::cout << " Rvb Tim " << (current_setting.reverb.time);
-	std::cout << " Rvb FBK " << (current_setting.reverb.delay_feedback);
-	std::cout << " Rvb DTm " << (current_setting.reverb.pre_delay_time);
+	doc.LinkEndChild(decl);
 
-	for(int i = 0; i < 2; i++)
+	//root node
+	root = new TiXmlElement("preset");
+	doc.LinkEndChild(root);
+
+	//master settings
+	element = new TiXmlElement("master");
+	element->SetAttribute("volume", s->master_volume);
+	root->LinkEndChild(element);
+
+	//tuning 
+	for(int i = 0; i < 6; i++)
 	{
-		std::cout << " Dist On " << (unsigned int) current_setting.fx_block[i].distortion.on;
-		std::cout << " Dist Typ " << current_setting.fx_block[i].distortion.type;
-		std::cout << " Dist Lvl " << current_setting.fx_block[i].distortion.level;
-		std::cout << " Dist Drv " << current_setting.fx_block[i].distortion.drive;
-		std::cout << " Dist Ton " << current_setting.fx_block[i].distortion.tone;
-
-		std::cout << " Comp On " << current_setting.fx_block[i].compressor.on;
-		std::cout << " Comp Att " << current_setting.fx_block[i].compressor.attack;
-		std::cout << " Comp Rel " << current_setting.fx_block[i].compressor.release;
-		std::cout << " Comp Thr " << current_setting.fx_block[i].compressor.threshold;
-		std::cout << " Comp Rat " << current_setting.fx_block[i].compressor.ratio;
-		std::cout << " Comp Bst " << current_setting.fx_block[i].compressor.boost;
-		std::cout << " Comp Kne " << current_setting.fx_block[i].compressor.knee;
-
-		std::cout << " Mod On " << current_setting.fx_block[i].modulation.on;
-		std::cout << " Mod Typ " << current_setting.fx_block[i].modulation.type;
-		std::cout << " Mod Lvl " << current_setting.fx_block[i].modulation.level;
-		std::cout << " Mod CDT " << current_setting.fx_block[i].modulation.chorus_delay_time;
-		std::cout << " Mod CFb " << current_setting.fx_block[i].modulation.chorus_feedback;
-		std::cout << " Mod HPF " << current_setting.fx_block[i].modulation.chorus_hpf;
-		std::cout << " Mod DFF " << current_setting.fx_block[i].modulation.delay_feedback_filter;
-		std::cout << " Mod Rat " << current_setting.fx_block[i].modulation.rate;
-		std::cout << " Mod Dep " << current_setting.fx_block[i].modulation.depth;
-		std::cout << " Mod Tre " << current_setting.fx_block[i].modulation.tremolo;
-
-		std::cout << " Del On " << current_setting.fx_block[i].delay.on;
-		std::cout << " Del Md " << current_setting.fx_block[i].delay.mode;
-		std::cout << " Del LP " << current_setting.fx_block[i].delay.pre_lp;
-		std::cout << " Del Lvl " << current_setting.fx_block[i].delay.level;
-		std::cout << " Del Tme " << current_setting.fx_block[i].delay.time;
-		std::cout << " Del FBK " << current_setting.fx_block[i].delay.feedback;
-		std::cout << " Del FBF " << current_setting.fx_block[i].delay.feedback_filter;
-
-		std::cout << " Mix LCF " << current_setting.fx_block[i].mixer.low_cut_filter_frequency;
-		std::cout << " Mix HCF " << current_setting.fx_block[i].mixer.high_cut_filter_frequency;
-		std::cout << " Mix IGn " << current_setting.fx_block[i].mixer.input_gain;
-		std::cout << " Mix OLv " << current_setting.fx_block[i].mixer.output_level;
-		std::cout << " Mix RSn " << current_setting.fx_block[i].mixer.reverb_send;
+		element = new TiXmlElement("tuning");
+		element->SetAttribute("string", i);
+		element->SetAttribute("value", s->tuning[i]);
+		root->LinkEndChild(element);
 	}
-	std::cout << std::flush;
+
+	//midi out channel
+	for(int i = 0; i < 6; i++)
+	{
+		element = new TiXmlElement("midi_out_channel");
+		element->SetAttribute("string", i);
+		element->SetAttribute("value", s->string_midi_out_channel[i]);
+		root->LinkEndChild(element);
+	}
+
+	//equalizer
+	element = new TiXmlElement("equalizer");
+	element->SetAttribute("on", (int) s->equalizer.on);
+	element->SetAttribute("low_mid_q", s->equalizer.low_mid_q);
+	element->SetAttribute("high_mid_q", s->equalizer.high_mid_q);
+	root->LinkEndChild(element);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "lowest");
+	element2->SetAttribute("gain", s->equalizer.lowest.gain);
+	element2->SetAttribute("frequency", s->equalizer.lowest.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "lower");
+	element2->SetAttribute("gain", s->equalizer.lower.gain);
+	element2->SetAttribute("frequency", s->equalizer.lower.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "higher");
+	element2->SetAttribute("gain", s->equalizer.higher.gain);
+	element2->SetAttribute("frequency", s->equalizer.higher.frequency);
+	element->LinkEndChild(element2);
+
+	element2 = new TiXmlElement("eq_band");
+	element2->SetAttribute("type", "highest");
+	element2->SetAttribute("gain", s->equalizer.highest.gain);
+	element2->SetAttribute("frequency", s->equalizer.highest.frequency);
+	element->LinkEndChild(element2);
+
+	//reverb
+	element = new TiXmlElement("reverb");
+	element->SetAttribute("type", s->reverb.type);
+	element->SetAttribute("character", s->reverb.character);
+	element->SetAttribute("pre_lpf", s->reverb.pre_lpf);
+	element->SetAttribute("level", s->reverb.level);
+	element->SetAttribute("time", s->reverb.time);
+	element->SetAttribute("delay_feedback", s->reverb.delay_feedback);
+	element->SetAttribute("pre_delay_time", s->reverb.pre_delay_time);
+	root->LinkEndChild(element);
+
+	//fx blocks
+	for(int fxb = 0; fxb < 2; fxb++)
+	{
+		element = new TiXmlElement("distortion");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].distortion.on);
+		element->SetAttribute("type", s->fx_block[fxb].distortion.type);
+		element->SetAttribute("level", s->fx_block[fxb].distortion.level);
+		element->SetAttribute("drive", s->fx_block[fxb].distortion.drive);
+		element->SetAttribute("tone", s->fx_block[fxb].distortion.tone);
+		element->SetAttribute("booster", s->fx_block[fxb].distortion.booster);
+		root->LinkEndChild(element);
+
+		element = new TiXmlElement("compression");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].compressor.on);
+		element->SetAttribute("attack", s->fx_block[fxb].compressor.attack);
+		element->SetAttribute("release", s->fx_block[fxb].compressor.release);
+		element->SetAttribute("threshold", s->fx_block[fxb].compressor.threshold);
+		element->SetAttribute("ratio", s->fx_block[fxb].compressor.ratio);
+		element->SetAttribute("boost", s->fx_block[fxb].compressor.boost);
+		element->SetAttribute("knee", s->fx_block[fxb].compressor.knee);
+		root->LinkEndChild(element);
+
+		element = new TiXmlElement("modulation");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].modulation.on);
+		element->SetAttribute("type", s->fx_block[fxb].modulation.type);
+		element->SetAttribute("level", s->fx_block[fxb].modulation.level);
+		element->SetAttribute("chorus_delay_time", s->fx_block[fxb].modulation.chorus_delay_time);
+		element->SetAttribute("chorus_feedback", s->fx_block[fxb].modulation.chorus_feedback);
+		element->SetAttribute("chorus_hpf", s->fx_block[fxb].modulation.chorus_hpf);
+		element->SetAttribute("delay_feedback_filter", s->fx_block[fxb].modulation.delay_feedback_filter);
+		element->SetAttribute("rate", s->fx_block[fxb].modulation.rate);
+		element->SetAttribute("depth", s->fx_block[fxb].modulation.depth);
+		element->SetAttribute("tremolo", s->fx_block[fxb].modulation.tremolo);
+		root->LinkEndChild(element);
+
+		element = new TiXmlElement("delay");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("on", s->fx_block[fxb].delay.on);
+		element->SetAttribute("mode", s->fx_block[fxb].delay.mode);
+		element->SetAttribute("pre_lp", s->fx_block[fxb].delay.pre_lp);
+		element->SetAttribute("level", s->fx_block[fxb].delay.level);
+		element->SetAttribute("time", s->fx_block[fxb].delay.time);
+		element->SetAttribute("feedback", s->fx_block[fxb].delay.feedback);
+		element->SetAttribute("feedback_filter", s->fx_block[fxb].delay.feedback_filter);
+		root->LinkEndChild(element);
+
+		element = new TiXmlElement("mixer");
+		element->SetAttribute("fxblock", fxb);
+		element->SetAttribute("low_cut_filter_frequency", s->fx_block[fxb].mixer.low_cut_filter_frequency);
+		element->SetAttribute("high_cut_filter_frequency", s->fx_block[fxb].mixer.high_cut_filter_frequency);
+		element->SetAttribute("input_gain", s->fx_block[fxb].mixer.input_gain);
+		element->SetAttribute("output_level", s->fx_block[fxb].mixer.output_level);
+		element->SetAttribute("pan", s->fx_block[fxb].mixer.pan);
+		element->SetAttribute("reverb_send", s->fx_block[fxb].mixer.reverb_send);
+		root->LinkEndChild(element);
+	}
+
+	//voices
+	for(int str = 0; str < 6; str++)
+		for(int vi = 0; vi < s->voices[str].size(); vi++)
+		{
+			element = new TiXmlElement("voice");
+			element->SetAttribute("string", str);
+//			element->SetAttribute("index", vi);
+			element->SetAttribute("channel", s->voices[str].at(vi).channel);
+			element->SetAttribute("wavetable_index", s->voices[str].at(vi).wavetable_index);
+			element->SetAttribute("amplitude_attack", s->voices[str].at(vi).amp_env_attack);
+			element->SetAttribute("amplitude_decay", s->voices[str].at(vi).amp_env_decay);
+			element->SetAttribute("amplitude_release", s->voices[str].at(vi).amp_env_release);
+			element->SetAttribute("detune_course", s->voices[str].at(vi).detune_course);
+			element->SetAttribute("detune_fine", s->voices[str].at(vi).detune_fine);
+			element->SetAttribute("vibrate_rate", s->voices[str].at(vi).vibrate_rate);
+			element->SetAttribute("vibrate_depth", s->voices[str].at(vi).vibrate_depth);
+			element->SetAttribute("vibrate_delay", s->voices[str].at(vi).vibrate_delay);
+			element->SetAttribute("channel_volume", s->voices[str].at(vi).channel_volume);
+			element->SetAttribute("portamento_time", s->voices[str].at(vi).portamento_time);
+			element->SetAttribute("pan", s->voices[str].at(vi).pan);
+			element->SetAttribute("pitch_bend_semitones", s->voices[str].at(vi).pitch_bend_semitones);
+			element->SetAttribute("pitch_wheel", s->voices[str].at(vi).pitch_wheel);
+			element->SetAttribute("velocity", s->voices[str].at(vi).velocity);
+			element->SetAttribute("fxb0_on", s->voices[str].at(vi).insert_fx_block_on[0]);
+			element->SetAttribute("fxb1_on", s->voices[str].at(vi).insert_fx_block_on[1]);
+			element->SetAttribute("reverb_send", s->voices[str].at(vi).reverb_send);
+			element->SetAttribute("filter_frequency", s->voices[str].at(vi).filter_frequency);
+			element->SetAttribute("filter_resonance", s->voices[str].at(vi).filter_resonance);
+			element->SetAttribute("filter_type", s->voices[str].at(vi).filter_type);
+			element->SetAttribute("filter_attack", s->voices[str].at(vi).filter_attack);
+			element->SetAttribute("filter_decay", s->voices[str].at(vi).filter_decay);
+			element->SetAttribute("filter_release", s->voices[str].at(vi).filter_release);
+			root->LinkEndChild(element);
+		}
+
+	for(int c = TOUCH_X; c < CONTROL_END; c++)
+	{
+		std::vector<struct assignable_effect> *control = getControlList(c);
+		for(int i = 0; i < control->size(); i++)
+		{
+			element = new TiXmlElement("control");
+			element->SetAttribute("type", c);
+			element->SetAttribute("name", control->at(i).name);
+			element->SetAttribute("string", control->at(i).str);
+			element->SetAttribute("index", control->at(i).voice_index);
+			element->SetAttribute("output", control->at(i).output);
+			element->SetAttribute("channel", control->at(i).channel);
+			element->SetAttribute("cc", control->at(i).cc);
+			element->SetAttribute("inverse", control->at(i).inverse);
+			element->SetAttribute("variation_start", control->at(i).variation_start);
+			element->SetAttribute("variation_end", control->at(i).variation_end);
+			element->SetAttribute("fxb", control->at(i).fxb);
+			element->SetAttribute("drag_center", control->at(i).drag_center);
+			root->LinkEndChild(element);
+		}
+	}
+
+	for(int i = 0; i < 6; i++)
+		for(int j = 0; j < s->stop_sound_cmds[i].size(); j++)
+		{
+			element = new TiXmlElement("control");
+			element->SetAttribute("type", 100); //fix: this nasty hack immediately!
+			element->SetAttribute("string", i);
+			element->SetAttribute("cc", s->stop_sound_cmds[i][j].cc_num);
+			element->SetAttribute("value", s->stop_sound_cmds[i][j].value);
+			root->LinkEndChild(element);
+		}
+
+	doc.SaveFile(filepath.c_str());
+
+	std::cout << "File " << filepath << " saved." << std::endl << std::flush;
+
+	system("sync");
 }
 
 void Synth::insertNewVoice(int str, int wave)
@@ -678,8 +1057,8 @@ void Synth::insertNewVoice(int str, int wave)
 		case 5: control_t = STRING_TOUCH_X_0; control_d = STRING_DRAG_X_5; break;
 	}
 
-	assignSynthVoiceParam(control_t, PARAM_VOICE_VELOCITY, str, v, true, 0, 0);
-	assignSynthVoiceParam(control_d, PARAM_VOICE_PITCH_WHEEL, str, v, false, 0, 0);
+//	assignSynthVoiceParam(control_t, PARAM_VOICE_VELOCITY, str, v, true, 0, 0);
+//	assignSynthVoiceParam(control_d, PARAM_VOICE_PITCH_WHEEL, str, v, false, 0, 0);
 }
 
 void Synth::removeVoice(int str, int voice_index)
@@ -703,17 +1082,20 @@ void Synth::removeVoice(int str, int voice_index)
 	unAssignSynthVoiceParam(PARAM_VOICE_PITCH_WHEEL, str, voice_index);
 	unAssignSynthVoiceParam(PARAM_VOICE_VELOCITY, str, voice_index);
 	unAssignSynthVoiceParam(PARAM_VOICE_REVERB_SEND, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_ATTACK, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_DECAY, str, voice_index);
+	unAssignSynthVoiceParam(PARAM_VOICE_FILTER_RELEASE, str, voice_index);
 
 	current_setting.voices[str].erase(current_setting.voices[str].begin() + voice_index);
 
 	//we must update all references to voice parameter controls
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		std::vector<struct assignable_effect> *control_list = getControlList(touch_control);
 
 		for(int i = 0; i < control_list->size(); i++)
 		{
-			if((control_list->at(i).name >= PARAM_VOICE_AMP_ENV_ATTACK) && (control_list->at(i).name <= PARAM_VOICE_REVERB_SEND))
+			if((control_list->at(i).name >= PARAM_VOICE_AMP_ENV_ATTACK) && (control_list->at(i).name < PARAM_VOICE_END))
 			{
 				if((control_list->at(i).str == str) && (control_list->at(i).voice_index > voice_index))
 				{
@@ -781,13 +1163,13 @@ void Synth::unAssignSynthEffect(unsigned char synth_param, unsigned char fxb)
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -817,13 +1199,13 @@ std::vector<int> Synth::findAssignSynthEffect(unsigned char synth_param, unsigne
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -885,13 +1267,13 @@ void Synth::unAssignSynthVoiceParam(unsigned char synth_param, unsigned char str
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -921,13 +1303,13 @@ std::vector<int> Synth::findAssignSynthVoiceParam(unsigned char synth_param, uns
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1004,13 +1386,13 @@ std::vector<int> Synth::findAssignMidiVelocity(int str, std::vector<struct assig
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1088,13 +1470,13 @@ std::vector<int> Synth::findAssignMidiPitch(unsigned char channel, std::vector<s
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1173,13 +1555,13 @@ std::vector<int> Synth::findAssignAllCC(unsigned char output, unsigned char chan
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1211,13 +1593,13 @@ std::vector<int> Synth::findAssignCC(unsigned char output, unsigned char channel
 	{
 		switch(touch_control)
 		{
-			case STRING_TOUCH_X_0:
+/*			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-			case STRING_DRAG_X_0:
+*/			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:

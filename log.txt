@@ -1,3 +1,7 @@
+v0.9.2
+- MODIFIED loadPresetFromFile() and savePresetToFile() functions to work with XML presets instead
+- FIXED bug when deleting voices in editor
+
 v0.9.1
 - ADDED drag and drop functionality to the voice screen
 

@@ -24,6 +24,7 @@ MISAKITARACOREDEP = ControlScreen.cpp Graphics.cpp Midi.cpp Synth.cpp ControlScr
 MISAKITARATOOLOBJCPP = Neck.o Touchpanel.o
 MISAKITARATOOLOBJC = bitmap.o ebmlib.o mapm.o
 MISAKITARAMAINOBJ = main.o
+TINYXMLOBJ = tinyxml/tinystr.o tinyxml/tinyxmlerror.o tinyxml/tinyxml.o tinyxml/tinyxmlparser.o
 
 MISAMENU=../Application/misa.a
 ifdef MISA_USED2D
@@ -40,8 +41,8 @@ RES=Resource.so \
 
 all: $(MISAKITARA)
 FORCE:
-$(MISAKITARA): $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES)
-	$(CPP) $(LDFLAG) -o $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES)
+$(MISAKITARA): $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES) $(TINYXMLOBJ)
+	$(CPP) $(LDFLAG) -o $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAMENU) $(GUIFW) $(RES) $(TINYXMLOBJ)
 
 $(MISAKITARAMAINOBJ): %.o: %.cpp
 	$(CPP) $(CPPFLAG) $<
@@ -77,15 +78,18 @@ rebuild:
 	make
 
 core:
+	cd tinyxml && make
 	make -f core.mak
 
 menu:
 	cd ../Application && make
 
 clean:
-	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISATOOLLIB) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP)
+	cd tinyxml && make clean
+	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISATOOLLIB) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP) $(MISAKITARACOREOBJ)
 
 cleanall:
+	cd tinyxml && make clean
 	rm $(MISAKITARA) $(MISAKITARAMAINOBJ) $(MISACORELIB) $(MISATOOLLIB) $(MISAKITARACOREOBJ) $(MISAKITARATOOLOBJC) $(MISAKITARATOOLOBJCPP)
 
 else

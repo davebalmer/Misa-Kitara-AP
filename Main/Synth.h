@@ -10,25 +10,29 @@
 #include "Neck.h"
 #include "Midi.h"
 
-#define TOUCH_X	0
-#define TOUCH_Y	1
-#define BALL_X	2
-#define BALL_Y	3
-#define DRAG_X	4
-#define DRAG_Y	5
-#define	STRING_TOUCH_X_0	6
-#define	STRING_TOUCH_X_1	7
-#define	STRING_TOUCH_X_2	8
-#define	STRING_TOUCH_X_3	9
-#define	STRING_TOUCH_X_4	10
-#define	STRING_TOUCH_X_5	11
-#define STRING_DRAG_X_0		12
-#define STRING_DRAG_X_1		13
-#define STRING_DRAG_X_2		14
-#define STRING_DRAG_X_3		15
-#define STRING_DRAG_X_4		16
-#define STRING_DRAG_X_5		17
-#define VARIATION			18
+enum CONTROLS
+{
+	TOUCH_X	= 0,
+	TOUCH_Y,
+	BALL_X,
+	BALL_Y,
+	DRAG_X,
+	DRAG_Y,
+	STRING_TOUCH_X_0, //6
+	STRING_TOUCH_X_1,
+	STRING_TOUCH_X_2,
+	STRING_TOUCH_X_3,
+	STRING_TOUCH_X_4,
+	STRING_TOUCH_X_5,
+	STRING_DRAG_X_0, //12
+	STRING_DRAG_X_1,
+	STRING_DRAG_X_2,
+	STRING_DRAG_X_3,
+	STRING_DRAG_X_4,
+	STRING_DRAG_X_5,
+	VARIATION,	//18
+	CONTROL_END
+};
 
 #define PARAM_NONE		0
 #define PARAM_DISTORTION_ON	1
@@ -416,7 +420,6 @@ public:
 		~Synth(void);
 		void loadPresetFromFile(std::string filename);
 		void savePresetToFile(struct synth_setting *s, std::string filepath);
-		void printCurrentSettings(void);
 		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
 		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
 		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);

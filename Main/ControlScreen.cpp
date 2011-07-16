@@ -887,7 +887,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 			if(t != bt.end())
 			{
 				struct coord temp = {0, 0};
-				if(xy_timer < 500)
+				if(xy_timer < 1500)
 				{
 					event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
 				}

@@ -660,7 +660,7 @@ void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 		for(int s = 0; s < 6; s++)
 		{
 //			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !sustained_note[s])
-			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0))
+			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode)
 			{
 				synth.sendNoteOff(s, current_note[s], harmonics[s]);
 				current_note[s] = -1;

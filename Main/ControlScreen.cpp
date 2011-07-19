@@ -503,6 +503,25 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 void ControlScreen::processEventBallPressed(struct control_message_t *msg)
 {
 //	std::cout << "Ball pressed." << std::flush;
+/*	for(int s = 0; s < 6; s++)
+	{
+		if(st[left_handed?5-s:s].size() == 0)
+		{
+			//turn off any playing notes
+			if(current_note[s] != -1)
+				synth.sendNoteOff(s, current_note[s], harmonics[s]);
+
+			//play note
+			if(neck_state.string_button[s] != 0)
+			{
+				current_note[s] = neck_state.string_button[s];
+				ringing_note[s] = current_note[s];
+				harmonics[s] = HARMONIC_MACRO;
+				synth.sendNoteOn(s, current_note[s], harmonics[s], true);
+			}
+		}
+	}
+*/
 }
 
 void ControlScreen::processEventBallDragged(struct control_message_t *msg)
@@ -887,7 +906,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 			if(t != bt.end())
 			{
 				struct coord temp = {0, 0};
-				if(xy_timer < 1500)
+				if((xy_timer < 1500) && (ball_travel_on))
 				{
 					event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
 				}

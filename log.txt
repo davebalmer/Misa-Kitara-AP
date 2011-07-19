@@ -1,3 +1,6 @@
+v0.9.3
+- IMPROVED control behaviour.
+
 v0.9.2
 - MODIFIED loadPresetFromFile() and savePresetToFile() functions to work with XML presets instead
 - FIXED bug when deleting voices in editor

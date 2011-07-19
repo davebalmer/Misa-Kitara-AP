@@ -1074,7 +1074,9 @@ int UpdateSoundbank()
 	//ret = system("./test");
 	pSynth->closeMidiPorts();
 	usleep(100);
-	ret = system("nice -n -20 samprom wavetable.bin");
+	std::string cmd = "nice -n -20 samprom " + working_directory + "/wavetable.bin";
+	ret = system(cmd.c_str());
+//	ret = system("nice -n -20 samprom wavetable.bin");
 	//ret = system("samprom wave.bin");
 	pSynth->openMidiPorts();
 	std::cout<<"Return value="<<ret<<std::endl<<std::flush;

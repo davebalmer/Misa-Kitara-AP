@@ -99,11 +99,11 @@ std::string getSystemInfo(void)
 {
 	std::string info;
 
-	std::string tpVer = "modinfo /media/usrdata/driver/nastech_ts.ko | grep srcversion | sed 's/srcversion/TP/g'";
-	std::string neckVer = "modinfo /media/usrdata/driver/keyboard144.ko | grep srcversion | sed 's/srcversion/NK/g'";
-	std::string synthVer = "modinfo /media/usrdata/driver/sam3716.ko | grep srcversion | sed 's/srcversion/SY/g'";
-	std::string powerVer = "modinfo /media/usrdata/driver/guitar_key.ko | grep srcversion | sed 's/srcversion/PW/g'";
-	std::string dspVer = "echo -ne 'DSP: v'; strings /media/usrdata/3716-FW_MISA.bin | grep 3716-MISA | cut -d\\  -f 2";
+	std::string tpVer = "modinfo " + working_directory + "/driver/nastech_ts.ko | grep srcversion | sed 's/srcversion/TP/g'";
+	std::string neckVer = "modinfo " + working_directory + "/driver/keyboard144.ko | grep srcversion | sed 's/srcversion/NK/g'";
+	std::string synthVer = "modinfo " + working_directory + "/driver/sam3716.ko | grep srcversion | sed 's/srcversion/SY/g'";
+	std::string powerVer = "modinfo " + working_directory + "/driver/guitar_key.ko | grep srcversion | sed 's/srcversion/PW/g'";
+	std::string dspVer = "echo -ne 'DSP: v'; strings " + working_directory + "/3716-FW_MISA.bin | grep 3716-MISA | cut -d\\  -f 2";
 	std::string cmd = "(" + tpVer + " ; " + neckVer + " ; " + synthVer + " ; " + powerVer + " ; " + dspVer + ")" + " > /tmp/sysinfo";
 
 	system(cmd.c_str());

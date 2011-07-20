@@ -252,11 +252,14 @@ void ControlScreen::testForCornerSwitches(void)
 			synth.sendControl(TOUCH_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
 			synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
 			synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-			synth.sendControl(BALL_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
-			synth.sendControl(BALL_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-			xy_control.x = graphics->getWindow1Width()/2;
-			xy_control.y = graphics->getScreenHeight()/2;
-			graphics->setXYControlPosition(xy_control.x, xy_control.y);
+			if(show_ball)
+			{
+				synth.sendControl(BALL_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
+				synth.sendControl(BALL_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
+				xy_control.x = graphics->getWindow1Width()/2;
+				xy_control.y = graphics->getScreenHeight()/2;
+				graphics->setXYControlPosition(xy_control.x, xy_control.y);
+			}
 
 			graphics->hideFloatingWindows();
 			graphics->setLCDUnScaled();

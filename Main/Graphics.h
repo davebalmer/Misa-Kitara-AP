@@ -84,7 +84,7 @@ class Graphics
 {
 	private:
 		static const int screen_width = 800, screen_height = 600, screen_bpp = 32;
-		static const int window1_width = 550, window2_width = screen_width - window1_width;
+		int window1_width, window2_width;
 		static const int screen_stride = screen_width * (screen_bpp >> 3);
 		static const int main_window = 0x53E2B000;
 		static const int floating_window_1 = 0x53C56000;
@@ -117,6 +117,7 @@ class Graphics
 
 		struct colour screen_colour, background;
 		bool stringed_mode, tap_mode, paused;
+		bool show_ball, show_strings;
 
 	public:
 		Graphics(int argc, char **argv);
@@ -127,6 +128,8 @@ class Graphics
 		int getScreenWidth(void);
 		int getWindow1Width(void);
 		int getWindow2Width(void);
+		int setWindow1Width(int w);
+		int setWindow2Width(int w);
 		int getScreenHeight(void);
 		int getScreenBpp(void);
 		int getScreenStride(void);
@@ -170,5 +173,8 @@ class Graphics
 		void setLCDScaled(void);
 		void setLCDUnScaled(void);
 		void hideFloatingWindows(void);
+
+		void showBall(bool state);
+		void showStrings(bool state);
 };
 #endif

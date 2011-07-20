@@ -21,6 +21,11 @@ ControlScreen::ControlScreen(Graphics *g)
 	tap_mode = false;
 	string_mode = false;
 	left_handed = false;
+
+	show_ball = false;
+	show_strings = false;
+	graphics->showBall(show_ball);
+	graphics->showStrings(show_strings);
 	
 	changeScreen(UI_NORMAL);
 
@@ -137,12 +142,7 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 {
 	ts->getTouchState(&touch_state);
 	neck->getNeckState(&neck_state, left_handed);
-/*
-	if((neck_state.string_button[0] == 24) && (neck_state.string_button[1] == 24) && 
-		(neck_state.string_button[2] == 24) && (neck_state.string_button[3] == 24) &&
-		(neck_state.string_button[4] == 24) && (neck_state.string_button[5] == 24))
-		exit(1);
-*/
+
 	static int old_button[6] = {0, 0, 0, 0, 0, 0};
 
 	//identify new button presses
@@ -161,6 +161,17 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 
 			old_button[s] = neck_state.string_button[s];
 		}
+	}
+
+	if(show_strings)
+	{
+		graphics->setWindow1Width(550);
+		graphics->setWindow2Width(graphics->getScreenWidth() - 550);
+	}
+	else
+	{
+		graphics->setWindow1Width(800);
+		graphics->setWindow2Width(0);
 	}
 
 	for(int i = 0; i < 5; i++)
@@ -185,7 +196,10 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 	{
 		case UI_NORMAL:
 			updateBallWindow();
-			updateStringWindow();
+
+			if(show_strings)
+				updateStringWindow();
+
 			testForCornerSwitches();
 			break;
 	}
@@ -860,7 +874,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 			if((find(nt.begin(), nt.end(), i) == nt.end()) &&
 			 (find(bt.begin(), bt.end(), i) == bt.end()))
 			{
-				if(isInXYControlBounds(touch_state_w1.x[i], touch_state_w1.y[i]))
+				if((show_ball) && (isInXYControlBounds(touch_state_w1.x[i], touch_state_w1.y[i])))
 				{
 					struct coord touch_location;
 					touch_location.x = touch_state_w1.x[i];
@@ -902,26 +916,29 @@ unsigned char ControlScreen::updateBallWindow(void)
 				nt.erase(t);
 			}
 
-			t = find(bt.begin(), bt.end(), i);
-			if(t != bt.end())
+			if(show_ball)
 			{
-				struct coord temp = {0, 0};
-				if((xy_timer < 1500) && (ball_travel_on))
+				t = find(bt.begin(), bt.end(), i);
+				if(t != bt.end())
 				{
-					event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
-				}
-				else
-				{
-					ball_vector.x = 0; ball_vector.y = 0; ball_vector_index = 0;
-					event_queue.push_back(newTouchEvent(EVENT_BALL_RELEASED, i, temp));
-				}
+					struct coord temp = {0, 0};
+					if((xy_timer < 1500) && (ball_travel_on))
+					{
+						event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
+					}
+					else
+					{
+						ball_vector.x = 0; ball_vector.y = 0; ball_vector_index = 0;
+						event_queue.push_back(newTouchEvent(EVENT_BALL_RELEASED, i, temp));
+					}
 
-				bt.erase(t);
+					bt.erase(t);
+				}
 			}
 		}
 	}
 
-	if(bt.size() > 0)
+	if((bt.size() > 0) && show_ball)
 	{
 		if((getDistance(xy_control.x, touch_state_w1.x[bt.at(0)]) >= 3) ||
 		 (getDistance(xy_control.y, touch_state_w1.y[bt.at(0)]) >= 3))
@@ -956,7 +973,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 		}
 	}
 	else
-	{
+	{	//this should run even if the ball is hidden
 		if(ball_travel_on && (xy_timer > 500)) //only update ball movement every 100 iterations
 		{
 			xy_timer = 0;

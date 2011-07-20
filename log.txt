@@ -1,3 +1,6 @@
+v0.9.4
+- ADDED settings to show/hide strings and ball.
+
 v0.9.3
 - IMPROVED control behaviour.
 

@@ -99,6 +99,12 @@ Graphics::Graphics(int argc, char **argv)
 
 	next_window_buffer = main_window;
 
+	show_ball = false;
+	show_strings = false;
+
+	window1_width = 550;
+	window2_width = screen_width - window1_width;
+
 	mainball_size = 60000, mainball_size_step = 3000;
 	mainball.x = getScreenWidth()/2;
 	mainball.y = getScreenHeight()/2;
@@ -382,6 +388,16 @@ int Graphics::getWindow1Width(void)
 int Graphics::getWindow2Width(void)
 {
 	return window2_width;
+}
+
+int Graphics::setWindow1Width(int w)
+{
+	window1_width = w;
+}
+
+int Graphics::setWindow2Width(int w)
+{
+	window2_width = w;
 }
 
 int Graphics::getScreenHeight(void)
@@ -708,13 +724,16 @@ void Graphics::drawAlgorithm(void)
 	for(int y = 0; y < 600/8; y++)
 		vy[y] = (my - y) * (my - y);
 
-	for(int s = 0; s < 6; s++)
+	if(show_strings)
 	{
-		for(int x = 0; x < 800/8; x++)
-			sx[s][x] = (96 - x) * (96 - x);
+		for(int s = 0; s < 6; s++)
+		{
+			for(int x = 0; x < 800/8; x++)
+				sx[s][x] = (96 - x) * (96 - x);
 
-		for(int y = 0; y < 600/8; y++)
-			sy[s][y] = ((600/6/8/2+1)+(600/6/8)*s-y) * ((600/6/8/2+1)+(600/6/8)*s-y) * (string_pressed[5-s]?5:100);
+			for(int y = 0; y < 600/8; y++)
+				sy[s][y] = ((600/6/8/2+1)+(600/6/8)*s-y) * ((600/6/8/2+1)+(600/6/8)*s-y) * (string_pressed[5-s]?5:100);
+		}
 	}
 
 	for(int i = 0; i < 5; i++)
@@ -729,7 +748,11 @@ void Graphics::drawAlgorithm(void)
 	for(int x = 0; x < 800/8; x++)
 		for(int y = 0; y < 600/8; y++)
 		{
-			int m = (ms / (vx[x] + vy[y] + 1)) + 1;
+			int m = 0;
+
+			if(show_ball)
+				m = (ms / (vx[x] + vy[y] + 1)) + 1;
+
 			for(int i = 0; i < 5; i++)
 				if(touch_life[i] > 0)
 				{
@@ -737,8 +760,9 @@ void Graphics::drawAlgorithm(void)
 					m += touch_life[i] / (vxt[i][x] + vyt[i][y] + 1);
 				}
 
-			for(int s = 0; s < 6; s++)
-				m += (10000 / (sx[s][x] + sy[s][y] + 1));
+			if(show_strings)
+				for(int s = 0; s < 6; s++)
+					m += (10000 / (sx[s][x] + sy[s][y] + 1));
 
 			int r = 0, g = 0, b = 0;
 			if(!tap_mode)
@@ -921,4 +945,14 @@ void Graphics::hideFloatingWindows(void)
 {
 	clearMainWindow();
 	*(lcd + (0x54>>2)) = 0x3600; //hide fw1 and fw2
+}
+
+void Graphics::showBall(bool state)
+{
+	show_ball = state;
+}
+
+void Graphics::showStrings(bool state)
+{
+	show_strings = state;
 }

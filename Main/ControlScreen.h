@@ -112,6 +112,8 @@ class ControlScreen
 
 		bool sustained_note[6];
 
+		bool show_ball, show_strings;
+
 	public:
 		ControlScreen(Graphics *g);
 		~ControlScreen(void);

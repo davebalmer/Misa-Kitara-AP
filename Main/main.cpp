@@ -10,7 +10,7 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-#define VERSION_STRING "Misa Kitara Control System v0.9.3 beta\n\n"
+#define VERSION_STRING "Misa Kitara Control System v0.9.4 beta\n\n"
 
 Touchpanel* pts;
 Neck* pnk;

@@ -959,6 +959,13 @@ void Synth::loadSineGuitar(void)
 	resetSettings();
 //	setMasterVolume(127);
 
+	current_setting.tuning[0] = 64;
+	current_setting.tuning[1] = 59;
+	current_setting.tuning[2] = 55;
+	current_setting.tuning[3] = 50;
+	current_setting.tuning[4] = 45;
+	current_setting.tuning[5] = 40;
+
 	for(int s = 0; s < 6; s++)
 	{
 		insertNewVoice(s, 1);
@@ -1112,7 +1119,7 @@ void Synth::loadSineGuitar(void)
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
 
 	assignSynthEffect(BALL_Y, PARAM_DISTORTION_DRIVE, 0, true, 0, 0);
-	assignSynthEffect(TOUCH_X, PARAM_DISTORTION_LEVEL, 0, true, 0, 0);
+//	assignSynthEffect(TOUCH_X, PARAM_DISTORTION_LEVEL, 0, true, 0, 0);
 
 	setMixerOutputLevel(0, 35);
 	setMixerLowCutFilterFrequency(0, 0);

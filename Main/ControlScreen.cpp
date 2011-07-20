@@ -776,21 +776,24 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 
 	if(st[left_handed?5-msg->string_id:msg->string_id].size() == 0)
 	{
-		if(current_note[msg->string_id] != -1)
+		if((nt.size() == 0) && (bt.size() == 0))
 		{
-			if(tap_mode)
+			if(current_note[msg->string_id] != -1)
 			{
-				if(current_note[msg->string_id] == 0)
+				if(tap_mode)
+				{
+					if(current_note[msg->string_id] == 0)
+					{
+						synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+						current_note[msg->string_id] = -1;
+					}
+				}
+				else
+				if(!tap_mode)
 				{
 					synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
 					current_note[msg->string_id] = -1;
 				}
-			}
-			else
-			if(!tap_mode)
-			{
-				synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
-				current_note[msg->string_id] = -1;
 			}
 		}
 

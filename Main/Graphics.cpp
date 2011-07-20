@@ -718,8 +718,16 @@ void Graphics::drawAlgorithm(void)
 	int my = mainball.y / 8;
 	int ms = mainball_size;
 
-	for(int x = 0; x < 800/8; x++)
-		vx[x] = (mx - x) * (mx - x);
+	if(show_ball)
+	{
+		for(int x = 0; x < 800/8; x++)
+			vx[x] = (mx - x) * (mx - x);
+	}
+	else
+	{
+		for(int x = 0; x < 800/8; x++)
+			vx[x] = (mx) * (mx);
+	}
 
 	for(int y = 0; y < 600/8; y++)
 		vy[y] = (my - y) * (my - y);
@@ -750,8 +758,10 @@ void Graphics::drawAlgorithm(void)
 		{
 			int m = 0;
 
-			if(show_ball)
+//			if(show_ball)
 				m = (ms / (vx[x] + vy[y] + 1)) + 1;
+
+			if(!show_ball) m+=100;
 
 			for(int i = 0; i < 5; i++)
 				if(touch_life[i] > 0)

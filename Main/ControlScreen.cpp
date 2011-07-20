@@ -1191,3 +1191,22 @@ void ControlScreen::SetStringmode(bool state)
 	string_mode = state;
 }
 
+bool ControlScreen::isShowBall(void)
+{
+	return show_ball;
+}
+
+void ControlScreen::showBall(bool state)
+{
+	show_ball = state;
+}
+
+bool ControlScreen::isShowStrings(void)
+{
+	return show_strings;
+}
+
+void ControlScreen::showStrings(bool state)
+{
+	show_strings = state;
+}

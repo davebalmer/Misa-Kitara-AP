@@ -567,5 +567,9 @@ void SynthSetStringmode(int val);
 int MisaGetHandMode();
 int MisaSetHandMode(int mode);
 int MisaSetBallTravel(int mode);
+int MisaGetShowBall();
+int MisaSetShowBall(int mode);
+int MisaGetShowStrings();
+int MisaSetShowStrings(int mode);
 
 #endif // __MISA_MENUCONFIG_H__

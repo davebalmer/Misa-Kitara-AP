@@ -155,6 +155,10 @@ class ControlScreen
 		void SetTapmode(bool state);
 		bool GetStringmode();
 		void SetStringmode(bool state);
+		bool isShowBall(void);
+		void showBall(bool state);
+		bool isShowStrings(void);
+		void showStrings(bool state);
 };
 
 #endif

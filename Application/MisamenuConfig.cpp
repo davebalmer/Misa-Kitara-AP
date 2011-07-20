@@ -1158,6 +1158,28 @@ int MisaSetBallTravel(int mode)
 	return 0;
 }
 
+int MisaGetShowBall()
+{
+	return pcs->isShowBall()?1:0;
+}
+
+int MisaSetShowBall(int mode)
+{
+	pcs->showBall(mode?true:false);
+	return 0;
+}
+
+int MisaGetShowStrings()
+{
+	return pcs->isShowStrings()?1:0;
+}
+
+int MisaSetShowStrings(int mode)
+{
+	pcs->showStrings(mode?true:false);
+	return 0;
+}
+
 // OR : Drag & Drop
 void SendVoiceParamToSynth(int string_index, int voice_index)
 {

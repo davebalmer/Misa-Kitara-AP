@@ -1199,6 +1199,7 @@ bool ControlScreen::isShowBall(void)
 void ControlScreen::showBall(bool state)
 {
 	show_ball = state;
+	graphics->showBall(state);
 }
 
 bool ControlScreen::isShowStrings(void)
@@ -1209,4 +1210,5 @@ bool ControlScreen::isShowStrings(void)
 void ControlScreen::showStrings(bool state)
 {
 	show_strings = state;
+	graphics->showStrings(state);
 }

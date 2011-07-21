@@ -612,11 +612,6 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				sustained_note[i] = false;
 	}
 */
-	if(nt.size() == 1)
-	{
-		synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
-		synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-	}
 
 	bool flag = false;	
 	for(unsigned int s = 0; s < 6; s++)
@@ -690,6 +685,12 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 {
 //	std::cout << "Touch released " << (unsigned int) msg->touch_id << "." << std::endl << std::flush;
+
+	if(nt.size() == 0)
+	{
+		synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
+		synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
+	}
 
 	if((nt.size() == 0) && (bt.size() == 0))
 	{

@@ -761,7 +761,7 @@ void Graphics::drawAlgorithm(void)
 //			if(show_ball)
 				m = (ms / (vx[x] + vy[y] + 1)) + 1;
 
-			if(!show_ball) m+=100;
+			if(!show_ball) m+=25;
 
 			for(int i = 0; i < 5; i++)
 				if(touch_life[i] > 0)

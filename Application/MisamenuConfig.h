@@ -310,6 +310,11 @@ static struct synth_setting current_setting;
 PSYNTH_SETTING GetCurrentSettingPtr();
 void SendVoiceParamToSynth(int string_index, int voice_index);
 
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+void SynthMuteVoice(int string_index, int voice_index, bool Mute);
+void SynthSoloVoice(int string_index, int voice_index, bool Solo);
+#endif		//OR_MUTE_SOLO
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Misa Synth reset all

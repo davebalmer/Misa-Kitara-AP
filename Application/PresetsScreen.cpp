@@ -8,8 +8,6 @@
 
 using namespace std;
 
-#include <string>
-#include <vector>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -65,10 +63,11 @@ extern std::string working_directory;
 
 typedef enum __PRESETSITEMS
 {
-	PRESETS_INDICATOR,
-	PRESETS_SLIDEWINDOW,
 	PRESETS_LOAD,
 	PRESETS_SAVE,
+	PRESETS_SAVE_AS,
+	PRESETS_NEW,
+	PRESETS_DELETE,
 	PRESETS_MAX
 } PRESETSITEMS;
 
@@ -76,25 +75,25 @@ typedef enum __PRESETS_ID
 {
 	PRESETS_ID_LOAD=GUI_ID_PRESETS_BASE,
 	PRESETS_ID_SAVE,
+	PRESETS_ID_SAVE_AS,
+	PRESETS_ID_DELETE,
+	PRESETS_ID_NEW,
 	PRESETS_ID_ITEMSBASE,
 	PRESETS_ID_MAX
 } PRESETS_ID;
 
 ///////////////////////////////////////////////////////////////////////////////
 //
+static PresetSlideList presetSlideList;
 
 static WM_HWIN hPresets;
 static void PresetsProc(WM_MESSAGE* pMsg);
 static WM_HWIN hPresetsItems[PRESETS_MAX];
 static COMMCOMPONENT hCOMPcomm;
-
-static WM_HWIN CreateSlidePanel(int x0, int y0, int width, int height, WM_HWIN hParent, U16 Style);
-static U8 DeleteSlidePanel(WM_HWIN hSlidePanel);
 static U8 PresetsDeleteItems();
-static U8 SlideCreateItems(WM_HWIN hParent);
-static U8 SlideDeleteItems();
 
-static U8 SlidingBorder;
+// static U8 SlidingBorder;
+
 
 static std::vector<std::string> preset_filenames;
 static BUTTON_Handle* pPresetsItems = 0;
@@ -102,7 +101,9 @@ static BUTTON_Handle* pPresetsItems = 0;
 static SYNTH_SETTING synthSetting;
 
 static int SaveEffect();
-static int LoadEffect();
+static bool SavePresetAs();
+static bool NewPreset();
+static bool DeletePreset();
 
 bool GetCurrentSetting(PSYNTH_SETTING pSetting);
 void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filepath);
@@ -130,16 +131,13 @@ U8 TopPresetsScreen(WM_HWIN hPreWin)
 {
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hPresets);
-	if(hPresetsItems[PRESETS_SLIDEWINDOW])
-	{
-		SlideDeleteItems();
-		SlideCreateItems(hPresetsItems[PRESETS_SLIDEWINDOW]);
-	}
+	presetSlideList.CreateSlideItem();
+
 	//WM_BringToTop(hPresets);
 	return 0;
 }
 
-static U8 ReadPresetsDir()
+bool ReadPresetsDir(std::vector<std::string> &preset_filenames)
 {
 #ifdef Linux
 	DIR *dp;
@@ -171,10 +169,10 @@ static U8 ReadPresetsDir()
 	HANDLE hFind;
 	DWORD error;
 
-	hFind = FindFirstFile("presets\\*.mz", &FindFileData);
+	hFind = FindFirstFile((working_directory + "/presets\\*.mz").c_str(), &FindFileData);
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
-		return 0;
+		return false;
 	}
 	else
 	{
@@ -222,7 +220,7 @@ static U8 ReadPresetsDir()
 	FindClose(hFind);
 #endif
 #endif
-	return preset_filenames.size();
+	return true;
 }
 
 static U8 PresetsCreateItems(WM_HWIN hParent)
@@ -232,7 +230,7 @@ static U8 PresetsCreateItems(WM_HWIN hParent)
 	memset(hPresetsItems,0,sizeof(hPresetsItems));
 	x=0;
 	y = bmEMPTYTITLEBAR.YSize;
-	hPresetsItems[PRESETS_INDICATOR] = CreateSlidePanel(x,y+INDICATORFRAME,WM_GetWindowSizeX(hParent),WM_GetWindowSizeY(hParent)-200-y,hParent,WM_CF_SHOW|WM_CF_MEMDEV);
+	presetSlideList.CreateWidget(x,y+INDICATORFRAME,WM_GetWindowSizeX(hParent),WM_GetWindowSizeY(hParent)-200-y,hParent,WM_CF_SHOW|WM_CF_MEMDEV);
 	x = 1;
 	y = 502;
 	hPresetsItems[PRESETS_LOAD] = BUTTON_CreateAsChild(x,y,bmPRESET_LOAD_UN.XSize,bmPRESET_LOAD_UN.YSize,hParent,PRESETS_ID_LOAD,WM_CF_SHOW|WM_CF_MEMDEV);
@@ -245,16 +243,34 @@ static U8 PresetsCreateItems(WM_HWIN hParent)
 	BUTTON_SetFocussable(hPresetsItems[PRESETS_SAVE],0);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
+
+	// save As
+	x += bmPRESET_SAVE_UN.XSize;
+	x += PRESETS_XOFFSET;
+	y = 470;
+	hPresetsItems[PRESETS_SAVE_AS] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVE_UN.XSize,bmPRESET_SAVE_UN.YSize,hParent,PRESETS_ID_SAVE_AS,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hPresetsItems[PRESETS_SAVE_AS],0);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
+
+	// Delete PRESETS_DELETE PRESETS_ID_DELETE
+	x += bmPRESET_SAVE_UN.XSize;
+	x += PRESETS_XOFFSET;
+	y = 440;
+	hPresetsItems[PRESETS_DELETE] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVE_UN.XSize,bmPRESET_SAVE_UN.YSize,hParent,PRESETS_ID_DELETE,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hPresetsItems[PRESETS_DELETE],0);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
+
+	// New PRESETS_NEW PRESETS_ID_NEW
+
+
 	return 0;
 }
 
 static U8 PresetsDeleteItems()
 {
-	if(hPresetsItems[PRESETS_INDICATOR])
-	{
-		DeleteSlidePanel(hPresetsItems[PRESETS_INDICATOR]);
-		hPresetsItems[PRESETS_INDICATOR] = 0;
-	}
+	presetSlideList.DeleteWidget();
 	DeleteCommComponent(hCOMPcomm);
 	return 0;
 }
@@ -301,7 +317,7 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 				switch(Id)
 				{
 				case PRESETS_ID_LOAD:
-					LoadEffect();
+					LoadEffect(presetSlideList);
 					break;
 				case PRESETS_ID_SAVE:
 					hFocus = WM_GetFocussedWindow();
@@ -318,8 +334,37 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 						}
 					}
 					break;
+
+				case PRESETS_ID_SAVE_AS:
+					SavePresetAs();
+					presetSlideList.CreateSlideItem();
+					break;
+
+				case PRESETS_ID_DELETE:
+					// confirmation ?
+					hFocus = WM_GetFocussedWindow();
+					if(hFocus)
+					{
+						if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
+						{
+							WM_SetFocus(hFocus);
+							DeletePreset();
+							presetSlideList.CreateSlideItem();
+						}
+						else
+						{
+							WM_SetFocus(hFocus);
+						}
+					}
+					break;
+
+				case PRESETS_ID_NEW:
+					NewPreset();
+					presetSlideList.CreateSlideItem();
+					break;
+
 				case COMMON_ID_CLOSE:
-					SlideDeleteItems();
+					PresetSlideDeleteItems();
 					break;
 				default:
 					;
@@ -336,80 +381,43 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-// Misa Sliding window support
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
 
-static WM_HWIN hSlideWindow;
-static void SlideWindowProc(WM_MESSAGE* pMsg);
-static void IndicatorProc(WM_MESSAGE* pMsg);
-
-static U8 IndicatorCreateItems(WM_HWIN hParent)
+U8 DeletePresetSlidePanel(WM_HWIN hSlidePanel)
 {
-	hPresetsItems[PRESETS_SLIDEWINDOW] = WM_CreateWindowAsChild(0,0,WM_GetWindowSizeX(hParent),WM_GetWindowSizeY(hParent),hParent,WM_CF_SHOW|WM_CF_MEMDEV,SlideWindowProc,0);
-	return 0;
-}
-
-static U8 IndicatorDeleteItems()
-{
-	if(hPresetsItems[PRESETS_SLIDEWINDOW])
-	{
-		SlideDeleteItems();
-		WM_DeleteWindow(hPresetsItems[PRESETS_SLIDEWINDOW]);
-		hPresetsItems[PRESETS_SLIDEWINDOW] = 0;
-	}
-	return 0;
-}
-
-WM_HWIN CreateSlidePanel(int x0, int y0, int width, int height, WM_HWIN hParent, U16 Style)
-{
-	return WM_CreateWindowAsChild(x0,y0,width,height,hParent,Style,IndicatorProc,0);
-}
-
-static U8 DeleteSlidePanel(WM_HWIN hSlidePanel)
-{
-	IndicatorDeleteItems();
+	presetSlideList.DeleteSlideWin();
 	WM_DeleteWindow(hSlidePanel);
 	return 0;
 }
 
-static void IndicatorProc(WM_MESSAGE* pMsg)
-{
-	switch (pMsg->MsgId)
-	{
-	case WM_CREATE:
-		IndicatorCreateItems(pMsg->hWin);
-		break;
-	case WM_DELETE:
-		IndicatorDeleteItems();
-		break;
-	case WM_PAINT:
-		GUI_SetBkColor(GUI_BLACK);
-		GUI_Clear();
-		break;
-	default:
-		WM_DefaultProc(pMsg);
-	}
-}
 
-static U8 SlideCreateItems(WM_HWIN hParent)
+U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 {
 	int x,y,i,size;
 	x = 0;
 	y = 0;
 	preset_filenames.clear();
-	size = ReadPresetsDir();
+	ReadPresetsDir(preset_filenames);
+	size = preset_filenames.size();
 	if(size)
 	{
 		pPresetsItems = (BUTTON_Handle*)malloc(sizeof(BUTTON_Handle*)*size);
 	}
 	//preset_filenames.size();
-	for(i=0;i<size;i++)
+	if (singleColumn)
 	{
-		pPresetsItems[i] = MisaItem_CreateEx(PRESETS_ITEM_POS+(bmSELECT.XSize+PRESETS_ITEMBLANK)*(i%3), bmSELECT.YSize*(i/3), bmSELECT.XSize, bmSELECT.YSize,
-			hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+		for(i=0;i<size;i++)
+		{
+			pPresetsItems[i] = MisaItem_CreateEx(10, bmSELECT.YSize * i, bmSELECT.XSize, bmSELECT.YSize,
+				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+		}
+	}
+	else
+	{
+		for(i=0;i<size;i++)
+		{
+			pPresetsItems[i] = MisaItem_CreateEx(PRESETS_ITEM_POS+(bmSELECT.XSize+PRESETS_ITEMBLANK)*(i%3), bmSELECT.YSize*(i/3), bmSELECT.XSize, bmSELECT.YSize,
+				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+		}
 	}
 	x = WM_GetWindowSizeX(hParent);
 	y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
@@ -417,7 +425,7 @@ static U8 SlideCreateItems(WM_HWIN hParent)
 	return 0;
 }
 
-static U8 SlideDeleteItems()
+U8 PresetSlideDeleteItems()
 {
 	int i,size;
 	size = preset_filenames.size();
@@ -434,16 +442,60 @@ static U8 SlideDeleteItems()
 	return 0;
 }
 
+static bool SavePresetAs()
+{
+	// Create Keyboard
+	string fileName;
+
+	// 
+	SynthSavePreset(&synthSetting, working_directory+"/presets/" + fileName +".mz");
+
+	return true;
+}
+
+static bool DeletePreset()
+{
+	int size,pos;
+	WM_HWIN hFocus;
+	size = preset_filenames.size();
+	hFocus = WM_GetFocussedWindow();
+	if(!presetSlideList.IsPresetItem(hFocus))
+		return false;
+
+	if(hFocus)
+	{
+		pos = WM_GetId(hFocus)-PRESETS_ID_ITEMSBASE;
+		if(pos < size)
+		{
+			GetCurrentSetting(&synthSetting);
+#ifdef Linux
+			// TO DO : Remove the file
+			// Michael ?
+#else	// Win
+			string fileToDeletePath = working_directory+"/presets/" + preset_filenames[pos]+".mz";
+			DeleteFile(fileToDeletePath.c_str());
+#endif	// Win
+			return true;
+
+		}
+	}
+	return false;
+}
+
+static bool NewPreset()
+{
+	return true;
+}
+
 static int SaveEffect()
 {
 	int size,pos;
 	WM_HWIN hFocus;
 	size = preset_filenames.size();
 	hFocus = WM_GetFocussedWindow();
-	if(WM_GetParent(hFocus) != hPresetsItems[PRESETS_SLIDEWINDOW])
-	{
+	if(!presetSlideList.IsPresetItem(hFocus))
 		return 0;
-	}
+
 	if(hFocus)
 	{
 		pos = WM_GetId(hFocus)-PRESETS_ID_ITEMSBASE;
@@ -456,16 +508,15 @@ static int SaveEffect()
 	return 1;
 }
 
-static int LoadEffect()
+int LoadEffect(PresetSlideList &thePresetSlideList)
 {
 	int size,pos;
 	WM_HWIN hFocus;
 	size = preset_filenames.size();
 	hFocus = WM_GetFocussedWindow();
-	if(WM_GetParent(hFocus) != hPresetsItems[PRESETS_SLIDEWINDOW])
-	{
+	if(!thePresetSlideList.IsPresetItem(hFocus))
 		return 0;
-	}
+
 	if(hFocus)
 	{
 		pos = WM_GetId(hFocus)-PRESETS_ID_ITEMSBASE;
@@ -479,88 +530,7 @@ static int LoadEffect()
 	return 1;
 }
 
-static void SlideWindowProc(WM_MESSAGE* pMsg)
-{
-	int x,y;
-	int NCode,Id;
-	GUI_PID_STATE* pPID_State;
-	static GUI_PID_STATE PID_LastState;
-	switch (pMsg->MsgId)
-	{
-	case WM_CREATE:
-		//SlideCreateItems(pMsg->hWin);
-		break;
-	case WM_DELETE:
-		//SlideDeleteItems();
-		break;
-	case WM_PAINT:
-		GUI_SetBkColor(GUI_BLACK);
-		GUI_Clear();
-		break;
-	case WM_NOTIFY_PARENT:
-		Id = WM_GetId(pMsg->hWinSrc);
-		NCode = pMsg->Data.v;
-		switch(NCode)
-		{
-		case WM_NOTIFICATION_CLICKED:
-			break;
-		case WM_NOTIFICATION_RELEASED:
-			break;
-		}
-		break;
-	case WM_TOUCH:
-		if(pMsg->Data.p)
-		{
-			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
-			if(pPID_State->Pressed)
-			{
-				int dy;
-				if(!WM_HasCaptured(pMsg->hWin))
-				{
-					WM_SetCapture(pMsg->hWin,0);
-					PID_LastState = *pPID_State;
-				}
-				else
-				{
-					y = WM_GetWindowOrgY(pMsg->hWin);
-					x = WM_GetWindowSizeY(pMsg->hWin);
-					dy = pPID_State->y-PID_LastState.y;
-					if(dy > 0)
-					{
-						WM_MoveWindow(pMsg->hWin,0,dy>bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y?bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y:dy);
-					}
-					else if(dy < 0)
-					{
-						WM_MoveWindow(pMsg->hWin,0,dy<GUI_GetScreenSizeY()-INDICATORFRAME-100-y-x?GUI_GetScreenSizeY()-100-INDICATORFRAME-y-x:dy);
-					}
-					//WM_MoveWindow(pMsg->hWin,0,pPID_State->y-PID_LastState.y);
-				}
-			}
-			else
-			{
-				WM_ReleaseCapture();
-				y = WM_GetWindowOrgY(pMsg->hWin);
-				x = WM_GetWindowSizeY(pMsg->hWin);
-				if(bmEMPTYTITLEBAR.YSize+INDICATORFRAME < y)
-				{
-					WM_MoveWindow(pMsg->hWin,0,bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y);
-				}
-				else if(GUI_GetScreenSizeY()-INDICATORFRAME-100 > y+x)
-				{
-					WM_MoveWindow(pMsg->hWin,0,GUI_GetScreenSizeY()-100-INDICATORFRAME-y-x);
-				}
-				SlidingBorder = GetSlidingBordercheck(pMsg->hWin,hPresets);
-			}
-		}
-		else
-		{
-			WM_ReleaseCapture();
-		}
-		break;
-	default:
-		WM_DefaultProc(pMsg);
-	}
-}
+
 
 void UpdateSynthSetting()
 {

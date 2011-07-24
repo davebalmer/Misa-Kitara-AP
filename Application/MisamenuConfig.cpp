@@ -1162,6 +1162,22 @@ void SendVoiceParamToSynth(int string_index, int voice_index)
 	pSynth->SendParamToSynth(string_index, voice_index);
 
 }
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+void SynthMuteVoice(int string_index, int voice_index, bool Mute)
+{
+	SynthTurnNotesOff();
+	pSynth->MuteChannelForString(string_index, voice_index, Mute);
+}
+
+void SynthSoloVoice(int string_index, int voice_index, bool Solo)
+{
+	SynthTurnNotesOff();
+	pSynth->SoloChannelForString(string_index, voice_index, Solo);
+}
+
+#endif		//OR_MUTE_SOLO
+
 #else
 
 #include <fstream>
@@ -1191,6 +1207,9 @@ void SendVoiceParamToSynth(int string_index, int voice_index)
 
 #include "MisamenuConfig.h"
 
+#include "tinyxml/tinyxml.h"
+#include "tinyxml/tinystr.h"
+
 using namespace std;
 
 const int effect_compressor::KNEE_HARD = 0;
@@ -1201,7 +1220,7 @@ const int effect_delay::MODE_MONO = 0;
 const int effect_delay::MODE_STEREO = 1;
 
 // OR 28-06-11 : make it compile with Visual Studio 2008
-std::string working_directory;		
+std::string working_directory("e:/Projets/Misa/ARM_Firmware");		
 std::vector<int> MidiStopSoundFind(unsigned char str)
 {
 	std::vector<int> vectInt;
@@ -2586,523 +2605,237 @@ void ResetAllEffect()
 
 void SynthLoadPreset(std::string filename)
 {
-#if 1
-	int i;
 	ResetAllEffect();
-	std::ifstream ifs((working_directory + "/presets/" + filename).c_str(), std::ios::binary);
 
-	ifs.read((char *) &current_setting.tuning, 6);
-	ifs.read((char *) &current_setting.string_midi_out_channel, 6);
-
-	ifs.read((char *) &current_setting.master_volume, sizeof(int));
-	//setMasterVolume(current_setting.master_volume);
-	ifs.read((char *) &current_setting.lfo_rate, sizeof(int));
-	//setLfoRate(current_setting.lfo_rate);
-	ifs.read((char *) &current_setting.lfo_frequency_depth, sizeof(int));
-	//setLfoFrequencyDepth(current_setting.lfo_frequency_depth);
-	ifs.read((char *) &current_setting.lfo_amp_depth, sizeof(int));
-	//setLfoAmpDepth(current_setting.lfo_amp_depth);
-	ifs.read((char *) &current_setting.lfo_pitch_depth, sizeof(int));
-	//setLfoPitchDepth(current_setting.lfo_pitch_depth);
-
-	ifs.read((char *) &current_setting.equalizer, sizeof(struct eq));
-	/*setEQLowestBandGain(current_setting.equalizer.lowest.gain);
-	setEQLowerBandGain(current_setting.equalizer.lower.gain);
-	setEQHigherBandGain(current_setting.equalizer.higher.gain);
-	setEQHighestBandGain(current_setting.equalizer.highest.gain);
-	setEQLowestBandFrequency(current_setting.equalizer.lowest.frequency);
-	setEQLowerBandFrequency(current_setting.equalizer.lower.frequency);
-	setEQHigherBandFrequency(current_setting.equalizer.higher.frequency);
-	setEQHighestBandFrequency(current_setting.equalizer.highest.frequency);
-	setEQLowMidQ(current_setting.equalizer.low_mid_q);
-	setEQHighMidQ(current_setting.equalizer.high_mid_q);*/
-
-	ifs.read((char *) &current_setting.reverb, sizeof(struct effect_reverb));
-	/*setReverbType(current_setting.reverb.type);
-	setReverbCharacter(current_setting.reverb.character);
-	setReverbPreLpf(current_setting.reverb.pre_lpf);
-	setReverbLevel(current_setting.reverb.level);
-	setReverbTime(current_setting.reverb.time);
-	setReverbDelayFeedback(current_setting.reverb.delay_feedback);
-	setReverbPreDelay(current_setting.reverb.pre_delay_time);*/
-
-	for(i = 0; i < 2; i++)
+	TiXmlDocument doc((working_directory + "/presets/" + filename).c_str());
+	if(!doc.LoadFile())
 	{
-		ifs.read((char *) &current_setting.fx_block[i], sizeof(struct fxb));
-		/*setDistortionOn(i, current_setting.fx_block[i].distortion.on);
-		setDistortionType(i, current_setting.fx_block[i].distortion.type);
-		setDistortionLevel(i, current_setting.fx_block[i].distortion.level);
-		setDistortionDrive(i, current_setting.fx_block[i].distortion.drive);
-		setDistortionTone(i, current_setting.fx_block[i].distortion.tone);
-		setDistortionNoiseReduction(i, current_setting.fx_block[i].distortion.noise_reduction);
-		setDistortionBooster(i, current_setting.fx_block[i].distortion.booster);
-
-		setCompressorOn(i, current_setting.fx_block[i].compressor.on);
-		setCompressorAttack(i, current_setting.fx_block[i].compressor.attack);
-		setCompressorRelease(i, current_setting.fx_block[i].compressor.release);
-		setCompressorThreshold(i, current_setting.fx_block[i].compressor.threshold);
-		setCompressorRatio(i, current_setting.fx_block[i].compressor.ratio);
-		setCompressorBoost(i, current_setting.fx_block[i].compressor.boost);
-		setCompressorKnee(i, current_setting.fx_block[i].compressor.knee);
-
-		setModulationType(i, current_setting.fx_block[i].modulation.type);
-		setModulationOn(i, current_setting.fx_block[i].modulation.on);
-		setModulationLevel(i, current_setting.fx_block[i].modulation.level);
-		setModulationChorusDelayTime(i, current_setting.fx_block[i].modulation.chorus_delay_time);
-		setModulationChorusFeedback(i, current_setting.fx_block[i].modulation.chorus_feedback);
-		setModulationChorusHpf(i, current_setting.fx_block[i].modulation.chorus_hpf);
-		setModulationDelayFeedbackFilter(i, current_setting.fx_block[i].modulation.delay_feedback_filter);
-		setModulationRate(i, current_setting.fx_block[i].modulation.rate);
-		setModulationDepth(i, current_setting.fx_block[i].modulation.depth);
-		setModulationTremolo(i, current_setting.fx_block[i].modulation.tremolo);
-
-		setDelayOn(i, current_setting.fx_block[i].delay.on);
-		setDelayMode(i, current_setting.fx_block[i].delay.mode);
-		setDelayPreLp(i, current_setting.fx_block[i].delay.pre_lp);
-		setDelayLevel(i, current_setting.fx_block[i].delay.level);
-		setDelayTime(i, current_setting.fx_block[i].delay.time);
-		setDelayFeedback(i, current_setting.fx_block[i].delay.feedback);
-		setDelayFeedbackFilter(i, current_setting.fx_block[i].delay.feedback_filter);
-
-		setMixerLowCutFilterFrequency(i, current_setting.fx_block[i].mixer.low_cut_filter_frequency);
-		setMixerHighCutFilterFrequency(i, current_setting.fx_block[i].mixer.high_cut_filter_frequency);
-		setMixerInputGain(i, current_setting.fx_block[i].mixer.input_gain);
-		setMixerOutputLevel(i, current_setting.fx_block[i].mixer.output_level);
-		setMixerReverbSend(i, current_setting.fx_block[i].mixer.reverb_send);*/
-	}
-
-	unsigned int vector_size;
-
-	//read voice vectors
-	for(i = 0; i < 6; i++)
-	{
-		ifs.read((char *) &vector_size, sizeof(unsigned int));
-		current_setting.voices[i].resize(vector_size);
-		ifs.read((char *) &current_setting.voices[i][0], sizeof(struct voice) *vector_size);
-
-		/*for(int j = 0; j < current_setting.voices[i].size(); j++)
-		{
-			setChannel(i, j, current_setting.voices[i].at(j).channel);
-			setWave(i, j, current_setting.voices[i].at(j).wavetable_index);
-			setAmpEnvAttack(i, j, current_setting.voices[i].at(j).amp_env_attack);
-			setAmpEnvDecay(i, j, current_setting.voices[i].at(j).amp_env_decay);
-			setAmpEnvRelease(i, j, current_setting.voices[i].at(j).amp_env_release);
-			setFilterFrequency(i, j, current_setting.voices[i].at(j).filter_frequency);
-			setFilterResonance(i, j, current_setting.voices[i].at(j).filter_resonance);
-			setDetuneCourse(i, j, current_setting.voices[i].at(j).detune_course);
-			setDetuneFine(i, j, current_setting.voices[i].at(j).detune_fine);
-			setVibrateRate(i, j, current_setting.voices[i].at(j).vibrate_rate);
-			setVibrateDepth(i, j, current_setting.voices[i].at(j).vibrate_depth);
-			setVibrateDelay(i, j, current_setting.voices[i].at(j).vibrate_delay);
-			setChannelVolume(i, j, current_setting.voices[i].at(j).channel_volume);
-			setPortamentoTime(i, j, current_setting.voices[i].at(j).portamento_time);
-			setPan(i, j, current_setting.voices[i].at(j).pan);
-			setPitchBendSemitones(i, j, current_setting.voices[i].at(j).pitch_bend_semitones);
-			setReverbSend(i, j, current_setting.voices[i].at(j).reverb_send);
-
-			if(current_setting.voices[i].at(j).insert_fx_block_on[0])
-				setFxBlockOn(i, j, 0, true);
-			else
-			if(current_setting.voices[i].at(j).insert_fx_block_on[1])
-				setFxBlockOn(i, j, 1, true);
-		}*/
-	}
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_touch_x.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_touch_x[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_touch_y.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_touch_y[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_drag_x.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_drag_x[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_drag_y.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_drag_y[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_ball_x.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_ball_x[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_ball_y.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_ball_y[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_0.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_0[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_1.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_1[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_2.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_2[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_3.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_3[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_4.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_4[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_touch_x_5.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_touch_x_5[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_0.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_0[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_1.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_1[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_2.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_2[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_3.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_3[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_4.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_4[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_string_drag_x_5.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_string_drag_x_5[0], sizeof(struct assignable_effect) * vector_size);
-
-	ifs.read((char *) &vector_size, sizeof(unsigned int));
-	current_setting.AE_variation.resize(vector_size);
-	ifs.read((char *) &current_setting.AE_variation[0], sizeof(struct assignable_effect) * vector_size);
-	
-	ifs.close();
-#else
-	std::ifstream preset_file((working_directory + "/presets/" + filepath).c_str());
-
-	if(!preset_file.is_open())
-	{
+		std::cout << "Preset file could not be opened." << std::endl << std::flush;
 		return;
 	}
-	ResetAllEffect();
-	char buffer[80];
-	int current_string = 0, current_fx_block = 0;
-	int voice_index = 0;
-	struct voice *new_voice;
 
-	while(!preset_file.eof())
+	TiXmlElement *root = doc.RootElement();
+
+	for(TiXmlElement *e = root->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
 	{
-		std::string field1, field2, field3, field4, field5, field6, field7, field8;
-		preset_file.getline(buffer, sizeof(buffer));
-		std::istringstream istr(std::string(buffer), std::ios_base::out);
-		istr >> field1 >> field2 >> field3 >> field4 >> field5 >> field6 >> field7 >> field8;
+		std::string e_str = e->Value();
 
-		if(field1 == "name")
+		if(e_str == "master")
 		{
-			current_setting.preset_name = field2;
+			if(e->Attribute("volume") != NULL)
+				current_setting.master_volume = atoi(e->Attribute("volume"));
 		}
 		else
-		if(field1 == "master_volume")
+		if(e_str == "tuning")
 		{
-			current_setting.master_volume = atoi(field2.c_str());
+			if(e->Attribute("value"))
+				current_setting.tuning[atoi(e->Attribute("string"))] = atoi(e->Attribute("value"));
 		}
 		else
-		if(field1 == "lfo_rate")
+		if(e_str == "midi_out_channel")
 		{
-			current_setting.lfo_rate = atoi(field2.c_str());
+			if(e->Attribute("value"))
+				current_setting.string_midi_out_channel[atoi(e->Attribute("string"))] = atoi(e->Attribute("value"));
 		}
 		else
-		if(field1 == "lfo_frequency_depth")
+		if(e_str == "equalizer")
 		{
-			current_setting.lfo_frequency_depth = atoi(field2.c_str());
+			if(e->Attribute("on")) EqOn(atoi(e->Attribute("on")));
+			if(e->Attribute("low_mid_q")) EqSetLowMidQ(atoi(e->Attribute("low_mid_q")));
+			if(e->Attribute("high_mid_q")) EqSetHighMidQ(atoi(e->Attribute("high_mid_q")));
+
+			for(TiXmlElement *e2 = e->FirstChildElement(); e2 != NULL; e2 = e2->NextSiblingElement())
+			{
+				if(e2->Value() != "eq_band") continue;
+				if(!e2->Attribute("type")) continue;
+
+				if(e2->Attribute("type") == "lowest")
+				{
+					if(e2->Attribute("gain")) EqSetLowestBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) EqSetLowestBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "lower")
+				{
+					if(e2->Attribute("gain")) EqSetLowerBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) EqSetLowerBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "higher")
+				{
+					if(e2->Attribute("gain")) EqSetHigherBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) EqSetHigherBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+				else
+				if(e2->Attribute("type") == "highest")
+				{
+					if(e2->Attribute("gain")) EqSetHighestBandGain(atoi(e2->Attribute("gain")));
+					if(e2->Attribute("frequency")) EqSetHighestBandFrequency(atoi(e2->Attribute("frequency")));
+				}
+			}
 		}
 		else
-		if(field1 == "lfo_amp_depth")
+		if(e_str == "reverb")
 		{
-			current_setting.lfo_amp_depth = atoi(field2.c_str());
+			if(e->Attribute("type")) ReverbSetType(atoi(e->Attribute("type")));
+			if(e->Attribute("character")) ReverbSetCharacter(atoi(e->Attribute("character")));
+			if(e->Attribute("pre_lpf")) ReverbSetPreLpf(atoi(e->Attribute("pre_lpf")));
+			if(e->Attribute("level")) ReverbSetLevel(atoi(e->Attribute("level")));
+			if(e->Attribute("time")) ReverbSetTime(atoi(e->Attribute("time")));
+			if(e->Attribute("delay_feedback")) ReverbSetDelayFeedback(atoi(e->Attribute("delay_feedback")));
+			if(e->Attribute("pre_delay_time")) ReverbSetPreDelay(atoi(e->Attribute("pre_delay_time")));
 		}
 		else
-		if(field1 == "lfo_pitch_depth")
+		if(e_str == "distortion")
 		{
-			current_setting.lfo_pitch_depth = atoi(field2.c_str());
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) DistortionOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("type")) DistortionSetType(fxb, atoi(e->Attribute("type")));
+				if(e->Attribute("level")) DistortionSetLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("drive")) DistortionSetDrive(fxb, atoi(e->Attribute("drive")));
+				if(e->Attribute("tone")) DistortionSetTone(fxb, atoi(e->Attribute("tone")));
+				if(e->Attribute("booster")) DistortionSetBooster(fxb, atoi(e->Attribute("booster")));
+			}
 		}
 		else
-		if(field1 == "string")
+		if(e_str == "compression")
 		{
-			current_string = atoi(field2.c_str());
-			new_voice = new struct voice;
-			current_setting.voices[current_string].push_back(new_voice);
-			voice_index = current_setting.voices[current_string].size() - 1;
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) CompressorSetOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("attack")) CompressorSetAttack(fxb, atoi(e->Attribute("attack")));
+				if(e->Attribute("release")) CompressorSetRelease(fxb, atoi(e->Attribute("release")));
+				if(e->Attribute("threshold")) CompressorSetThreshold(fxb, atoi(e->Attribute("threshold")));
+				if(e->Attribute("ratio")) CompressorSetRatio(fxb, atoi(e->Attribute("ratio")));
+				if(e->Attribute("boost")) CompressorSetBoost(fxb, atoi(e->Attribute("boost")));
+				if(e->Attribute("knee")) CompressorSetKnee(fxb, atoi(e->Attribute("knee")));
+			}
 		}
 		else
-		if(field1 == "channel")
+		if(e_str == "modulation")
 		{
-			current_setting.voices[current_string].at(voice_index)->channel = atoi(field2.c_str());
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("type")) ModulationSetPreset(fxb, atoi(e->Attribute("type")));
+				if(e->Attribute("on")) ModulationSetOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("level")) ModulationSetLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("chorus_delay_time")) ModulationSetChorusDelayTime(fxb, atoi(e->Attribute("chorus_delay_time")));
+				if(e->Attribute("chorus_feedback")) ModulationSetChorusFeedback(fxb, atoi(e->Attribute("chorus_feedback")));
+				if(e->Attribute("chorus_hpf")) ModulationSetChorusHpf(fxb, atoi(e->Attribute("chorus_hpf")));
+				if(e->Attribute("delay_feedback_filter")) ModulationSetDelayFeedbackFilter(fxb, atoi(e->Attribute("delay_feedback_filter")));
+				if(e->Attribute("rate")) ModulationSetRate(fxb, atoi(e->Attribute("rate")));
+				if(e->Attribute("depth")) ModulationSetDepth(fxb, atoi(e->Attribute("depth")));
+				if(e->Attribute("tremolo")) ModulationSetTremolo(fxb, atoi(e->Attribute("tremolo")));
+			}
 		}
 		else
-		if(field1 == "wave")
+		if(e_str == "delay")
 		{
-			int channel = current_setting.voices[current_string].at(voice_index)->channel;
-			current_setting.voices[current_string].at(voice_index)->bank = atoi(field2.c_str());
-			current_setting.voices[current_string].at(voice_index)->wavetable_index = atoi(field3.c_str());
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) DelaySetOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("mode")) DelaySetMode(fxb, atoi(e->Attribute("mode")));
+				if(e->Attribute("pre_lp")) DelaySetPreLp(fxb, atoi(e->Attribute("pre_lp")));
+				if(e->Attribute("level")) DelaySetLevel(fxb, atoi(e->Attribute("level")));
+				if(e->Attribute("time")) DelaySetTime(fxb, atoi(e->Attribute("time")));
+				if(e->Attribute("feedback")) DelaySetFeedback(fxb, atoi(e->Attribute("feedback")));
+				if(e->Attribute("feedback_filter")) DelaySetFeedbackFilter(fxb, atoi(e->Attribute("feedback_filter")));
+			}
 		}
 		else
-		if(field1 == "amp_env_attack")
+		if(e_str == "mixer")
 		{
-			current_setting.voices[current_string].at(voice_index)->amp_env_attack = atoi(field2.c_str());
+			int fxb = 0;
+			if(e->Attribute("fxblock")) 
+			{
+				int fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("low_cut_filter_frequency")) MixerSetLowcut(fxb, atoi(e->Attribute("low_cut_filter_frequency")));
+				if(e->Attribute("high_cut_filter_frequency")) MixerSetHighcut(fxb, atoi(e->Attribute("high_cut_filter_frequency")));
+				if(e->Attribute("input_gain")) MixerSetInputgain(fxb, atoi(e->Attribute("input_gain")));
+				if(e->Attribute("output_level")) MixerSetLevel(fxb, atoi(e->Attribute("output_level")));
+				if(e->Attribute("pan")) MixerSetPan(fxb, atoi(e->Attribute("pan")));
+				if(e->Attribute("reverb_send")) MixerSetReverbsend(fxb, atoi(e->Attribute("reverb_send")));
+			}
 		}
 		else
-		if(field1 == "amp_env_decay")
+		if(e_str == "control")
 		{
-			current_setting.voices[current_string].at(voice_index)->amp_env_decay = atoi(field2.c_str());
+			if(atoi(e->Attribute("type")) == 100) //fix: this nasty hack immediately!
+			{
+				if((e->Attribute("string")) && (e->Attribute("cc")) && (e->Attribute("value")))
+					SynthAssignStopSound(atoi(e->Attribute("string")), atoi(e->Attribute("cc")), atoi(e->Attribute("value")));
+			}
+			else
+			{
+				std::vector<struct assignable_effect> *control = SynthGetControlList(atoi(e->Attribute("type")));
+				struct assignable_effect ae;
+				if(e->Attribute("name")) ae.name = atoi(e->Attribute("name"));
+				if(e->Attribute("string")) ae.str = atoi(e->Attribute("string"));
+				if(e->Attribute("index")) ae.voice_index = atoi(e->Attribute("index"));
+				if(e->Attribute("output")) ae.output = atoi(e->Attribute("output"));
+				if(e->Attribute("channel")) ae.channel = atoi(e->Attribute("channel"));
+				if(e->Attribute("cc")) ae.cc = atoi(e->Attribute("cc"));
+				if(e->Attribute("inverse")) ae.inverse = atoi(e->Attribute("inverse"));
+				if(e->Attribute("variation_start")) ae.variation_start = atoi(e->Attribute("variation_start"));
+				if(e->Attribute("variation_end")) ae.variation_end = atoi(e->Attribute("variation_end"));
+				if(e->Attribute("fxb")) ae.fxb = atoi(e->Attribute("fxb"));
+				if(e->Attribute("drag_center")) ae.drag_center = atoi(e->Attribute("drag_center"));
+				control->push_back(ae);
+			}
 		}
 		else
-		if(field1 == "amp_env_release")
+		if(e_str == "voice")
 		{
-			current_setting.voices[current_string].at(voice_index)->amp_env_release = atoi(field2.c_str());
+			if((e->Attribute("string")) && (e->Attribute("channel")) && (e->Attribute("wavetable_index")))
+			{
+				int i = atoi(e->Attribute("string"));
+				int j = current_setting.voices[i].size();
+				SynthInsertVoice(i, j);
+
+				
+				current_setting.voices[i].at(j).channel = atoi(e->Attribute("channel"));	// setChannel(i, j, atoi(e->Attribute("channel")));
+
+				SynthVoiceSetWave(i, j, atoi(e->Attribute("wavetable_index")));
+				if(e->Attribute("amplitude_attack")) SynthVoiceAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
+				if(e->Attribute("amplitude_decay")) SynthVoiceAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
+				if(e->Attribute("amplitude_release")) SynthVoiceAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
+				if(e->Attribute("filter_frequency")) SynthVoiceFilterFrequency(i, j, atoi(e->Attribute("filter_frequency")));
+				if(e->Attribute("filter_resonance")) SynthVoiceFilterResonance(i, j, atoi(e->Attribute("filter_resonance")));
+				if(e->Attribute("detune_course")) SynthVoiceDetuneCourse(i, j, atoi(e->Attribute("detune_course")));
+				if(e->Attribute("detune_fine")) SynthVoiceDetuneFine(i, j, atoi(e->Attribute("detune_fine")));
+				if(e->Attribute("vibrate_rate")) SynthVoiceVibrateRate(i, j, atoi(e->Attribute("vibrate_rate")));
+				if(e->Attribute("vibrate_depth")) SynthVoiceVibrateDepth(i, j, atoi(e->Attribute("vibrate_depth")));
+				if(e->Attribute("vibrate_delay")) SynthVoiceVibrateDelay(i, j, atoi(e->Attribute("vibrate_delay")));
+				if(e->Attribute("channel_volume")) SynthVoiceChannelVolume(i, j, atoi(e->Attribute("channel_volume")));
+				if(e->Attribute("portamento_time")) SynthVoicePortamentoTime(i, j, atoi(e->Attribute("portamento_time")));
+				if(e->Attribute("pan")) SynthVoicePan(i, j, atoi(e->Attribute("pan")));
+				if(e->Attribute("pitch_bend_semitones")) SynthVoicePitchBendSemitones(i, j, atoi(e->Attribute("pitch_bend_semitones")));
+				if(e->Attribute("pitch_wheel")) SynthVoicePitchWheel(i, j, atoi(e->Attribute("pitch_wheel")));
+				if(e->Attribute("velocity")) SynthVoiceVoiceVelocity(i, j, atoi(e->Attribute("velocity")));
+				if(e->Attribute("reverb_send")) SynthVoiceReverbSend(i, j, atoi(e->Attribute("reverb_send")));
+				if(e->Attribute("filter_type")) SynthVoiceFilterType(i, j, atoi(e->Attribute("filter_type")));
+				if(e->Attribute("filter_attack")) SynthVoiceFilterAttack(i, j, atoi(e->Attribute("filter_attack")));
+				if(e->Attribute("filter_decay")) SynthVoiceFilterDecay(i, j, atoi(e->Attribute("filter_decay")));
+				if(e->Attribute("filter_release")) SynthVoiceFilterRelease(i, j, atoi(e->Attribute("filter_release")));
+
+				if((e->Attribute("fxb0_on")) && (atoi(e->Attribute("fxb0_on"))))
+					SynthVoiceSetFX(i, j, 0, true);
+				else
+				if((e->Attribute("fxb1_on")) && (atoi(e->Attribute("fxb1_on"))))
+					SynthVoiceSetFX(i, j, 1, true);
+			}
 		}
-		else
-		if(field1 == "filter_frequency")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_frequency = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "filter_resonance")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_resonance = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "detune_course")
-		{
-			current_setting.voices[current_string].at(voice_index)->detune_course = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "detune_fine")
-		{
-			current_setting.voices[current_string].at(voice_index)->detune_fine = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "vibrate_rate")
-		{
-			current_setting.voices[current_string].at(voice_index)->vibrate_rate = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "vibrate_depth")
-		{
-			current_setting.voices[current_string].at(voice_index)->vibrate_depth = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "vibrate_delay")
-		{
-			current_setting.voices[current_string].at(voice_index)->vibrate_delay = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "filter_type")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_type = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "filter_attack")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_attack = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "filter_decay")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_decay = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "filter_release")
-		{
-			current_setting.voices[current_string].at(voice_index)->filter_release = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "channel_volume")
-		{
-			current_setting.voices[current_string].at(voice_index)->channel_volume = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "portamento_time")
-		{
-			current_setting.voices[current_string].at(voice_index)->portamento_time = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_send")
-		{
-			current_setting.voices[current_string].at(voice_index)->reverb_send = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "pan")
-		{
-			current_setting.voices[current_string].at(voice_index)->pan = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "pitch_bend_semitones")
-		{
-			current_setting.voices[current_string].at(voice_index)->pitch_bend_semitones = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "fx_block_on")
-		{
-			current_setting.voices[current_string].at(voice_index)->insert_fx_block_on[atoi(field2.c_str())] = true;
-		}
-		else
-		if(field1 == "fx_block")
-		{
-			current_fx_block = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "distortion_on")
-		{
-			current_setting.fx_block[current_fx_block].distortion.on = true;
-		}
-		else
-		if(field1 == "distortion_type")
-		{
-			current_setting.fx_block[current_fx_block].distortion.type = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "distortion_post_gain")
-		{
-			current_setting.fx_block[current_fx_block].distortion.post_gain = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "distortion_drive")
-		{
-			current_setting.fx_block[current_fx_block].distortion.drive = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "distortion_tone")
-		{
-			current_setting.fx_block[current_fx_block].distortion.tone = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_level")
-		{
-			current_setting.fx_block[current_fx_block].modulation.level = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_chorus_delay_time")
-		{
-			current_setting.fx_block[current_fx_block].modulation.chorus_delay_time = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_chorus_feedback")
-		{
-			current_setting.fx_block[current_fx_block].modulation.chorus_feedback = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_chorus_hpf")
-		{
-			current_setting.fx_block[current_fx_block].modulation.chorus_hpf = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_delay_feedback_filter")
-		{
-			current_setting.fx_block[current_fx_block].modulation.delay_feedback_filter = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_rate")
-		{
-			current_setting.fx_block[current_fx_block].modulation.rate = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_depth")
-		{
-			current_setting.fx_block[current_fx_block].modulation.depth = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "modulation_tremolo")
-		{
-			current_setting.fx_block[current_fx_block].modulation.tremolo = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_on")
-		{
-			current_setting.fx_block[current_fx_block].delay.on = true;
-		}
-		else
-		if(field1 == "delay_mode")
-		{
-			current_setting.fx_block[current_fx_block].delay.mode = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_pre_lp")
-		{
-			current_setting.fx_block[current_fx_block].delay.pre_lp = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_level")
-		{
-			current_setting.fx_block[current_fx_block].delay.level = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_time")
-		{
-			current_setting.fx_block[current_fx_block].delay.time = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_feedback")
-		{
-			current_setting.fx_block[current_fx_block].delay.feedback = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "delay_feedback_filter")
-		{
-			current_setting.fx_block[current_fx_block].delay.feedback_filter = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_type")
-		{
-			current_setting.reverb.type = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_character")
-		{
-			current_setting.reverb.character = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_pre_lpf")
-		{
-			current_setting.reverb.pre_lpf = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_level")
-		{
-			current_setting.reverb.level = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_time")
-		{
-			current_setting.reverb.time = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_delay_feedback")
-		{
-			current_setting.reverb.delay_feedback = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "reverb_pre_delay")
-		{
-			current_setting.reverb.pre_delay_time = atoi(field2.c_str());
-		}
-		else
-		if(field1 == "midi_channel")
-		{
-			current_setting.string_midi_out_channel[current_string] = atoi(field2.c_str());
-		}
+
 	}
-
-	preset_file.close();	
-#endif
 }
 
 void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filepath)
@@ -3124,6 +2857,19 @@ void SendVoiceParamToSynth(int string_index, int voice_index)
 {
 	// Do nothing in the Windows simulation
 }
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+void SynthMuteVoice(int string_index, int voice_index, bool Mute)
+{
+	// Do nothing in the Windows simulation
+}
+
+void SynthSoloVoice(int string_index, int voice_index, bool Solo)
+{
+	// Do nothing in the Windows simulation
+}
+
+#endif		//OR_MUTE_SOLO
 
 #endif // Linux
 

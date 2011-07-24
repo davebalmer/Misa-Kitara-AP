@@ -3376,9 +3376,11 @@ static void MisaItemProc(WM_MESSAGE* pMsg)
 	BUTTON_Obj * pObj = (BUTTON_Obj *)GUI_ALLOC_h2p(hObj);
 	switch (pMsg->MsgId)
 	{
-	//case WM_TOUCH:
+	case WM_TOUCH:
 	//	MisaItemOntouch(hObj, pObj, pMsg);
-	//	break;
+		WM_SendMessage(WM_GetParent(hObj), pMsg);
+		DefaultItemProc(pMsg);
+		break;
 	case WM_PAINT:
 		MisaItemPaint(pObj,hObj);
 		break;

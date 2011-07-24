@@ -136,7 +136,15 @@ void ReadVoiceTypesFromFile(void);
 	"sybrass2",
 	"sitara"
 };
+
 */
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+static void VoiceSubWindowProc(WM_MESSAGE* pMsg);
+OptionSubWin *OptionSubWin::pOptionSubWin  = NULL;
+#endif		//OR_MUTE_SOLO
+
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 
@@ -371,7 +379,11 @@ static U8 VoiceCreateItems(WM_HWIN hParent)
 	x+=bmFX2_NORMAL.XSize;
 	x+=VOICE_XOFFSET;
 	//y+=VOICE_YOFFSET;
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+	hVoiceItems[VOICE_DELETE] = BUTTON_CreateAsChild(x,y,bmVC_DEL_UN.XSize,bmVC_DEL_UN.YSize,hParent,VOICE_ID_MOREOPTIONS, WM_CF_SHOW|WM_CF_MEMDEV);
+#else		//OR_MUTE_SOLO
 	hVoiceItems[VOICE_DELETE] = BUTTON_CreateAsChild(x,y,bmVC_DEL_UN.XSize,bmVC_DEL_UN.YSize,hParent,VOICE_ID_DELETE,WM_CF_SHOW|WM_CF_MEMDEV);
+#endif		//OR_MUTE_SOLO
 	BUTTON_SetFocussable(hVoiceItems[VOICE_DELETE],0);
 	BUTTON_SetBitmap(hVoiceItems[VOICE_DELETE],BUTTON_CI_UNPRESSED,&bmVC_DEL_UN);
 	BUTTON_SetBitmap(hVoiceItems[VOICE_DELETE],BUTTON_CI_PRESSED,&bmVC_DEL_SE);
@@ -554,11 +566,29 @@ static void VoiceProc(WM_MESSAGE* pMsg)
 					SynthVoiceSetWave(SynthGetStringIndex(), SynthGetVoiceIndex(), voiceIndex);
 					break;
 				case COMMON_ID_CLOSE:
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+					if (OptionSubWin::pOptionSubWin != NULL)
+					{
+						delete OptionSubWin::pOptionSubWin;
+						OptionSubWin::pOptionSubWin = NULL;
+					}
+#endif		//OR_MUTE_SOLO
+
 					CenterVoiceControls();
 					SynthEditVoice();
 					TopSynthScreen(pMsg->hWin);
 					UpdateSynthSettingEx(MISAMODULE_SYNTH);
 					break;
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+				case VOICE_ID_MOREOPTIONS:
+					if (OptionSubWin::pOptionSubWin == NULL)
+						new OptionSubWin(pMsg->hWin);
+					else
+						OptionSubWin::pOptionSubWin->Show();
+
+#else		//OR_MUTE_SOLO
 				case VOICE_ID_DELETE:
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
 					{
@@ -566,7 +596,10 @@ static void VoiceProc(WM_MESSAGE* pMsg)
 						TopSynthScreen(pMsg->hWin);
 						UpdateSynthSettingEx(MISAMODULE_SYNTH);
 					}
+#endif		//OR_MUTE_SOLO
+
 					break;
+
 				case CTL_NONE_ID:
 				case CTL_TOUCH_X_ID:
 				case CTL_TOUCH_Y_ID:
@@ -1222,3 +1255,178 @@ void ReadVoiceTypesFromFile(void)
 
 	ifs.close();
 }
+
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+
+// OptionSubWin implementation (OptionSubWin is an object that manages an additional window with 3 buttons -  Del, Solo, Mute)
+OptionSubWin::OptionSubWin(WM_HWIN parent)
+{
+	pOptionSubWin  = this;
+
+	hWin = WM_CreateWindowAsChild(0, 500, GUI_GetScreenSizeX(), GUI_GetScreenSizeY() / 3, parent, WM_CF_SHOW|WM_CF_MEMDEV, VoiceSubWindowProc, 0);
+	// WM_SetUserData(hWin, this, sizeof(void *));
+	//WM_SetCapture(hWin, false); // to close the window if the user press outside of it.
+
+}
+
+OptionSubWin::~OptionSubWin()
+{
+	SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+	SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+
+	WM_DetachWindow(hWin); 
+	WM_DeleteWindow(hWin);
+	hWin = 0;
+
+	pOptionSubWin = NULL;
+}
+
+void OptionSubWin::Show()
+{
+	WM_ShowWindow(hWin);
+}
+
+void OptionSubWin::Hide()
+{
+	WM_HideWindow(hWin);
+}
+
+//TMP!!
+#define bmVC_SOLO_UN bmVC_DEL_UN
+#define bmVC_MUTE_UN bmVC_DEL_UN
+#define bmVC_SOLO_SE bmVC_DEL_SE
+#define bmVC_MUTE_SE bmVC_DEL_SE
+
+U8 OptionSubWin::CreateItems(WM_HWIN hParent)
+{
+	int x,y;
+	
+	x = (WM_GetWindowSizeX(hParent) - 3 * bmVC_DEL_UN.XSize - bmCLOSE_NORMAL.XSize - 8) / 2 ;
+	y = 4;
+
+	hDelButton = BUTTON_CreateAsChild(x, y, bmVC_DEL_UN.XSize, bmVC_DEL_UN.YSize, hParent, OPTION_VOICE_ID_DELETE, WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hDelButton, 0);
+	BUTTON_SetBitmap(hDelButton, BUTTON_CI_UNPRESSED, &bmVC_DEL_UN);
+	BUTTON_SetBitmap(hDelButton, BUTTON_CI_PRESSED, &bmVC_DEL_SE);
+
+	x += bmVC_DEL_UN.XSize + VOICE_XOFFSET;
+	hSoloButton = MisaCheckbox_Create(x, y, bmVC_MUTE_UN.XSize, bmVC_SOLO_UN.YSize, hParent, OPTION_VOICE_ID_SOLO, WM_CF_SHOW|WM_CF_MEMDEV, &bmVC_SOLO_UN, &bmVC_SOLO_SE);
+	//hSoloButton = BUTTON_CreateAsChild(x, y, bmVC_SOLO_UN.XSize, bmVC_SOLO_UN.YSize, hParent, OPTION_VOICE_ID_SOLO, WM_CF_SHOW|WM_CF_MEMDEV);
+	//BUTTON_SetFocussable(hSoloButton, 0);
+	//BUTTON_SetBitmap(hSoloButton, BUTTON_CI_UNPRESSED, &bmVC_SOLO_UN);
+	//BUTTON_SetBitmap(hSoloButton, BUTTON_CI_PRESSED, &bmVC_SOLO_SE);
+
+	x += bmVC_SOLO_UN.XSize + VOICE_XOFFSET;
+	hMuteButton = MisaCheckbox_Create(x, y, bmVC_MUTE_UN.XSize, bmVC_MUTE_UN.YSize, hParent, OPTION_VOICE_ID_MUTE, WM_CF_SHOW|WM_CF_MEMDEV, &bmVC_MUTE_UN, &bmVC_MUTE_SE);
+
+
+	x += bmVC_SOLO_UN.XSize + VOICE_XOFFSET;
+	hCloseButton = BUTTON_CreateAsChild(x, y, bmCLOSE_NORMAL.XSize, bmCLOSE_NORMAL.YSize, hParent, COMMON_ID_CLOSE, WM_CF_SHOW | WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hCloseButton, 0);
+	BUTTON_SetBitmap(hCloseButton,BUTTON_CI_UNPRESSED,&bmCLOSE_NORMAL);
+	BUTTON_SetBitmap(hCloseButton, BUTTON_CI_PRESSED,&bmCLOSE_PRESSED);
+
+
+	return 0;
+}
+
+U8 OptionSubWin::DeleteItems()
+{
+	BUTTON_Delete(hDelButton);
+	BUTTON_Delete(hSoloButton);
+	BUTTON_Delete(hMuteButton);
+	BUTTON_Delete(hCloseButton);
+
+	return 0;
+}
+
+
+static void VoiceSubWindowProc(WM_MESSAGE* pMsg)
+{
+	GUI_PID_STATE* pState = (GUI_PID_STATE*)pMsg->Data.p;
+	WM_HWIN hWinString = 0;
+	int NCode,Id;
+
+	OptionSubWin *pOptionSubWin = OptionSubWin::pOptionSubWin;
+	//WM_GetUserData(pMsg->hWin, &pOptionSubWin, sizeof(void *));
+
+	switch (pMsg->MsgId)
+	{
+	case WM_CREATE:
+		pOptionSubWin->CreateItems(pMsg->hWin);
+		break;
+
+	case WM_DELETE:
+		pOptionSubWin->DeleteItems();
+		break;
+
+	case WM_PAINT:
+		GUI_SetBkColor(GUI_BLACK);
+		GUI_Clear();
+		break;
+
+	//case WM_TOUCH:
+	//	delete pOptionSubWin;
+	//	break;
+
+	case WM_CAPTURE_RELEASED:
+		delete pOptionSubWin;
+		break;
+
+
+	case WM_NOTIFY_PARENT:
+		Id = WM_GetId(pMsg->hWinSrc);
+		NCode = pMsg->Data.v;
+		switch(NCode)
+		{
+			case WM_NOTIFICATION_CLICKED:
+				DEBUG_STDOUT("OptionSubWin button clicked!");
+				break;
+			case WM_NOTIFICATION_RELEASED:
+				switch(Id)
+				{
+				case OPTION_VOICE_ID_DELETE:
+					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
+					{
+						SynthDeleteVoice();
+						TopSynthScreen(WM_GetParent(pMsg->hWin));
+						UpdateSynthSettingEx(MISAMODULE_SYNTH);
+						delete pOptionSubWin;
+					}
+					break;
+
+				case OPTION_VOICE_ID_SOLO:
+					// Unselect Mute
+					if (MisaCheckbox_GetStatus(pOptionSubWin->hMuteButton))
+					{
+						MisaCheckbox_SetStatus(pOptionSubWin->hMuteButton, 0);
+						SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+					}
+					SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), (bool) MisaCheckbox_GetStatus(pMsg->hWinSrc));
+					break;
+
+				case OPTION_VOICE_ID_MUTE:
+					if (MisaCheckbox_GetStatus(pOptionSubWin->hSoloButton))
+					{
+						MisaCheckbox_SetStatus(pOptionSubWin->hSoloButton, 0);
+						SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+					}
+
+					SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), (bool) MisaCheckbox_GetStatus(pMsg->hWinSrc));
+					break;
+
+				case COMMON_ID_CLOSE:
+					pOptionSubWin->Hide();
+					break;
+
+				}
+				break;
+		}
+
+	default:
+		WM_DefaultProc(pMsg);
+	};
+
+}
+#endif		//OR_MUTE_SOLO

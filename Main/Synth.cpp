@@ -2668,3 +2668,29 @@ void Synth::SendParamToSynth(int string_index, int voice_index)
         setFxBlockOn(string_index, voice_index, 1, true);
 }
 
+
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+
+void Synth::SetMuteChannelForString(int string_index, int voice_index, bool Mute)
+{
+	if (Mute)
+		midi.sendCC(SYNTH, current_setting.voices[string_index].at(voice_index).channel, 7, 0);	// volume 0
+	else
+		midi.sendCC(SYNTH, current_setting.voices[string_index].at(voice_index).channel, 7, current_setting.voices[string_index].at(voice_index).channel_volume);	// restore volume
+}
+
+void Synth::SoloChannelForString(int string_index, int voice_index, bool Solo)
+{
+	// Mute all other channel
+	for (int voiceIdx = 0; voiceIdx < 5; voiceIdx++)
+	{
+		if (voiceIdx == voice_index)
+			continue;
+
+		SetMuteChannelForString(string_index, voiceIdx, Solo)
+
+	}
+}
+
+#endif		//OR_MUTE_SOLO
+

@@ -3,6 +3,8 @@
 #ifndef __MISAQUICKSETSCREEN_H__
 #define __MISAQUICKSETSCREEN_H__
 
+
+// MisaQuickSet Entry points
 U8 CreateMisaquicksetScreen(void* pPara);
 U8 DeleteMisaquicksetScreen();
 

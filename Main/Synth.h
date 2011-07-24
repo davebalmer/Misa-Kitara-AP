@@ -466,6 +466,11 @@ public:
 // OR : Drag & Drop
 		//synth::duplicateVoice(int src_string, int srv_voice_index, int dest_string, int dest_voice_index)
 		void SendParamToSynth(int string_index, int voice_index);
+#ifdef OR_MUTE_SOLO			// OR Mute/Solo
+		void SetMuteChannelForString(int string_index, int voice_index, bool Mute);
+		void SetSoloChannelForString(int string_index, int voice_index, bool Solo);
+#endif		//OR_MUTE_SOLO
+
 };
 
 #endif

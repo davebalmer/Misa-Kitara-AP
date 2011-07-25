@@ -2309,7 +2309,6 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
 			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
-			midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 126, 0); //set monophonic mode
 		}
 	}
 }

@@ -420,9 +420,9 @@ public:
 		~Synth(void);
 		void loadPresetFromFile(std::string filename);
 		void savePresetToFile(struct synth_setting *s, std::string filepath);
-		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
-		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
-		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);
+		void sendNoteOn(unsigned char str, unsigned char btn, bool attack);
+		void sendNoteOff(unsigned char str, unsigned char btn);
+		void sendStopSound(unsigned char str, unsigned char btn);
 		void sendControl(unsigned char control_type, int val, int scaler);
 		void sendToEffect(struct assignable_effect *ae, int val, int scaler);
 		void sendVariation(int str, int voice_index, int channel);

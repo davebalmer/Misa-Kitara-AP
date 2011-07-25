@@ -107,7 +107,6 @@ class ControlScreen
 		
 		std::vector<struct control_message_t *> event_queue;
 		struct coord drag_origin[5], drag_position[5];
-		bool harmonics[6];
 		int xy_timer;
 
 		bool sustained_note[6];

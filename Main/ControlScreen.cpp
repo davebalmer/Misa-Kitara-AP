@@ -10,8 +10,6 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-#define HARMONIC_MACRO false //(nt.size() >= 3)
-
 extern std::string working_directory;
 
 ControlScreen::ControlScreen(Graphics *g)
@@ -42,7 +40,6 @@ ControlScreen::ControlScreen(Graphics *g)
 		current_note[i] = -1;
 		ringing_note[i] = -1;
 //		sustained_note[i] = false;
-		harmonics[i] = false;
 		old_pitch[i] = 0x2000;
 	}
 
@@ -360,17 +357,17 @@ void ControlScreen::playNotes(struct neckstate *state)
 		{
 			if(state->string_button[s] != 0)
 			{
-				synth.sendNoteOn(s, state->string_button[s], false, true);
+				synth.sendNoteOn(s, state->string_button[s], true);
 
 				if(current_note[s] != -1)
-					synth.sendNoteOff(s, current_note[s], false);
+					synth.sendNoteOff(s, current_note[s]);
 
 				current_note[s] = state->string_button[s];
 			}
 			else //not pressed any more
 			{
 				if(current_note[s] != -1)
-					synth.sendNoteOff(s, current_note[s], false);
+					synth.sendNoteOff(s, current_note[s]);
 
 				current_note[s] = -1;
 			}
@@ -383,7 +380,7 @@ void ControlScreen::turnCurrentNotesOff(struct neckstate *state)
 	for(unsigned int s = 0; s < 6; s++)
 	{
 		if(current_note[s] != -1)
-			synth.sendNoteOff(s, current_note[s], false);
+			synth.sendNoteOff(s, current_note[s]);
 
 		current_note[s] = -1;
 	}
@@ -461,14 +458,13 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode))
 	{
-		synth.sendNoteOn(msg->string_id, msg->button_id, HARMONIC_MACRO, false);
+		synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
 		if(current_note[msg->string_id] != -1)
-			synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 		current_note[msg->string_id] = msg->button_id;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
-		harmonics[msg->string_id] = HARMONIC_MACRO;
 	}
 }
 
@@ -485,30 +481,28 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		  (((st[left_handed?5-msg->string_id:msg->string_id].size() > 0))) ||
 		  (tap_mode))
 		{
-			synth.sendNoteOn(msg->string_id, msg->button_id, HARMONIC_MACRO, false);
+			synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
 			if(current_note[msg->string_id] != -1)
-				synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 			current_note[msg->string_id] = msg->button_id;
 			ringing_note[msg->string_id] = current_note[msg->string_id];
-			harmonics[msg->string_id] = HARMONIC_MACRO;
 		}
 	}
 	else
 	if(ringing_note[msg->string_id] != -1)
 	{
 		if(current_note[msg->string_id] != -1)
-			synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 //		if(ringing_note[msg->string_id] != current_note[msg->string_id])
 //			synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
 
-		synth.sendStopSound(msg->string_id, ringing_note[msg->string_id], harmonics[msg->string_id]);
+		synth.sendStopSound(msg->string_id, ringing_note[msg->string_id]);
 
 		current_note[msg->string_id] = -1;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
-		harmonics[msg->string_id] = HARMONIC_MACRO;
 	}
 }
 
@@ -521,15 +515,14 @@ void ControlScreen::processEventBallPressed(struct control_message_t *msg)
 		{
 			//turn off any playing notes
 			if(current_note[s] != -1)
-				synth.sendNoteOff(s, current_note[s], harmonics[s]);
+				synth.sendNoteOff(s, current_note[s]);
 
 			//play note
 			if(neck_state.string_button[s] != 0)
 			{
 				current_note[s] = neck_state.string_button[s];
 				ringing_note[s] = current_note[s];
-				harmonics[s] = HARMONIC_MACRO;
-				synth.sendNoteOn(s, current_note[s], harmonics[s], true);
+				synth.sendNoteOn(s, current_note[s], true);
 			}
 		}
 	}
@@ -559,7 +552,7 @@ void ControlScreen::processEventBallReleased(struct control_message_t *msg)
 			if(st[left_handed?5-s:s].size() == 0)
 				if(current_note[s] != -1)
 				{
-					synth.sendNoteOff(s, current_note[s], harmonics[s]);
+					synth.sendNoteOff(s, current_note[s]);
 					current_note[s] = -1;
 				}
 		}
@@ -621,7 +614,7 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 		{
 			//turn off any playing notes
 			if(current_note[s] != -1)
-				synth.sendNoteOff(s, current_note[s], harmonics[s]);
+				synth.sendNoteOff(s, current_note[s]);
 
 			//play note
 			if(neck_state.string_button[s] != 0)
@@ -629,8 +622,7 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				flag = true;
 				current_note[s] = neck_state.string_button[s];
 				ringing_note[s] = current_note[s];
-				harmonics[s] = HARMONIC_MACRO;
-				synth.sendNoteOn(s, current_note[s], harmonics[s], true);
+				synth.sendNoteOn(s, current_note[s], true);
 			}
 		}
 	}
@@ -642,7 +634,7 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 //			sustained_note[i] = false;
 			if((ringing_note[i] != -1) && (st[left_handed?5-i:i].size() == 0))
 			{
-				synth.sendStopSound(i, ringing_note[i], harmonics[i]);
+				synth.sendStopSound(i, ringing_note[i]);
 				ringing_note[i] = -1;
 			}
 		}
@@ -694,7 +686,7 @@ void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 //			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !sustained_note[s])
 			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode)
 			{
-				synth.sendNoteOff(s, current_note[s], harmonics[s]);
+				synth.sendNoteOff(s, current_note[s]);
 				current_note[s] = -1;
 			}
 		}
@@ -723,7 +715,7 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 
 	//turn off any playing notes
 	if(current_note[msg->string_id] != -1)
-		synth.sendNoteOff(msg->string_id, current_note[msg->string_id], false);
+		synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 	if(st[left_handed?5-msg->string_id:msg->string_id].size() == 1)
 	{
@@ -744,7 +736,7 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 	//play note
 	current_note[msg->string_id] = neck_state.string_button[msg->string_id];
 	ringing_note[msg->string_id] = current_note[msg->string_id];
-	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], false, true);
+	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], true);
 
 	graphics->setStringPressed(left_handed?5-msg->string_id:msg->string_id, true);
 }
@@ -783,14 +775,14 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 				{
 					if(current_note[msg->string_id] == 0)
 					{
-						synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+						synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 						current_note[msg->string_id] = -1;
 					}
 				}
 				else
 				if(!tap_mode)
 				{
-					synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+					synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 					current_note[msg->string_id] = -1;
 				}
 			}

@@ -2271,91 +2271,50 @@ void Synth::setMixerReverbSend(int fxb, int val)
 	current_setting.fx_block[fxb].mixer.reverb_send = val;
 }
 
-void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack)
-{
-	unsigned char note = current_setting.tuning[str] + btn;
-
-	if(!harmonic)
-	{
-		if(current_setting.string_midi_out_channel[str] >= 0)
-		{
-			sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
-		}
-		else
-		{
-			for(int i = 0; i < current_setting.voices[str].size(); i++)
-			{
-				sendVariation(str, i, current_setting.voices[str].at(i).channel);
-
-				int vel = current_setting.voices[str].at(i).velocity;
-
-				if(!attack)
-					midi.sendProgramChange(current_setting.voices[str].at(i).channel, 1, current_setting.voices[str].at(i).wavetable_index);
-				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
-				if(!attack)
-					midi.sendProgramChange(current_setting.voices[str].at(i).channel, 0, current_setting.voices[str].at(i).wavetable_index);
-			}
-		}
-	}
-	else
-	{
-		if(current_setting.string_midi_out_channel[str] >= 0)
-		{
-			sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note+24, velocity[str]);
-		}
-		else
-		{
-			for(int i = 0; i < current_setting.voices[str].size(); i++)
-			{
-				sendVariation(str, i, current_setting.voices[str].at(i).channel);
-
-				int vel = current_setting.voices[str].at(i).velocity;
-
-				midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 127, 0); //set polyphonic mode
-				if(!attack)
-					midi.sendProgramChange(current_setting.voices[str].at(i).channel, 1, current_setting.voices[str].at(i).wavetable_index);
-				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note+36, vel);
-				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note+24, vel);
-				if(!attack)
-					midi.sendProgramChange(current_setting.voices[str].at(i).channel, 0, current_setting.voices[str].at(i).wavetable_index);
-			}
-		}
-	}
-}
-
-void Synth::sendNoteOff(unsigned char str, unsigned char btn, bool harmonic)
+void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
 	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
-		if(harmonic)
-			midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note+24, 0);
-		else
-			midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
+		sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+		midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
 	}
 	else
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			if(harmonic)
-			{
-				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note+36, 0);
-				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note+24, 0);
-				midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 126, 0); //set monophonic mode
-			}
-			else
-			{
-				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
-				midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 126, 0); //set monophonic mode
-			}
+			sendVariation(str, i, current_setting.voices[str].at(i).channel);
+
+			int vel = current_setting.voices[str].at(i).velocity;
+			if(!attack)
+				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 1, current_setting.voices[str].at(i).wavetable_index);
+			midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+			if(!attack)
+				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 0, current_setting.voices[str].at(i).wavetable_index);
 		}
 	}
 }
 
-void Synth::sendStopSound(unsigned char str, unsigned char btn, bool harmonic)
+void Synth::sendNoteOff(unsigned char str, unsigned char btn)
+{
+	unsigned char note = current_setting.tuning[str] + btn;
+
+	if(current_setting.string_midi_out_channel[str] >= 0)
+	{
+		midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
+	}
+	else
+	{
+		for(int i = 0; i < current_setting.voices[str].size(); i++)
+		{
+			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+			midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 126, 0); //set monophonic mode
+		}
+	}
+}
+
+void Synth::sendStopSound(unsigned char str, unsigned char btn)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 

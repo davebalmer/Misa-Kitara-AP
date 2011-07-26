@@ -413,6 +413,7 @@ void Synth::resetSettings(void)
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
 }
 */
+
 void Synth::loadPresetFromFile(std::string filename)
 {
 	TiXmlDocument doc((working_directory + "/presets/" + filename).c_str());
@@ -460,28 +461,27 @@ void Synth::loadPresetFromFile(std::string filename)
 
 			for(TiXmlElement *e2 = e->FirstChildElement(); e2 != NULL; e2 = e2->NextSiblingElement())
 			{
-				if(e2->Value() != "eq_band") continue;
+				if(std::string(e2->Value()) != "eq_band") continue;
 				if(!e2->Attribute("type")) continue;
-
-				if(e2->Attribute("type") == "lowest")
+				if(std::string(e2->Attribute("type")) == "lowest")
 				{
 					if(e2->Attribute("gain")) setEQLowestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQLowestBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "lower")
+				if(std::string(e2->Attribute("type")) == "lower")
 				{
 					if(e2->Attribute("gain")) setEQLowerBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQLowerBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "higher")
+				if(std::string(e2->Attribute("type")) == "higher")
 				{
 					if(e2->Attribute("gain")) setEQHigherBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQHigherBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "highest")
+				if(std::string(e2->Attribute("type")) == "highest")
 				{
 					if(e2->Attribute("gain")) setEQHighestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQHighestBandFrequency(atoi(e2->Attribute("frequency")));

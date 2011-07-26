@@ -655,6 +655,8 @@ void UpdateSynthSetting()
 	// Eq
 	eq.lowbandgain = synthSetting.equalizer.lowest.gain;
 	eq.lowbandfreq = synthSetting.equalizer.lowest.frequency;
+	eq.lowmidbandgain = synthSetting.equalizer.lower.gain;
+	eq.lowmidbandfreq = synthSetting.equalizer.lower.frequency;
 	eq.lowmidbandQ = synthSetting.equalizer.low_mid_q;
 	eq.highmidbandgain = synthSetting.equalizer.higher.gain;
 	eq.highmidbandfreq = synthSetting.equalizer.higher.frequency;
@@ -843,6 +845,8 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 	{
 		eq.lowbandgain = synthSetting.equalizer.lowest.gain;
 		eq.lowbandfreq = synthSetting.equalizer.lowest.frequency;
+		eq.lowmidbandgain = synthSetting.equalizer.lower.gain;
+		eq.lowmidbandfreq = synthSetting.equalizer.lower.frequency;
 		eq.lowmidbandQ = synthSetting.equalizer.low_mid_q;
 		eq.highmidbandgain = synthSetting.equalizer.higher.gain;
 		eq.highmidbandfreq = synthSetting.equalizer.higher.frequency;

@@ -1938,7 +1938,6 @@ void Synth::setDistortionNoiseReduction(int fxb, int val)
 
 void Synth::setDistortionBooster(int fxb, int val)
 {
-std::cout << "booster val: " << val << std::endl << std::flush;
 	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x69, val);
 	current_setting.fx_block[fxb].distortion.booster = val;
 }

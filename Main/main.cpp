@@ -10,7 +10,7 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-#define VERSION_STRING "Misa Kitara Control System v0.9.5 beta\n\n"
+#define VERSION_STRING "Misa Kitara Control System v0.9.6 beta\n\n"
 
 Touchpanel* pts;
 Neck* pnk;
@@ -99,12 +99,13 @@ std::string getSystemInfo(void)
 {
 	std::string info;
 
-	std::string tpVer = "modinfo " + working_directory + "/driver/nastech_ts.ko | grep srcversion | sed 's/srcversion/TP/g'";
-	std::string neckVer = "modinfo " + working_directory + "/driver/keyboard144.ko | grep srcversion | sed 's/srcversion/NK/g'";
-	std::string synthVer = "modinfo " + working_directory + "/driver/sam3716.ko | grep srcversion | sed 's/srcversion/SY/g'";
-	std::string powerVer = "modinfo " + working_directory + "/driver/guitar_key.ko | grep srcversion | sed 's/srcversion/PW/g'";
+	std::string serialNum = "read_mac_sn | grep SN";
+	std::string tpVer = "modinfo " + working_directory + "/driver/nastech_ts.ko | grep -v srcversion | grep version | sed 's/version/TP/g'";
+	std::string neckVer = "modinfo " + working_directory + "/driver/keyboard144.ko | grep -v srcversion | grep version | sed 's/version/NK/g'";
+	std::string synthVer = "modinfo " + working_directory + "/driver/sam3716.ko | grep -v srcversion | grep version | sed 's/version/SY/g'";
+	std::string powerVer = "modinfo " + working_directory + "/driver/guitar_key.ko | grep -v srcversion | grep version | sed 's/version/PW/g'";
 	std::string dspVer = "echo -ne 'DSP: v'; strings " + working_directory + "/3716-FW_MISA.bin | grep 3716-MISA | cut -d\\  -f 2";
-	std::string cmd = "(" + tpVer + " ; " + neckVer + " ; " + synthVer + " ; " + powerVer + " ; " + dspVer + ")" + " > /tmp/sysinfo";
+	std::string cmd = "(" + serialNum + " ; " + tpVer + " ; " + neckVer + " ; " + synthVer + " ; " + powerVer + " ; " + dspVer + ")" + " > /tmp/sysinfo";
 
 	system(cmd.c_str());
 
@@ -147,6 +148,7 @@ bool systemCheckPassed(void)
 	if(!doesFileExist("/usr/bin/samprom")) return false;
 	if(!doesFileExist("/usr/bin/power_key")) return false;
 	if(!doesFileExist("/usr/bin/otgd")) return false;
+	if(!doesFileExist("/usr/bin/read_mac_sn")) return false;
 
 	std::string info;
 

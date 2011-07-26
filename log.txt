@@ -1,3 +1,6 @@
+v0.9.6
+- ADDED serial number display in settings
+
 v0.9.5
 - MODIFIED drag controls to reset on drag release
 

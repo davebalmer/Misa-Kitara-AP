@@ -460,8 +460,8 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	{
 		synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
-		if(current_note[msg->string_id] != -1)
-			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//		if(current_note[msg->string_id] != -1)
+//			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 		current_note[msg->string_id] = msg->button_id;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
@@ -483,8 +483,8 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		{
 			synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
-			if(current_note[msg->string_id] != -1)
-				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//			if(current_note[msg->string_id] != -1)
+//				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 			current_note[msg->string_id] = msg->button_id;
 			ringing_note[msg->string_id] = current_note[msg->string_id];
@@ -493,13 +493,13 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 	else
 	if(ringing_note[msg->string_id] != -1)
 	{
-		if(current_note[msg->string_id] != -1)
-			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//		if(current_note[msg->string_id] != -1)
+//			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 //		if(ringing_note[msg->string_id] != current_note[msg->string_id])
-//			synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
+			synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
 
-		synth.sendStopSound(msg->string_id, ringing_note[msg->string_id]);
+//		synth.sendStopSound(msg->string_id, ringing_note[msg->string_id]);
 
 		current_note[msg->string_id] = -1;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
@@ -509,24 +509,6 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 void ControlScreen::processEventBallPressed(struct control_message_t *msg)
 {
 //	std::cout << "Ball pressed." << std::flush;
-/*	for(int s = 0; s < 6; s++)
-	{
-		if(st[left_handed?5-s:s].size() == 0)
-		{
-			//turn off any playing notes
-			if(current_note[s] != -1)
-				synth.sendNoteOff(s, current_note[s]);
-
-			//play note
-			if(neck_state.string_button[s] != 0)
-			{
-				current_note[s] = neck_state.string_button[s];
-				ringing_note[s] = current_note[s];
-				synth.sendNoteOn(s, current_note[s], true);
-			}
-		}
-	}
-*/
 }
 
 void ControlScreen::processEventBallDragged(struct control_message_t *msg)
@@ -552,7 +534,8 @@ void ControlScreen::processEventBallReleased(struct control_message_t *msg)
 			if(st[left_handed?5-s:s].size() == 0)
 				if(current_note[s] != -1)
 				{
-					synth.sendNoteOff(s, current_note[s]);
+//					synth.sendNoteOff(s, current_note[s]);
+					synth.sendNoteOffRinging(s, current_note[s]);
 					current_note[s] = -1;
 				}
 		}
@@ -613,9 +596,9 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 		if(st[left_handed?5-s:s].size() == 0)
 		{
 			//turn off any playing notes
-			if(current_note[s] != -1)
-				synth.sendNoteOff(s, current_note[s]);
-
+//			if(current_note[s] != -1)
+//				synth.sendNoteOff(s, current_note[s]);
+//might need to add code to handle above
 			//play note
 			if(neck_state.string_button[s] != 0)
 			{
@@ -634,7 +617,8 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 //			sustained_note[i] = false;
 			if((ringing_note[i] != -1) && (st[left_handed?5-i:i].size() == 0))
 			{
-				synth.sendStopSound(i, ringing_note[i]);
+				synth.sendNoteOff(i, ringing_note[i]);
+//				synth.sendStopSound(i, ringing_note[i]);
 				ringing_note[i] = -1;
 			}
 		}
@@ -686,7 +670,8 @@ void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 //			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !sustained_note[s])
 			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode)
 			{
-				synth.sendNoteOff(s, current_note[s]);
+//				synth.sendNoteOff(s, current_note[s]);
+				synth.sendNoteOffRinging(s, current_note[s]);
 				current_note[s] = -1;
 			}
 		}
@@ -714,8 +699,8 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 	synth.sendControl(touch_control, graphics->getWindow2Width() - msg->current_location.x, graphics->getWindow2Width());
 
 	//turn off any playing notes
-	if(current_note[msg->string_id] != -1)
-		synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//	if(current_note[msg->string_id] != -1)
+//		synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 	if(st[left_handed?5-msg->string_id:msg->string_id].size() == 1)
 	{
@@ -775,14 +760,16 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 				{
 					if(current_note[msg->string_id] == 0)
 					{
-						synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//						synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+						synth.sendNoteOffRinging(msg->string_id, current_note[msg->string_id]);
 						current_note[msg->string_id] = -1;
 					}
 				}
 				else
 				if(!tap_mode)
 				{
-					synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+//					synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
+					synth.sendNoteOffRinging(msg->string_id, current_note[msg->string_id]);
 					current_note[msg->string_id] = -1;
 				}
 			}

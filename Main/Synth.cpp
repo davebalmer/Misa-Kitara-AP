@@ -14,6 +14,8 @@ Synth::Synth()
 	resetSettings();
 	srand(time(NULL));
 	setMasterVolume(64);
+	for(int s = 0; s < 6; s++)
+		string_note[s] = 0;
 }
 
 Synth::~Synth()
@@ -1811,6 +1813,18 @@ void Synth::setChannelVolume(int str, int voice_index, int val)
 	current_setting.voices[str].at(voice_index).channel_volume = val;
 }
 
+void Synth::setMuteChannelVolume(int str, int voice_index)
+{
+	int channel = current_setting.voices[str].at(voice_index).channel;
+	midi.sendCC(SYNTH, channel, 7, 0);
+}
+
+void Synth::setUnMuteChannelVolume(int str, int voice_index)
+{
+	int channel = current_setting.voices[str].at(voice_index).channel;
+	midi.sendCC(SYNTH, channel, 7, current_setting.voices[str].at(voice_index).channel_volume);
+}
+
 void Synth::setPortamentoTime(int str, int voice_index, int val)
 {
 	int channel = current_setting.voices[str].at(voice_index).channel;
@@ -2271,6 +2285,12 @@ void Synth::setMixerReverbSend(int fxb, int val)
 	current_setting.fx_block[fxb].mixer.reverb_send = val;
 }
 
+/*	[MZ] "Sliding" - There are two problems we must avoid when sliding on the neck:
+	1. The sound of one tone changing to another when pressing a new note - this is handled by polyphony;
+	2. The restarting of the amplitude and filter envelopes when a new note is turned on after the old note has been turned off.
+	The functions below handle this. They are very important and it wouldn't be the misa kitara without them.
+*/
+
 void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
@@ -2287,12 +2307,31 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 			sendVariation(str, i, current_setting.voices[str].at(i).channel);
 
 			int vel = current_setting.voices[str].at(i).velocity;
-			if(!attack)
+
+			if(attack)
+			{
+				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+				setUnMuteChannelVolume(str, i);
+				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+			}
+			else
+			{
+				setUnMuteChannelVolume(str, i);
+				if(string_note[str] != note)
+				{
+					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+				}
+			}
+
+/*			if(!attack)
 				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 1, current_setting.voices[str].at(i).wavetable_index);
 			midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 			if(!attack)
 				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 0, current_setting.voices[str].at(i).wavetable_index);
+*/
 		}
+		string_note[str] = note;
 	}
 }
 
@@ -2308,8 +2347,20 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+			setMuteChannelVolume(str, i);
+			//midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
 		}
+	}
+}
+
+void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
+{
+	unsigned char note = current_setting.tuning[str] + btn;
+
+	for(int i = 0; i < current_setting.voices[str].size(); i++)
+	{
+		//setMuteChannelVolume(str, i);
+		midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
 	}
 }
 

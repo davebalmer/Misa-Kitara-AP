@@ -426,6 +426,7 @@ public:
 		void sendNoteOn(unsigned char str, unsigned char btn, bool attack);
 		void sendNoteOff(unsigned char str, unsigned char btn);
 		void sendNoteOffRinging(unsigned char str, unsigned char btn);
+		void sendCurrentSynthNotesOff(void);
 		void sendStopSound(unsigned char str, unsigned char btn);
 		void sendControl(unsigned char control_type, int val, int scaler);
 		void sendToEffect(struct assignable_effect *ae, int val, int scaler);

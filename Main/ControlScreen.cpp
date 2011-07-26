@@ -260,6 +260,7 @@ void ControlScreen::testForCornerSwitches(void)
 
 			graphics->hideFloatingWindows();
 			graphics->setLCDUnScaled();
+			synth.sendCurrentSynthNotesOff();
 			KitaraMenu();
 			graphics->setLCDScaled();
 
@@ -359,8 +360,8 @@ void ControlScreen::playNotes(struct neckstate *state)
 			{
 				synth.sendNoteOn(s, state->string_button[s], true);
 
-				if(current_note[s] != -1)
-					synth.sendNoteOff(s, current_note[s]);
+//				if(current_note[s] != -1)
+//					synth.sendNoteOff(s, current_note[s]);
 
 				current_note[s] = state->string_button[s];
 			}

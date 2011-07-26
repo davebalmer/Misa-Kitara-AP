@@ -2360,6 +2360,17 @@ void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 	}
 }
 
+void Synth::sendCurrentSynthNotesOff(void)
+{
+	for(int str = 0; str < 6; str++)
+		for(int i = 0; i < current_setting.voices[str].size(); i++)
+		{
+			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
+			setUnMuteChannelVolume(str, i);
+		}
+}
+
 void Synth::sendStopSound(unsigned char str, unsigned char btn)
 {
 	unsigned char note = current_setting.tuning[str] + btn;

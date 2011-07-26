@@ -587,7 +587,7 @@ void UpdateSynthSetting()
 	distortion.tone = synthSetting.fx_block[distortion.Fx].distortion.tone;
 	distortion.level = synthSetting.fx_block[distortion.Fx].distortion.level;
 	distortion.noisereduction = synthSetting.fx_block[distortion.Fx].distortion.noise_reduction;
-	distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster;
+	distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 	UpdateDistortionInfo(&distortion);
 	// Compression
 	GetCompressionInfo(&compression);
@@ -781,7 +781,7 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 		distortion.tone = synthSetting.fx_block[distortion.Fx].distortion.tone;
 		distortion.level = synthSetting.fx_block[distortion.Fx].distortion.level;
 		distortion.noisereduction = synthSetting.fx_block[distortion.Fx].distortion.noise_reduction;
-		distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster;
+		distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 		UpdateDistortionInfo(&distortion);
 	}
 	// Modulation

@@ -16,6 +16,8 @@ Synth::Synth()
 	setMasterVolume(64);
 	for(int s = 0; s < 6; s++)
 		string_note[s] = 0;
+
+	midi.sendAllNotesOff(); //in case AP incorrectly shut down and the notes are not turned off inside the chip
 }
 
 Synth::~Synth()
@@ -85,6 +87,7 @@ void Synth::resetSettings(void)
 		midi.sendCC(SYNTH, i, 65, 0x7F);	//channel portamento on = 0x7F
 		midi.sendCC(SYNTH, i, 120, 0);	//turn all sound off
 		midi.sendCC(SYNTH, i, 123, 0);	//turn all notes off
+
 		//unassign effects inserts
 		int chan = midi.setMidiPort(i);
 		unsigned char sysex[11] = {0xF0, 0x41, 0x00, 0x42, 0x12, 0x40, 0x40+chan, 0x22, 0x00, 0x00, 0xF7};
@@ -2323,13 +2326,6 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				}
 			}
-
-/*			if(!attack)
-				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 1, current_setting.voices[str].at(i).wavetable_index);
-			midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
-			if(!attack)
-				midi.sendProgramChange(current_setting.voices[str].at(i).channel, 0, current_setting.voices[str].at(i).wavetable_index);
-*/
 		}
 		string_note[str] = note;
 	}

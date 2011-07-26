@@ -154,6 +154,21 @@ void MIDI::sendNoteOff(unsigned char output, unsigned char channel, unsigned cha
 //std::cout << std::endl << "note off " << (unsigned int) output << ": " << (unsigned int) note << "." << std::flush;
 }
 
+void MIDI::sendAllNotesOff(void)
+{
+	for(int c = 0; c < 32; c++)
+	{
+		int chan = c;
+		chan = setMidiPort(c);
+		for(int n = 0; n < 128; n++)
+		{
+			unsigned char midi_off_buffer[3] = {0x80+chan, n, 0};
+
+			safeWrite(synth_fd, &midi_off_buffer, 3);
+		}
+	}
+}
+
 void MIDI::sendSoundOff(unsigned char output, unsigned char channel)
 {
 	if(output == MIDI_OUT)

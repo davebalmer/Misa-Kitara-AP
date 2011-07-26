@@ -27,6 +27,7 @@ class MIDI
 		void midiTest(void);
 		void sendNoteOn(unsigned char output, unsigned char channel, unsigned char note, unsigned char velocity);
 		void sendNoteOff(unsigned char output, unsigned char channel, unsigned char note, unsigned char velocity);
+		void sendAllNotesOff(void);
 		void sendSoundOff(unsigned char output, unsigned char channel);
 		void sendCC(unsigned char output, unsigned char channel, unsigned char control, unsigned char value);
 		void sendNRPN(unsigned char output, unsigned char channel, unsigned char nrpn_high, unsigned char nrpn_low, unsigned char val);

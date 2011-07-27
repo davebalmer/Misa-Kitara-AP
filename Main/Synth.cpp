@@ -2323,7 +2323,8 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 				if(string_note[str] != note)
 				{
 					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
-					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+					if(string_note[str] != -1)
+						midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				}
 			}
 		}
@@ -2357,19 +2358,23 @@ void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 	{
 		//setMuteChannelVolume(str, i);
 		midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
-		string_note[str] = -1;
 	}
+	string_note[str] = -1;
 }
 
 void Synth::sendCurrentSynthNotesOff(void)
 {
 	for(int str = 0; str < 6; str++)
+	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+			if(string_note[str] != -1)
+				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
 			setUnMuteChannelVolume(str, i);
 		}
+		string_note[str] = -1;
+	}
 }
 
 void Synth::sendStopSound(unsigned char str, unsigned char btn)
@@ -2388,6 +2393,7 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 		{
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
 		}
+		string_note[str] = -1;
 	}
 }
 

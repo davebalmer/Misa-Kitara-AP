@@ -2660,6 +2660,10 @@ void Synth::SendParamToSynth(int string_index, int voice_index)
     setPitchWheel(string_index, voice_index, current_setting.voices[string_index].at(voice_index).pitch_wheel);
     setVoiceVelocity(string_index, voice_index, current_setting.voices[string_index].at(voice_index).velocity);
     setReverbSend(string_index, voice_index, current_setting.voices[string_index].at(voice_index).reverb_send);
+	setFilterType(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_type);
+	setFilterAttack(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_attack);
+	setFilterDecay(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_decay);
+	setFilterRelease(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_release);
 
     if(current_setting.voices[string_index].at(voice_index).insert_fx_block_on[0])
         setFxBlockOn(string_index, voice_index, 0, true);

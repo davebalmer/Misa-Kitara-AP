@@ -8,6 +8,7 @@
 #include "tinyxml/tinystr.h"
 
 extern std::string working_directory;
+extern char *VERSION_STRING;
 
 Synth::Synth()
 {
@@ -795,6 +796,11 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 	//root node
 	root = new TiXmlElement("preset");
 	doc.LinkEndChild(root);
+
+	//identification
+	element = new TiXmlElement("kitara_id");
+	element->SetAttribute("ap", VERSION_STRING);
+	root->LinkEndChild(element);
 
 	//master settings
 	element = new TiXmlElement("master");

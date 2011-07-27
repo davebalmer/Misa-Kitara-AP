@@ -17,6 +17,10 @@
 	_CrtMemState endMemState;
 #endif
 
+#ifndef Linux
+#pragma warning(disable : 4996)
+#endif
+
 #include "tinyxml.h"
 
 bool XmlTest (const char* testString, const char* expected, const char* found, bool noEcho = false);

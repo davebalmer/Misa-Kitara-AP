@@ -54,43 +54,11 @@ QuickScreen::~QuickScreen()
 
 U8 QuickScreen::CreateItems()
 {
-	int x,y;
 
-	x = 400;
-	y = 0;
-	hWinClose = BUTTON_CreateAsChild(x,y,bmCLOSE_NORMAL.XSize,bmCLOSE_NORMAL.YSize,hQuickWin, COMMON_ID_CLOSE,WM_CF_SHOW | WM_CF_MEMDEV);
-	BUTTON_SetFocussable(hWinClose,0);
-	BUTTON_SetBitmap(hWinClose,BUTTON_CI_UNPRESSED,&bmCLOSE_NORMAL);
-	BUTTON_SetBitmap(hWinClose,BUTTON_CI_PRESSED,&bmCLOSE_PRESSED);
+	int x1 = 2, x2 = 250, x3 = 523;
+	int y = 0;
 
-	x = 0;
-	y = 0;
-	hWinTapMode = MisaCheckbox_Create(x,y,bmQS_TAPMODE_UN.XSize,bmQS_TAPMODE_UN.YSize, hQuickWin,MISAQUICKSET_ID_TAPMODE,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_TAPMODE_UN, &bmQS_TAPMODE_SE);
-
-	y = 60;
-	hWinStringMode = MisaCheckbox_Create(x,y,bmQS_STRING_UN.XSize,bmQS_STRING_UN.YSize, hQuickWin, MISAQUICKSET_ID_STRINGS,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_STRING_UN, &bmQS_STRING_SE);
-
-	y = 120;
-	hWinBallMode = MisaCheckbox_Create(x,y,bmQS_STRING_UN.XSize,bmQS_STRING_UN.YSize, hQuickWin, MISAQUICKSET_ID_STRINGS,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_STRING_UN, &bmQS_STRING_SE);
-
-	y =500;
-	hWinAdvanced = BUTTON_CreateAsChild(x,y,bmQS_CONF_UN.XSize,bmQS_CONF_UN.YSize,hQuickWin, MISAQUICKSET_ID_ADVANCED,WM_CF_SHOW|WM_CF_MEMDEV);
-	BUTTON_SetFocussable(hWinAdvanced,0);
-	BUTTON_SetBitmap(hWinAdvanced,BUTTON_CI_UNPRESSED,&bmQS_CONF_UN);
-	BUTTON_SetBitmap(hWinAdvanced,BUTTON_CI_PRESSED,&bmQS_CONF_UN);
-	x = 0;//bmQS_CONF_UN.XSize+100;
-	y = 100+16;
-	hWinMasterVolume = MisaProgressbar_CreateEx(x,y,0,0,hQuickWin,MISAQUICKSET_ID_MASTERVOLUME,"Master","volume",MISAPROG_FONT24, 0);
-
-	//LISTBOX_SetDefaultBkColor     (0, 0);
-	//LISTBOX_SetDefaultTextColor     (0, 0xffffffff);
-	//LISTBOX_SetDefaultTextColor     (1, 0x808080);
-
-
-	hWinLoad = BUTTON_CreateAsChild(400, 400 ,bmPRESET_LOAD_UN.XSize,bmPRESET_LOAD_UN.YSize,hQuickWin, MISAQUICKSET_ID_LOAD, WM_CF_SHOW|WM_CF_MEMDEV);
-	BUTTON_SetFocussable(hWinLoad,0);
-	BUTTON_SetBitmap(hWinLoad,BUTTON_CI_UNPRESSED,&bmPRESET_LOAD_UN);
-	BUTTON_SetBitmap(hWinLoad,BUTTON_CI_PRESSED,&bmPRESET_LOAD_SE);
+	hWinMasterVolume = MisaProgressbar_CreateEx(x1, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hQuickWin,MISAQUICKSET_ID_MASTERVOLUME,"Volume","",MISAPROG_FONT32, 0);
 
 #ifdef PRESET_IN_LIST
 	hPresetList =  LISTBOX_CreateAsChild (NULL, hQuickWin, 400, 150, 250, 250, WM_CF_SHOW | WM_CF_MEMDEV);
@@ -109,11 +77,33 @@ U8 QuickScreen::CreateItems()
 	//LISTBOX_SetScrollbarColor(LISTBOX_Handle hObj, SCROLLBAR_CI_THUMB or SCROLLBAR_CI_SHAFT or SCROLLBAR_CI_ARROW, GUI_COLOR Color);
 
 #else // PRESET_IN_SLIDEWIN
-	hPresetList = presetSlideList.CreateWidget(400, 150, 250, 250, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
+	hPresetList = presetSlideList.CreateWidget(x2 + 16, y + 16, bmQS_PRESET_BKG.XSize - 32, bmQS_PRESET_BKG.YSize - 32, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
 #endif  // PRESET_IN_SLIDEWIN
 
+	hWinTapMode = MisaCheckbox_Create(x3, y , bmQS_TAP_UN.XSize, bmQS_TAP_UN.YSize, hQuickWin,MISAQUICKSET_ID_TAPMODE,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_TAP_UN, &bmQS_TAP_SE);
 
+	y += bmQS_TAP_UN.YSize + 1;
+	hWinBallMode = MisaCheckbox_Create(x3, y, bmQS_BALL_UN.XSize,bmQS_BALL_UN.YSize, hQuickWin, MISAQUICKSET_ID_BALL,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_BALL_UN, &bmQS_BALL_SE);
 
+	y += bmQS_BALL_UN.YSize + 1;
+	hWinStringMode = MisaCheckbox_Create(x3, y, bmQS_STRING_UN.XSize,bmQS_STRING_UN.YSize, hQuickWin, MISAQUICKSET_ID_STRINGS,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_STRING_UN, &bmQS_STRING_SE);
+
+	y += bmQS_STRING_UN.YSize + 1;
+	hWinAdvanced = BUTTON_CreateAsChild(x3, y, bmQS_ADVANCED_UN.XSize,bmQS_ADVANCED_UN.YSize,hQuickWin, MISAQUICKSET_ID_ADVANCED,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hWinAdvanced,0);
+	BUTTON_SetBitmap(hWinAdvanced,BUTTON_CI_UNPRESSED,&bmQS_ADVANCED_UN);
+	BUTTON_SetBitmap(hWinAdvanced,BUTTON_CI_PRESSED,&bmQS_ADVANCED_SE);
+
+	y += bmQS_ADVANCED_UN.YSize + 2;
+	hWinClose = BUTTON_CreateAsChild(x3, y, bmQS_CLOSE_UN.XSize,bmQS_CLOSE_UN.YSize,hQuickWin, COMMON_ID_CLOSE,WM_CF_SHOW | WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hWinClose,0);
+	BUTTON_SetBitmap(hWinClose,BUTTON_CI_UNPRESSED,&bmQS_CLOSE_UN);
+	BUTTON_SetBitmap(hWinClose,BUTTON_CI_PRESSED,&bmQS_CLOSE_SE);
+
+	hWinLoad = BUTTON_CreateAsChild(x2, y, bmQS_LOAD_UN.XSize,bmQS_LOAD_UN.YSize,hQuickWin, MISAQUICKSET_ID_LOAD, WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hWinLoad,0);
+	BUTTON_SetBitmap(hWinLoad,BUTTON_CI_UNPRESSED,&bmQS_LOAD_UN);
+	BUTTON_SetBitmap(hWinLoad,BUTTON_CI_PRESSED,&bmQS_LOAD_SE);
 
 
 	return 0;

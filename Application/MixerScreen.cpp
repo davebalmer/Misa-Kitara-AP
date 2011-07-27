@@ -85,6 +85,7 @@ U8 TopMixerScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hMixer);
 	//WM_BringToTop(hMixer);
+	SetWindowToUpdateIfPresetModified(hMixer);
 	return 0;
 }
 
@@ -212,7 +213,10 @@ static void MixerProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmEMPTYTITLEBAR, 0, 0);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Mixer", x / 2, 5);
+		{
+			std::string title("Mixer");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		// Draw slide indicator
 		y = WM_GetWindowOrgY(hMixerItems[MIXER_SLIDEWINDOW]);
 		y += 170;

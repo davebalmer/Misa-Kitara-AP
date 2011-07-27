@@ -105,6 +105,7 @@ U8 TopReverbScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hReverb);
 	//WM_BringToTop(hReverb);
+	SetWindowToUpdateIfPresetModified(hReverb);
 	return 0;
 }
 
@@ -240,7 +241,10 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmDISTYPEAREA, x, y);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Reverb", x / 2, 5);
+		{
+			std::string title("Reverb");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		y += 20;
 		GUI_DispStringHCenterAt(strRevtype[revIndex], x / 2, y);
 		y = WM_GetWindowOrgY(hReverbItems[REVERB_SLIDEWINDOW]);

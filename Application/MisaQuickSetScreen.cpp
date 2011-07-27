@@ -1,6 +1,7 @@
 #include "QuickScreen.h"
 #include "MisaWidget.h"
 #include "MainMenu.h"
+#include "Resource.h"
 
 
 
@@ -64,6 +65,7 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 	case WM_PAINT:
 		GUI_SetBkColor(GUI_BLACK);
 		GUI_Clear();
+		GUI_DrawBitmap(&bmQS_PRESET_BKG, 250, 0);
 		break;
 
 	case WM_NOTIFY_PARENT:
@@ -104,11 +106,18 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 
 				break;
 
+			case MISAQUICKSET_ID_BALL:
+				// TO DO : SynthSetBallmode(MisaCheckbox_GetStatus(pMsg->hWinSrc));
+				RunFramework();
+				TerminateApplication();
+				pQuickScreen->Hide();				
+				break;
 
 			case MISAQUICKSET_ID_STRINGS:
 				SynthSetStringmode(MisaCheckbox_GetStatus(pMsg->hWinSrc));
 				RunFramework();
 				TerminateApplication();
+				pQuickScreen->Hide();
 				break;
 
 			case COMMON_ID_CLOSE:
@@ -123,8 +132,8 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 			}
 			break;
 
-		case WM_NOTIFICATION_SEL_CHANGED:
-			break;
+		//case WM_NOTIFICATION_SEL_CHANGED:
+		//	break;
 
 		case WM_NOTIFICATION_VALUE_CHANGED:
 			Vol = MisaProgressbar_GetPercent(pMsg->hWinSrc);

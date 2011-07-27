@@ -317,8 +317,11 @@ class Synth
 		struct synth_setting current_setting;
 		unsigned char midiScale(int val, int scaler);
 
+		std::string currentPresetName;	// OR : added for displaying current preset name (can alternatively be in synth_setting)
+
 	public:
 		void resetSettings(void);
+		const std::string &getCurrentPresetName(void) {return currentPresetName;}
 
 	private:
 		void setLfoRate(int val);
@@ -419,7 +422,7 @@ public:
 		Synth(void);
 		~Synth(void);
 		void loadPresetFromFile(std::string filename);
-		void savePresetToFile(struct synth_setting *s, std::string filepath);
+		void savePresetToFile(struct synth_setting *s, std::string filename);
 		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
 		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
 		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);
@@ -463,13 +466,9 @@ public:
 		PSYNTH_SETTING GetCurrentSettingPtr() {return &current_setting;}
 		void closeMidiPorts(void);
 		void openMidiPorts(void);
-// OR : Drag & Drop
-		//synth::duplicateVoice(int src_string, int srv_voice_index, int dest_string, int dest_voice_index)
 		void SendParamToSynth(int string_index, int voice_index);
-#ifdef OR_MUTE_SOLO			// OR Mute/Solo
 		void SetMuteChannelForString(int string_index, int voice_index, bool Mute);
 		void SetSoloChannelForString(int string_index, int voice_index, bool Solo);
-#endif		//OR_MUTE_SOLO
 
 };
 

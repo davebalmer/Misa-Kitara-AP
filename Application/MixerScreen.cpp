@@ -28,6 +28,23 @@
 #define MIXER_XOFFSET 2
 #define MIXER_YOFFSET 2
 
+
+// No more sliding
+#define PAGE_POSITIVE_FACTOR 175
+#define PAGE_NEGATIVE_FACTOR -175
+
+static const GUI_RECT leftsidebutton=
+{
+	0,64,39,498
+};
+static const GUI_RECT rightsidebutton=
+{
+	760,64,799,498
+};
+
+static void SlideGoNextPage();
+static void SlideGoPreviousPage();
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 
@@ -197,6 +214,10 @@ static void MixerProc(WM_MESSAGE* pMsg)
 {
 	int x, y;
 	int NCode,Id;
+	// No more sliding
+	GUI_PID_STATE* pPID_State;
+	static U8 sidebutton = 0;
+
 	ProcessCommComponent(pMsg, &hCOMPcomm);
 	switch (pMsg->MsgId)
 	{
@@ -217,6 +238,32 @@ static void MixerProc(WM_MESSAGE* pMsg)
 			std::string title("Mixer");
 			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
 		}
+
+		// No more sliding
+		// Draw button shape
+		if(WM_HasCaptured(pMsg->hWin))
+		{
+			const GUI_RECT* prect;
+			switch(sidebutton)
+			{
+			case 1:
+				prect = &leftsidebutton;
+				break;
+			case 2:
+				prect = &rightsidebutton;
+				break;
+			case 0:
+			default:
+				prect = 0;
+			}
+			if(prect)
+			{
+				GUI_SetColor(GUI_LIGHTBLUE);
+				GUI_SetPenSize(5);
+				GUI_DrawRectEx(prect);
+			}
+		}
+
 		// Draw slide indicator
 		y = WM_GetWindowOrgY(hMixerItems[MIXER_SLIDEWINDOW]);
 		y += 170;
@@ -270,6 +317,49 @@ static void MixerProc(WM_MESSAGE* pMsg)
 		}
 		break;
 	case WM_TOUCH:
+		// No more sliding
+		if(pMsg->Data.p)
+		{
+			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
+			if(pPID_State->Pressed)
+			{
+				if(!WM_HasCaptured(pMsg->hWin))
+				{
+					GUI_RECT ptRect;
+					WM_SetCapture(pMsg->hWin,1);
+					ptRect.x0 = pPID_State->x;
+					ptRect.y0 = pPID_State->y;
+					ptRect.x1 = ptRect.x0+1;
+					ptRect.y1 = ptRect.y0+1;
+					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
+					{
+						sidebutton = 1;
+						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
+						SlideGoPreviousPage();
+					}
+					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
+					{
+						sidebutton = 2;
+						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
+						SlideGoNextPage();
+					}
+				}
+			}
+			else
+			{
+				//WM_ReleaseCapture();
+				sidebutton = 0;
+				if(pPID_State->x<50)
+				{
+					WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
+				}
+				else
+				{
+					WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
+				}
+			}
+		}
+		//! No more sliding
 		break;
 	default:
 		WM_DefaultProc(pMsg);
@@ -441,8 +531,8 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 	int x,y;
 	int NCode,Id;
 	std::vector<int> effect;
-	GUI_PID_STATE* pPID_State;
-	static GUI_PID_STATE PID_LastState;
+	//GUI_PID_STATE* pPID_State;
+	//static GUI_PID_STATE PID_LastState;
 	switch (pMsg->MsgId)
 	{
 	case WM_CREATE:
@@ -527,6 +617,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 		}
 		break;
 	case WM_TOUCH:
+#if 0		// No more sliding
 		if(pMsg->Data.p)
 		{
 			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
@@ -581,6 +672,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 			PID_LastState.y = 0;
 			WM_ReleaseCapture();
 		}
+#endif		// No more sliding
 		break;
 	default:
 		WM_DefaultProc(pMsg);
@@ -592,3 +684,42 @@ static void MixerControlMenuProc(int menuId)
 	AssginEffectControlMenuProc(menuId,MixerGetFX());
 }
 
+
+// No more sliding
+static void SlideGoNextPage()
+{
+	int x,y;
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	SlidingBorder = GetSlidingBordercheck(hMixerItems[MIXER_SLIDEWINDOW],hMixer);
+}
+
+static void SlideGoPreviousPage()
+{
+	int x;
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hMixerItems[MIXER_SLIDEWINDOW]);
+	WM_MoveWindow(hMixerItems[MIXER_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	SlidingBorder = GetSlidingBordercheck(hMixerItems[MIXER_SLIDEWINDOW],hMixer);
+}

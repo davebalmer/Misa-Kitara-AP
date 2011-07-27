@@ -174,6 +174,8 @@ void Synth::resetSettings(void)
 	}
 
 	setMasterVolume(temp_volume);
+
+	currentPresetName = "";
 }
 
 /*void Synth::loadPresetFromFile(std::string filename)
@@ -415,7 +417,7 @@ void Synth::resetSettings(void)
 */
 void Synth::loadPresetFromFile(std::string filename)
 {
-	TiXmlDocument doc((working_directory + "/presets/" + filename).c_str());
+	TiXmlDocument doc((working_directory + "/presets/" + filename + ".mz").c_str());
 	if(!doc.LoadFile())
 	{
 		std::cout << "Preset file could not be opened." << std::endl << std::flush;
@@ -423,6 +425,8 @@ void Synth::loadPresetFromFile(std::string filename)
 	}
 
 	resetSettings();
+
+	currentPresetName = filename;
 
 	//temp mute while loading
 	int temp_volume = master_volume;
@@ -782,7 +786,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 	system("sync");
 }
 */
-void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
+void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 {
 	TiXmlDocument doc;
 	TiXmlDeclaration *decl;
@@ -989,7 +993,11 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 			root->LinkEndChild(element);
 		}
 
+	
+		
+	std::string filepath = working_directory + "/presets/" + filename + ".mz";
 	doc.SaveFile(filepath.c_str());
+	currentPresetName = filename;
 
 	std::cout << "File " << filepath << " saved." << std::endl << std::flush;
 
@@ -2669,8 +2677,6 @@ void Synth::SendParamToSynth(int string_index, int voice_index)
 }
 
 
-#ifdef OR_MUTE_SOLO			// OR Mute/Solo
-
 void Synth::SetMuteChannelForString(int string_index, int voice_index, bool Mute)
 {
 	if (Mute)
@@ -2679,7 +2685,7 @@ void Synth::SetMuteChannelForString(int string_index, int voice_index, bool Mute
 		midi.sendCC(SYNTH, current_setting.voices[string_index].at(voice_index).channel, 7, current_setting.voices[string_index].at(voice_index).channel_volume);	// restore volume
 }
 
-void Synth::SoloChannelForString(int string_index, int voice_index, bool Solo)
+void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo)
 {
 	// Mute all other channel
 	for (int voiceIdx = 0; voiceIdx < 5; voiceIdx++)
@@ -2687,10 +2693,7 @@ void Synth::SoloChannelForString(int string_index, int voice_index, bool Solo)
 		if (voiceIdx == voice_index)
 			continue;
 
-		SetMuteChannelForString(string_index, voiceIdx, Solo)
-
+		SetMuteChannelForString(string_index, voiceIdx, Solo);
 	}
 }
-
-#endif		//OR_MUTE_SOLO
 

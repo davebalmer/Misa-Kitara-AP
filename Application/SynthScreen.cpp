@@ -1,6 +1,7 @@
 
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
 #include "GUI.h"
 #include "WM.h"
@@ -185,6 +186,7 @@ U8 TopSynthScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hSynth);
 	//WM_BringToTop(hSynth);
+	SetWindowToUpdateIfPresetModified(hSynth);
 	return 0;
 }
 
@@ -314,7 +316,10 @@ static void SynthProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmEMPTYTITLEBAR, 0, 0);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Synth / MIDI", x / 2, 5);
+		{
+			std::string title("Synth / MIDI");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		//PaintSynthCombo();
 		break;
 	case WM_NOTIFY_PARENT:

@@ -107,6 +107,7 @@ U8 TopDistortionScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hDistortion);
 	//WM_BringToTop(hDistortion);
+	SetWindowToUpdateIfPresetModified(hDistortion);
 	return 0;
 }
 
@@ -333,7 +334,10 @@ static void DistortionProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmDISTYPEAREA, x, y);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Distortion", x / 2, 5);
+		{
+			std::string title("Distortion");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		y += 20;
 		GUI_DispStringHCenterAt(strDistype[disIndex], x / 2, y);
 		break;

@@ -2,6 +2,9 @@
 #ifndef __MISAAPPINC_H__
 #define __MISAAPPINC_H__
 
+#include "GUI.h"
+#include "BUTTON.h"
+
 #ifdef MISA_DEBUG_PRINT
 #define DEBUG_STDOUT(content) Debug_stdout(content)
 #else
@@ -15,6 +18,9 @@ void Debug_stdout(char* content);
 #define WM_CUST_GET_MISAMENUVARMIN WM_USER+3
 #define WM_CUST_GET_MISAMENUVARMAX WM_USER+4
 #define WM_CUST_GET_MISASYNTHVOICE WM_USER+5
+#define WM_CUST_KEYBOARD_CANCEL	WM_USER + 6
+#define WM_CUST_KEYBOARD_DONE	WM_USER + 7
+
 
 #define GUI_ID_COMMON_BASE GUI_ID_USER
 #define GUI_ID_MAINMENU_BASE GUI_ID_USER+50

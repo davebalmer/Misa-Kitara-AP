@@ -97,6 +97,7 @@ U8 TopModulationScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hModulation);
 	//WM_BringToTop(hModulation);
+	SetWindowToUpdateIfPresetModified(hModulation);
 	return 0;
 }
 
@@ -407,7 +408,10 @@ static void ModulationProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmDISTYPEAREA, x, y);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Modulation", x / 2, 5);
+		{
+			std::string title("Modulation");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		y += 20;
 		GUI_DispStringHCenterAt(pModpresets[modIndex]->name, x / 2, y);
 		y = WM_GetWindowOrgY(hModulationItems[MODULATION_SLIDEWINDOW]);

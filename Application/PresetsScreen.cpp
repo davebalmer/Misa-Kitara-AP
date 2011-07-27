@@ -39,7 +39,7 @@ using namespace std;
 #include "EqScreen.h"
 
 #include "PresetsScreen.h"
-
+#include "Keyboard.h"
 #include "MisamenuConfig.h"
 
 #include "Resource.h"
@@ -50,7 +50,7 @@ using namespace std;
 #define PRESETS_TYPE_XPOS 80
 #define PRESETS_TYPE_YPOS 120
 
-#define PRESETS_XOFFSET 2
+#define PRESETS_XOFFSET 0
 #define PRESETS_YOFFSET 2
 
 #define PRESETS_ITEM_POS 50
@@ -66,8 +66,9 @@ typedef enum __PRESETSITEMS
 	PRESETS_LOAD,
 	PRESETS_SAVE,
 	PRESETS_SAVE_AS,
-	PRESETS_NEW,
+	//PRESETS_NEW,
 	PRESETS_DELETE,
+	PRESETS_CLOSE,
 	PRESETS_MAX
 } PRESETSITEMS;
 
@@ -77,7 +78,7 @@ typedef enum __PRESETS_ID
 	PRESETS_ID_SAVE,
 	PRESETS_ID_SAVE_AS,
 	PRESETS_ID_DELETE,
-	PRESETS_ID_NEW,
+	//PRESETS_ID_NEW,
 	PRESETS_ID_ITEMSBASE,
 	PRESETS_ID_MAX
 } PRESETS_ID;
@@ -89,7 +90,6 @@ static PresetSlideList presetSlideList;
 static WM_HWIN hPresets;
 static void PresetsProc(WM_MESSAGE* pMsg);
 static WM_HWIN hPresetsItems[PRESETS_MAX];
-static COMMCOMPONENT hCOMPcomm;
 static U8 PresetsDeleteItems();
 
 // static U8 SlidingBorder;
@@ -101,12 +101,11 @@ static BUTTON_Handle* pPresetsItems = 0;
 static SYNTH_SETTING synthSetting;
 
 static int SaveEffect();
-static bool SavePresetAs();
+static bool SavePresetAs(WM_HWIN hWinCaller);
 static bool NewPreset();
 static bool DeletePreset();
 
 bool GetCurrentSetting(PSYNTH_SETTING pSetting);
-void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filepath);
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -226,41 +225,47 @@ bool ReadPresetsDir(std::vector<std::string> &preset_filenames)
 static U8 PresetsCreateItems(WM_HWIN hParent)
 {
 	int x,y;
-	hCOMPcomm = CreateCommComponentEx(hParent,COMMON_ITEM_CLOSE);
 	memset(hPresetsItems,0,sizeof(hPresetsItems));
 	x=0;
 	y = bmEMPTYTITLEBAR.YSize;
-	presetSlideList.CreateWidget(x,y+INDICATORFRAME,WM_GetWindowSizeX(hParent),WM_GetWindowSizeY(hParent)-200-y,hParent,WM_CF_SHOW|WM_CF_MEMDEV);
+	presetSlideList.CreateWidget(x,y + 15, WM_GetWindowSizeX(hParent),WM_GetWindowSizeY(hParent)-130-y,hParent,WM_CF_SHOW|WM_CF_MEMDEV);
+
+
 	x = 1;
 	y = 502;
 	hPresetsItems[PRESETS_LOAD] = BUTTON_CreateAsChild(x,y,bmPRESET_LOAD_UN.XSize,bmPRESET_LOAD_UN.YSize,hParent,PRESETS_ID_LOAD,WM_CF_SHOW|WM_CF_MEMDEV);
 	BUTTON_SetFocussable(hPresetsItems[PRESETS_LOAD],0);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_LOAD],BUTTON_CI_UNPRESSED,&bmPRESET_LOAD_UN);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_LOAD],BUTTON_CI_PRESSED,&bmPRESET_LOAD_SE);
-	x += bmPRESET_LOAD_UN.XSize;
-	x += PRESETS_XOFFSET;
+
+	// save As
+	x += bmPRESET_LOAD_UN.XSize + PRESETS_XOFFSET;
+	hPresetsItems[PRESETS_SAVE_AS] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVEAS_UN.XSize,bmPRESET_SAVEAS_UN.YSize,hParent,PRESETS_ID_SAVE_AS,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hPresetsItems[PRESETS_SAVE_AS],0);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_UNPRESSED,&bmPRESET_SAVEAS_UN);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_PRESSED,&bmPRESET_SAVEAS_SE);
+
+
+	x += bmPRESET_SAVE_UN.XSize + PRESETS_XOFFSET;
 	hPresetsItems[PRESETS_SAVE] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVE_UN.XSize,bmPRESET_SAVE_UN.YSize,hParent,PRESETS_ID_SAVE,WM_CF_SHOW|WM_CF_MEMDEV);
 	BUTTON_SetFocussable(hPresetsItems[PRESETS_SAVE],0);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
 	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
 
-	// save As
-	x += bmPRESET_SAVE_UN.XSize;
-	x += PRESETS_XOFFSET;
-	y = 470;
-	hPresetsItems[PRESETS_SAVE_AS] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVE_UN.XSize,bmPRESET_SAVE_UN.YSize,hParent,PRESETS_ID_SAVE_AS,WM_CF_SHOW|WM_CF_MEMDEV);
-	BUTTON_SetFocussable(hPresetsItems[PRESETS_SAVE_AS],0);
-	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
-	BUTTON_SetBitmap(hPresetsItems[PRESETS_SAVE_AS],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
 
 	// Delete PRESETS_DELETE PRESETS_ID_DELETE
-	x += bmPRESET_SAVE_UN.XSize;
-	x += PRESETS_XOFFSET;
-	y = 440;
-	hPresetsItems[PRESETS_DELETE] = BUTTON_CreateAsChild(x,y,bmPRESET_SAVE_UN.XSize,bmPRESET_SAVE_UN.YSize,hParent,PRESETS_ID_DELETE,WM_CF_SHOW|WM_CF_MEMDEV);
+	x += bmPRESET_SAVEAS_UN.XSize + PRESETS_XOFFSET;
+	hPresetsItems[PRESETS_DELETE] = BUTTON_CreateAsChild(x,y,bmVC_DEL_UN.XSize,bmVC_DEL_UN.YSize,hParent,PRESETS_ID_DELETE,WM_CF_SHOW|WM_CF_MEMDEV);
 	BUTTON_SetFocussable(hPresetsItems[PRESETS_DELETE],0);
-	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_UNPRESSED,&bmPRESET_SAVE_UN);
-	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_PRESSED,&bmPRESET_SAVE_SE);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_UNPRESSED,&bmVC_DEL_UN);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_DELETE],BUTTON_CI_PRESSED,&bmVC_DEL_SE);
+
+	// Close
+	x += bmVC_DEL_UN.XSize + PRESETS_XOFFSET;
+	hPresetsItems[PRESETS_CLOSE] = BUTTON_CreateAsChild(x,y,bmPRESET_BACK_UN.XSize,bmPRESET_BACK_UN.YSize,hParent, COMMON_ID_CLOSE,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hPresetsItems[PRESETS_CLOSE],0);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_CLOSE],BUTTON_CI_UNPRESSED,&bmPRESET_BACK_UN);
+	BUTTON_SetBitmap(hPresetsItems[PRESETS_CLOSE],BUTTON_CI_PRESSED,&bmPRESET_BACK_SE);
 
 	// New PRESETS_NEW PRESETS_ID_NEW
 
@@ -271,7 +276,14 @@ static U8 PresetsCreateItems(WM_HWIN hParent)
 static U8 PresetsDeleteItems()
 {
 	presetSlideList.DeleteWidget();
-	DeleteCommComponent(hCOMPcomm);
+	for(int i=0; i < PRESETS_MAX; i++)
+	{
+		if (hPresetsItems[i])
+		{
+			BUTTON_Delete(hPresetsItems[i]);
+			hPresetsItems[i] = 0;
+		}
+	}
 	return 0;
 }
 
@@ -280,7 +292,6 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 	int x, y;
 	int NCode,Id;
 	WM_HWIN hFocus;
-	ProcessCommComponent(pMsg, &hCOMPcomm);
 	switch (pMsg->MsgId)
 	{
 	case WM_CREATE:
@@ -301,81 +312,90 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 		y += PRESETS_YOFFSET;
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Presets", x / 2, 5);
+		{
+			std::string title("Presets");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		break;
 	case WM_NOTIFY_PARENT:
-		if(DispatchCommComponent(pMsg,&hCOMPcomm))
+		Id = WM_GetId(pMsg->hWinSrc);
+		NCode = pMsg->Data.v;
+		switch(NCode)
 		{
-			Id = WM_GetId(pMsg->hWinSrc);
-			NCode = pMsg->Data.v;
-			switch(NCode)
+		case WM_NOTIFICATION_CLICKED:
+			DEBUG_STDOUT("PRESETS button clicked!");
+			break;
+		case WM_NOTIFICATION_RELEASED:
+
+			if (Keyboard::IsOpen())
+				break;		// lock the buttons if saveas keyboard is open
+
+			switch(Id)
 			{
-			case WM_NOTIFICATION_CLICKED:
-				DEBUG_STDOUT("PRESETS button clicked!");
+			case PRESETS_ID_LOAD:
+				LoadEffect(presetSlideList);
 				break;
-			case WM_NOTIFICATION_RELEASED:
-				switch(Id)
+
+			case PRESETS_ID_SAVE:
+				SaveEffect();
+				break;
+
+			case PRESETS_ID_SAVE_AS:
+				SavePresetAs(pMsg->hWin);
+				break;
+
+			case PRESETS_ID_DELETE:
+				// confirmation ?
+				hFocus = WM_GetFocussedWindow();
+				if(hFocus)
 				{
-				case PRESETS_ID_LOAD:
-					LoadEffect(presetSlideList);
-					break;
-				case PRESETS_ID_SAVE:
-					hFocus = WM_GetFocussedWindow();
-					if(hFocus)
+					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
 					{
-						if(GUI_ID_OK == Misa_ConfirmBox("Are you sure? You will OVERWRITE the selected preset.","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
-						{
-							WM_SetFocus(hFocus);
-							SaveEffect();
-						}
-						else
-						{
-							WM_SetFocus(hFocus);
-						}
+						WM_SetFocus(hFocus);
+						DeletePreset();
+						presetSlideList.CreateSlideItem();
 					}
-					break;
-
-				case PRESETS_ID_SAVE_AS:
-					SavePresetAs();
-					presetSlideList.CreateSlideItem();
-					break;
-
-				case PRESETS_ID_DELETE:
-					// confirmation ?
-					hFocus = WM_GetFocussedWindow();
-					if(hFocus)
+					else
 					{
-						if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
-						{
-							WM_SetFocus(hFocus);
-							DeletePreset();
-							presetSlideList.CreateSlideItem();
-						}
-						else
-						{
-							WM_SetFocus(hFocus);
-						}
+						WM_SetFocus(hFocus);
 					}
-					break;
-
-				case PRESETS_ID_NEW:
-					NewPreset();
-					presetSlideList.CreateSlideItem();
-					break;
-
-				case COMMON_ID_CLOSE:
-					PresetSlideDeleteItems();
-					break;
-				default:
-					;
 				}
-				DEBUG_STDOUT("PRESETS button released!");
 				break;
+
+/*			case PRESETS_ID_NEW:
+				NewPreset();
+				presetSlideList.CreateSlideItem();
+				break;*/
+
+			case COMMON_ID_CLOSE:
+				TopMainMenu(pMsg->hWin);
+				PresetSlideDeleteItems();
+				break;
+			default:
+				;
 			}
+			DEBUG_STDOUT("PRESETS button released!");
+			break;
 		}
 		break;
 	case WM_TOUCH:
 		break;
+
+	case WM_CUST_KEYBOARD_DONE:
+		{
+			char *fileName = (char *)pMsg->Data.p;
+			SynthSavePreset(&synthSetting, fileName);
+			presetSlideList.CreateSlideItem();		 //update the list
+			GUI_RECT RectToInvalidate ={0, 0, 800, 62};
+			WM_InvalidateRect(hPresets, &RectToInvalidate);
+			Keyboard::Close();
+		}
+		break;
+
+	case WM_CUST_KEYBOARD_CANCEL:
+		Keyboard::Close();
+		break;
+
 	default:
 		WM_DefaultProc(pMsg);
 	}
@@ -442,14 +462,11 @@ U8 PresetSlideDeleteItems()
 	return 0;
 }
 
-static bool SavePresetAs()
+static bool SavePresetAs(WM_HWIN hWinCaller)
 {
 	// Create Keyboard
 	string fileName;
-
-	// 
-	SynthSavePreset(&synthSetting, working_directory+"/presets/" + fileName +".mz");
-
+	Keyboard::Open(hWinCaller, 0, bmEMPTYTITLEBAR.YSize);
 	return true;
 }
 
@@ -491,20 +508,35 @@ static int SaveEffect()
 {
 	int size,pos;
 	WM_HWIN hFocus;
+	std::string presetFileName;
 	size = preset_filenames.size();
 	hFocus = WM_GetFocussedWindow();
-	if(!presetSlideList.IsPresetItem(hFocus))
-		return 0;
 
-	if(hFocus)
+	if(hFocus && presetSlideList.IsPresetItem(hFocus))
 	{
 		pos = WM_GetId(hFocus)-PRESETS_ID_ITEMSBASE;
-		if(pos < size)
+		if(pos >= size)
+			return 0;
+		presetFileName = preset_filenames[pos];
+	}
+	else
+	{
+		presetFileName = GetCurrentPresetName();		// Overwrite the current preset
+	}
+
+	if (!presetFileName.empty())
+	{
+		std::string msg("Are you sure? You will OVERWRITE ");
+		msg += presetFileName + " !";
+		if(GUI_ID_OK == Misa_ConfirmBox(msg.c_str(), "Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
 		{
 			GetCurrentSetting(&synthSetting);
-			SynthSavePreset(&synthSetting, working_directory+"/presets/" + preset_filenames[pos]+".mz");
+			SynthSavePreset(&synthSetting, presetFileName);
+			GUI_RECT RectToInvalidate ={0, 0, 800, 62};
+			WM_InvalidateRect(hPresets, &RectToInvalidate);
 		}
 	}
+
 	return 1;
 }
 
@@ -523,8 +555,11 @@ int LoadEffect(PresetSlideList &thePresetSlideList)
 		if(pos < size)
 		{
 			SynthTurnNotesOff();
-			SynthLoadPreset(preset_filenames[pos]+".mz");
+			SynthLoadPreset(preset_filenames[pos]);
 			UpdateSynthSetting();
+			// ClearModified();		// requested here because UpdateSynthSetting send values to the synth (SynthSetDragCentre...)
+			GUI_RECT RectToInvalidate ={0, 0, 800, 62};
+			WM_InvalidateRect(hPresets, &RectToInvalidate);
 		}
 	}
 	return 1;
@@ -649,6 +684,9 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 	{
 		GetCurrentSetting(&synthSetting);
 	}
+
+	LockModified();		// OR : Lock modified flag setting during this function
+
 	// Synth
 	if(MISAMODULE_SYNTH & module)
 	{
@@ -826,5 +864,7 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 	{
 		UpdateControlAssignmentsInfo(0);
 	}
+
+	UnlockModified();	// OR : Lock modified flag setting during this function
 }
 

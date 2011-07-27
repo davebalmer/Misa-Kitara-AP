@@ -38,6 +38,10 @@ Purpose     : Configures abilities, fonts etc.
 #define GUI_SUPPORT_MEMDEV        1  /* Memory devices available */
 #define GUI_SUPPORT_AA            1  /* Anti aliasing available */
 
+#ifndef Linux
+#pragma warning(disable : 4996)
+#endif
+
 #endif  /* Avoid multiple inclusion */
 
 

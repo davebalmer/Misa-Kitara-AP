@@ -116,10 +116,10 @@ static U8 ControlAssignmentsCreateItems(WM_HWIN hParent)
 	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_DELALL],BUTTON_CI_PRESSED,&bmVOICE_DELALL_SE);
 	x += bmVOICE_DELALL_UN.XSize;
 	x += CONTROLASSIGNMENTS_XOFFSET;
-	hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE] = BUTTON_CreateAsChild(x,y,bmVOICE_CLOSE_UN.XSize,bmVOICE_CLOSE_UN.YSize,hParent,CONTROLASSIGNMENTS_ID_CLOSE,WM_CF_SHOW|WM_CF_MEMDEV);
+	hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE] = BUTTON_CreateAsChild(x,y,bmCONTROL_BACK_UN.XSize,bmCONTROL_BACK_UN.YSize,hParent,CONTROLASSIGNMENTS_ID_CLOSE,WM_CF_SHOW|WM_CF_MEMDEV);
 	BUTTON_SetFocussable(hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE],0);
-	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE],BUTTON_CI_UNPRESSED,&bmVOICE_CLOSE_UN);
-	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE],BUTTON_CI_PRESSED,&bmVOICE_CLOSE_SE);
+	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE],BUTTON_CI_UNPRESSED,&bmCONTROL_BACK_UN);
+	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_CLOSE],BUTTON_CI_PRESSED, &bmCONTROL_BACK_SE);
 	return 0;
 }
 
@@ -175,6 +175,7 @@ U8 TopControlAssignmentsScreen(WM_HWIN hPreWin)
 	WM_ShowWindow(hControlAssignments);
 	//WM_BringToTop(hControlAssignments);
 	CommitCallback = 0;
+	SetWindowToUpdateIfPresetModified(hControlAssignments);
 	return 0;
 }
 
@@ -266,7 +267,10 @@ static void ControlAssignmentsProc(WM_MESSAGE* pMsg)
 		//GUI_DrawBitmap(&bmVOICE_SELECTED, x, y);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Control Assignments", x / 2, 5);
+		{
+			std::string title("Control Assignments");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
 		// Draw slide indicator
 		/*y = WM_GetWindowOrgY(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW]);
 		y += 170;

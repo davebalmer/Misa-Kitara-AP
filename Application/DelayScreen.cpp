@@ -82,6 +82,7 @@ U8 TopDelayScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hDelay);
 	//WM_BringToTop(hDelay);
+	SetWindowToUpdateIfPresetModified(hDelay);
 	return 0;
 }
 
@@ -192,7 +193,11 @@ static void DelayProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmEMPTYTITLEBAR, 0, 0);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Delay", x / 2, 5);
+		{
+			std::string title("Delay");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
+
 		y = WM_GetWindowOrgY(hDelayItems[DELAY_SLIDEWINDOW]);
 		y += 170;
 		if(0x02 &SlidingBorder)

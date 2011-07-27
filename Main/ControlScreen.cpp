@@ -616,10 +616,12 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 		for(int i = 0; i < 6; i++)
 		{
 //			sustained_note[i] = false;
-			if((ringing_note[i] != -1) && (st[left_handed?5-i:i].size() == 0))
+//			if((ringing_note[i] != -1) && (st[left_handed?5-i:i].size() == 0))
+			if(st[left_handed?5-i:i].size() == 0)
 			{
-				synth.sendNoteOff(i, ringing_note[i]);
-//				synth.sendStopSound(i, ringing_note[i]);
+				if(ringing_note[i] != -1)
+					synth.sendNoteOff(i, ringing_note[i]);
+				synth.sendStopSound(i, ringing_note[i]);
 				ringing_note[i] = -1;
 			}
 		}

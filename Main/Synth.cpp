@@ -2357,6 +2357,7 @@ void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 	{
 		//setMuteChannelVolume(str, i);
 		midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+		string_note[str] = -1;
 	}
 }
 

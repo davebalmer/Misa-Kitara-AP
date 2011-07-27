@@ -775,7 +775,7 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 
 	if(st[left_handed?5-msg->string_id:msg->string_id].size() == 0)
 	{
-		if((nt.size() == 0) && (bt.size() == 0))
+//		if((nt.size() == 0) && (bt.size() == 0))
 		{
 			if(current_note[msg->string_id] != -1)
 			{

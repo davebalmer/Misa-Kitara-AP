@@ -564,6 +564,8 @@ int SynthGetMastervolume(void);
 void SynthSetMastervolume(int val);
 int SynthGetTapmode();
 void SynthSetTapmode(int val);
+int SynthGetBallmode();
+void SynthSetBallmode(int val);
 int SynthGetStringmode();
 void SynthSetStringmode(int val);
 

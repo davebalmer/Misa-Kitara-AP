@@ -107,7 +107,7 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 				break;
 
 			case MISAQUICKSET_ID_BALL:
-				// TO DO : SynthSetBallmode(MisaCheckbox_GetStatus(pMsg->hWinSrc));
+				SynthSetBallmode(MisaCheckbox_GetStatus(pMsg->hWinSrc));
 				RunFramework();
 				TerminateApplication();
 				pQuickScreen->Hide();				

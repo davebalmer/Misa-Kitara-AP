@@ -958,14 +958,24 @@ void SynthSetTapmode(int val)
 	pcs->SetTapmode(val?true:false);
 }
 
+int SynthGetBallmode()
+{
+	return pcs->isShowBall()?1:0;
+}
+
+void SynthSetBallmode(int val)
+{
+	pcs->showBall(val?true:false);
+}
+
 int SynthGetStringmode()
 {
-	return pcs->GetStringmode()?1:0;
+	return pcs->isShowStrings()?1:0;
 }
 
 void SynthSetStringmode(int val)
 {
-	pcs->SetStringmode(val?true:false);
+	pcs->showStrings(val?true:false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2169,6 +2179,7 @@ int RebootSystem()
 ///////////////////////////////////////////////////////////////////////////////
 
 static int synthtapmode;
+static int synthballmode;
 static int synthstringmode;
 
 int SynthGetMastervolume(void)
@@ -2188,6 +2199,16 @@ int SynthGetTapmode()
 void SynthSetTapmode(int val)
 {
 	synthtapmode = val;
+}
+
+int SynthGetBallmode()
+{
+	return synthballmode;
+}
+
+void SynthSetBallmode(int val)
+{
+	synthballmode = val;
 }
 
 int SynthGetStringmode()

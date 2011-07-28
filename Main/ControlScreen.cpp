@@ -1183,16 +1183,6 @@ void ControlScreen::SetTapmode(bool state)
 	graphics->setGraphicsModeNormal(state);
 }
 
-bool ControlScreen::GetStringmode()
-{
-	return string_mode;
-}
-
-void ControlScreen::SetStringmode(bool state)
-{
-	string_mode = state;
-}
-
 bool ControlScreen::isShowBall(void)
 {
 	return show_ball;

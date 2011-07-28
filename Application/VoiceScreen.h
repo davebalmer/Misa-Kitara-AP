@@ -4,7 +4,7 @@
 
 typedef enum __VOICE_ID
 {
-	VOICE_ID_DELETE=GUI_ID_VOICE_BASE,
+	VOICE_ID_MOREOPTIONS=GUI_ID_VOICE_BASE,
 	VOICE_ID_LEFTARROW,
 	VOICE_ID_RIGHTARROW,
 	VOICE_ID_AMPATTACK,
@@ -64,6 +64,44 @@ U8 DeleteVoiceScreen();
 U8 TopVoiceScreen(WM_HWIN hPreWin);
 U8 UpdateVoiceInfo(PVOICE_INFO pInfo);
 U8 GetVoiceInfo(PVOICE_INFO pInfo);
+
+// OptionSubWin declaration (OptionSubWin is an object that manages an additional window with 3 buttons -  Del, Solo, Mute)
+
+// buttons Id
+typedef enum __OPTION_VOICE_ID
+{
+	OPTION_VOICE_ID_DELETE=GUI_ID_VOICE_BASE,		// share the same values as VOICE_ID_XXX Ids
+	OPTION_VOICE_ID_SOLO,
+	OPTION_VOICE_ID_MUTE,
+
+	OPTION_VOICE_ID_MAX
+} OPTION_VOICE_ID;
+
+class OptionSubWin
+{
+	friend void VoiceSubWindowProc(WM_MESSAGE* pMsg);
+
+public:
+	OptionSubWin(WM_HWIN hParent);
+	~OptionSubWin();
+
+	U8 CreateItems(WM_HWIN hParent);
+	U8 DeleteItems();
+
+	void Show();
+	void Hide();
+
+	static OptionSubWin *pOptionSubWin;
+
+private:
+	GUI_HWIN hWin;		// Option subwindow
+
+	GUI_HWIN hDelButton;
+	GUI_HWIN hSoloButton;
+	GUI_HWIN hMuteButton;
+	GUI_HWIN hBackButton;
+};
+
 
 #endif// __VOICESCREEN_H__
 

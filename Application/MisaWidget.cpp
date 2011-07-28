@@ -258,6 +258,7 @@ typedef struct __MISAPROGRESSPROP
 	MISAPROGINFOCB ShowTips;
 	char label[16];
 	char seclab[16];
+	bool IsVolumeSlider;
 } MISAPROGRESSPROP,*LPMISAPROGRESSPROP;
 
 typedef struct __MISAPROG_OBJ
@@ -288,6 +289,7 @@ WM_HWIN MisaProgressbar_Create(int x, int y, int width, int height, WM_HWIN hPar
 	prop.fontSize = fontSize;
 	prop.fontcolor = 0;
 	prop.ShowTips = 0;
+	prop.IsVolumeSlider = false;
 	if(label)
 	{
 		strcpy(prop.label,label);
@@ -306,7 +308,16 @@ WM_HWIN MisaProgressbar_CreateEx(int x, int y, int width, int height, WM_HWIN hP
 	WM_HWIN hMisaProgress;
 	MISAPROGRESSPROP prop;
 	//hMisaProgress = WM_CreateWindowAsChild(x, y, width, height, WM_CF_SHOW | WM_CF_MEMDEV, MisaProgressbarProc, 0);
-	hMisaProgress = WM_CreateWindowAsChild(x, y, bmSLIDER.XSize, bmSLIDER.YSize, hParent, WM_CF_SHOW | WM_CF_MEMDEV, MisaProgressbarProc, sizeof(MISAPROG_OBJ)-sizeof(WM_Obj));
+	if (width == bmQS_VOLUME_BKG.XSize && height == bmQS_VOLUME_BKG.YSize)
+	{
+		prop.IsVolumeSlider = true;
+		hMisaProgress = WM_CreateWindowAsChild(x, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hParent, WM_CF_SHOW | WM_CF_MEMDEV, MisaProgressbarProc, sizeof(MISAPROG_OBJ)-sizeof(WM_Obj));
+	}
+	else
+	{
+		prop.IsVolumeSlider = false;
+		hMisaProgress = WM_CreateWindowAsChild(x, y, bmSLIDER.XSize, bmSLIDER.YSize, hParent, WM_CF_SHOW | WM_CF_MEMDEV, MisaProgressbarProc, sizeof(MISAPROG_OBJ)-sizeof(WM_Obj));
+	}
 	prop.percent = 0;
 	prop.Id = Id;
 	prop.fontSize = fontSize;
@@ -455,12 +466,18 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 	int i,x,y;
 	MISAPROGRESSPROP prop;
 	GUI_PID_STATE* pPID_State;
+
 	WM_GetUserData(pMsg->hWin, &prop, sizeof(MISAPROGRESSPROP));
 	switch (pMsg->MsgId)
 	{
 	case WM_PAINT:
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DrawBitmap(&bmSLIDER, 0, 0);
+
+		if (prop.IsVolumeSlider)
+			GUI_DrawBitmap(&bmQS_VOLUME_BKG, 0, 0);
+		else
+			GUI_DrawBitmap(&bmSLIDER, 0, 0);
+
 		GUI_SetTextMode(GUI_TEXTMODE_TRANS);
 		GUI_SetColor(GUI_WHITE);
 		// Debug version only.
@@ -522,6 +539,8 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 		}*/
 		if(0 == prop.seclab[0])
 		{
+			if (prop.IsVolumeSlider)
+				y = 533;
 			GUI_DispStringHCenterAt(prop.label, x/2, y);
 		}
 		else
@@ -529,39 +548,62 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 			GUI_DispStringHCenterAt(prop.label, x/2, y-i);
 			GUI_DispStringHCenterAt(prop.seclab, x/2, y+i);
 		}
-		x = prop.percent*1.182;
-		for(i=0;i<x;i++)
+
+		if (prop.IsVolumeSlider)
 		{
-			GUI_DrawBitmap(&bmSLIDERCENT,10,312-i*2);
+			x = prop.percent*1.941;
+			for(i=0; i < x; i++)
+				GUI_DrawBitmap(&bmQS_VOLUME_FILL, 10, 503 - i*2);
+
+			if(x == 246)		// 246 = 127 * 1.941
+				GUI_DrawBitmap(&bmQS_VOLUME_TOP, 10, 10);
+		
 		}
-		if(150==x)
+		else
 		{
-			GUI_DrawBitmap(&bmSLIDERTOP,10,10);
+			x = prop.percent*1.182;
+			for(i=0;i<x;i++)
+				GUI_DrawBitmap(&bmSLIDERCENT,10,312-i*2);
+
+			if(x == 150)			// 246 = 127 * 1.182
+				GUI_DrawBitmap(&bmSLIDERTOP,10,10);
 		}
 		break;
+
 	case WM_TOUCH:
 		if(pMsg->Data.p)
 		{
+			int h;
+			float fFactor;
 			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
 			if(pPID_State->Pressed)
 			{
 				int perc;
-				if(!WM_HasCaptured(pMsg->hWin) && 315 > pPID_State->y)
+				
+				if (prop.IsVolumeSlider)
 				{
-					WM_SetCapture(pMsg->hWin, 0);
-				}
-				if(315 <= pPID_State->y)
-				{
-					perc = 0;
+					h = 503;
+					fFactor = 0.518;
 				}
 				else
 				{
-					perc = (315-pPID_State->y)/2;
+					h = 315;
+					fFactor = 0.847;		// inverse(1.18)  (to have a multiplication rather than a division)
 				}
-				if(WM_HasCaptured(pMsg->hWin))
+
+				if(!WM_HasCaptured(pMsg->hWin) && h > pPID_State->y)
 				{
-					MisaProgressbar_SetPercent(pMsg->hWin,perc/1.18);
+					WM_SetCapture(pMsg->hWin, 0);
 				}
+
+				if(h <= pPID_State->y)
+					perc = 0;
+				else
+					perc = (h-pPID_State->y)/2;
+
+				if(WM_HasCaptured(pMsg->hWin))
+					MisaProgressbar_SetPercent(pMsg->hWin,perc * fFactor);
+
 			}
 			else
 			{
@@ -2012,7 +2054,7 @@ static void DragAndDropWindowProc(WM_MESSAGE* pMsg)
 
 	case WM_PAINT:
 		if (Drag.Moving())
-			GUI_DrawBitmap(&bmSM_WF_SE, 0 , 0);
+			GUI_DrawBitmap(&bmSM_DRAG, 0 , 0);
 		break;
 
 	case WM_TOUCH:
@@ -2039,7 +2081,7 @@ static void DragAndDropWindowProc(WM_MESSAGE* pMsg)
 			}
 		}
 
-		// Here is the case if the gragged box is not over a string window
+		// Here is the case if the dragged box is not over a string window
 		MisaSynthStringOntouch(pMsg, NULL);
 		break;
 
@@ -2055,23 +2097,23 @@ static void DragAndDropWindowProc(WM_MESSAGE* pMsg)
 
 void DragVoice::MoveOn(int x, int y, GUI_HWIN parent)
 {
-	int X = x - bmSM_WF_SE.XSize / 2;
+	int X = x - bmSM_DRAG.XSize / 2;
 	if (x < 0)
 		x = 0;
 
-	int Y = y - bmSM_WF_SE.YSize / 2;
+	int Y = y - bmSM_DRAG.YSize / 2;
 	if (y < 0)
 		y = 0;
 
 	// clip to rectVoiceArea
 	if (X < rectVoiceArea.x0)
 		X = rectVoiceArea.x0;
-	if (X > rectVoiceArea.x1 - bmSM_WF_SE.YSize)
-		X = rectVoiceArea.x1 - bmSM_WF_SE.YSize;
+	if (X > rectVoiceArea.x1 - bmSM_DRAG.YSize)
+		X = rectVoiceArea.x1 - bmSM_DRAG.YSize;
 
 	if (!hWinOverlay)
 	{
-		hWinOverlay = WM_CreateWindowAsChild(X, Y, bmSM_WF_SE.XSize, bmSM_WF_SE.YSize, parent, WM_CF_SHOW|WM_CF_MEMDEV, DragAndDropWindowProc, 0);
+		hWinOverlay = WM_CreateWindowAsChild(X, Y, bmSM_DRAG.XSize, bmSM_DRAG.YSize, parent, WM_CF_SHOW|WM_CF_MEMDEV, DragAndDropWindowProc, 0);
 		//WM_BringToTop(hWinOverlay);
 		WM_SetCapture(hWinOverlay, false);
 	}
@@ -3376,9 +3418,11 @@ static void MisaItemProc(WM_MESSAGE* pMsg)
 	BUTTON_Obj * pObj = (BUTTON_Obj *)GUI_ALLOC_h2p(hObj);
 	switch (pMsg->MsgId)
 	{
-	//case WM_TOUCH:
+	case WM_TOUCH:
 	//	MisaItemOntouch(hObj, pObj, pMsg);
-	//	break;
+		WM_SendMessage(WM_GetParent(hObj), pMsg);
+		DefaultItemProc(pMsg);
+		break;
 	case WM_PAINT:
 		MisaItemPaint(pObj,hObj);
 		break;

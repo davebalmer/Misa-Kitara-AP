@@ -3,6 +3,8 @@
 #define __MISA_MENUCONFIG_H__
 
 #include <vector>
+#include <string>
+
 #if defined(Linux) && !defined(MISA_APPLICATION)
 #include <Synth.h>
 #endif		// Linux
@@ -309,6 +311,16 @@ static struct synth_setting current_setting;
 // OR : Drag & Drop
 PSYNTH_SETTING GetCurrentSettingPtr();
 void SendVoiceParamToSynth(int string_index, int voice_index);
+const std::string &GetCurrentPresetName();
+
+void SynthMuteVoice(int string_index, int voice_index, bool Mute);
+void SynthSoloVoice(int string_index, int voice_index, bool Solo);
+
+std::string &GetTitleWithPreset(std::string &TitleBase);
+void ClearModified();
+void SetWindowToUpdateIfPresetModified(WM_HWIN hWin);
+void LockModified();
+void UnlockModified();
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -324,8 +336,8 @@ void ResetAllEffect();
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SynthLoadPreset(std::string filepath);
-//void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filepath);
+void SynthLoadPreset(std::string filename);
+void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename);
 //bool GetCurrentSetting(PSYNTH_SETTING pSetting);
 
 ///////////////////////////////////////////////////////////////////////////////

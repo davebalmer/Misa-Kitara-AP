@@ -64,6 +64,10 @@ extern const GUI_BITMAP bmTOMIXER_PRESSED;
 extern const GUI_BITMAP bmEMPTYTITLEBAR;
 extern const GUI_BITMAP bmCLOSE_NORMAL;
 extern const GUI_BITMAP bmCLOSE_PRESSED;
+extern const GUI_BITMAP bmPRESET_BACK_UN;
+extern const GUI_BITMAP bmPRESET_BACK_SE;
+extern const GUI_BITMAP bmCONTROL_BACK_UN;
+extern const GUI_BITMAP bmCONTROL_BACK_SE;
 extern const GUI_BITMAP bmCHECKON_NORMAL;
 extern const GUI_BITMAP bmCHECKON_PRESSED;
 extern const GUI_BITMAP bmFX1_NORMAL;
@@ -90,6 +94,10 @@ extern const GUI_BITMAP bmMC_CHRA_SE;
 extern const GUI_BITMAP bmMC_CHANNEL_SLIDER;
 extern const GUI_BITMAP bmVC_DEL_UN;
 extern const GUI_BITMAP bmVC_DEL_SE;
+extern const GUI_BITMAP bmVC_PLUS_UN;
+extern const GUI_BITMAP bmVC_PLUS_SE;
+extern const GUI_BITMAP bmVC_MINUS_UN;
+extern const GUI_BITMAP bmVC_MINUS_SE;
 extern const GUI_BITMAP bmCM_CANCEL_UN;
 extern const GUI_BITMAP bmCM_CANCEL_SE;
 extern const GUI_BITMAP bmCM_UPWA_UN;
@@ -100,6 +108,7 @@ extern const GUI_BITMAP bmCP_LEFTARROW_SE;
 extern const GUI_BITMAP bmCP_RIGHTARROW_UN;
 extern const GUI_BITMAP bmCP_RIGHTARROW_SE;
 extern const GUI_BITMAP bmCP_SMALLSLIDER;
+extern const GUI_BITMAP bm_KEYBOARD;
 
 ///////////////////////////////////////////////////////////////////////////////
 // Presets pictures
@@ -113,6 +122,8 @@ extern const GUI_BITMAP bmPRESET_LOAD_UN;
 extern const GUI_BITMAP bmPRESET_LOAD_SE;
 extern const GUI_BITMAP bmPRESET_SAVE_UN;
 extern const GUI_BITMAP bmPRESET_SAVE_SE;
+extern const GUI_BITMAP bmPRESET_SAVEAS_UN;
+extern const GUI_BITMAP bmPRESET_SAVEAS_SE;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -136,6 +147,7 @@ extern const GUI_BITMAP bmSM_MIDI_SE;
 extern const GUI_BITMAP bmSM_WF_OP;
 extern const GUI_BITMAP bmSM_WF_UN;
 extern const GUI_BITMAP bmSM_WF_SE;
+extern const GUI_BITMAP bmSM_DRAG;
 extern const GUI_BITMAP bmSM_MIDICTL_UN;
 extern const GUI_BITMAP bmSM_MIDICTL_SE;
 
@@ -169,6 +181,11 @@ extern const GUI_BITMAP bmVOICE_DELALL_SE;
 extern const GUI_BITMAP bmVOICE_CLOSE_UN;
 extern const GUI_BITMAP bmVOICE_CLOSE_SE;
 
+
+extern const GUI_BITMAP bmVC_SOLO_UN;
+extern const GUI_BITMAP bmVC_MUTE_UN;
+extern const GUI_BITMAP bmVC_SOLO_SE;
+extern const GUI_BITMAP bmVC_MUTE_SE;
 ///////////////////////////////////////////////////////////////////////////////
 // Quick set pictures
 ///////////////////////////////////////////////////////////////////////////////
@@ -180,6 +197,64 @@ extern const GUI_BITMAP bmQS_PRESET2_UN;
 extern const GUI_BITMAP bmQS_PRESET3_UN;
 extern const GUI_BITMAP bmQS_STRING_UN;
 extern const GUI_BITMAP bmQS_STRING_SE;
-extern const GUI_BITMAP bmQS_CONF_UN;
+extern const GUI_BITMAP bmQS_ADVANCED_UN;
+extern const GUI_BITMAP bmQS_ADVANCED_SE;
+extern const GUI_BITMAP bmQS_BALL_UN;
+extern const GUI_BITMAP bmQS_BALL_SE;
+extern const GUI_BITMAP bmQS_CLOSE_UN;
+extern const GUI_BITMAP bmQS_CLOSE_SE;
+extern const GUI_BITMAP bmQS_LOAD_UN;
+extern const GUI_BITMAP bmQS_LOAD_SE;
+extern const GUI_BITMAP bmQS_STRING_UN;
+extern const GUI_BITMAP bmQS_STRING_SE;
+extern const GUI_BITMAP bmQS_TAP_UN;
+extern const GUI_BITMAP bmQS_TAP_SE;
+extern const GUI_BITMAP bmQS_VOLUME_BKG;
+extern const GUI_BITMAP bmQS_PRESET_BKG;
+extern const GUI_BITMAP bmQS_VOLUME_FILL;
+extern const GUI_BITMAP bmQS_VOLUME_TOP;
+
+///////////////////////////////////////////////////////////////////////////////
+// Keyboard pictures
+///////////////////////////////////////////////////////////////////////////////
+extern const GUI_BITMAP bm_CHAR_0;
+extern const GUI_BITMAP bm_CHAR_1;
+extern const GUI_BITMAP bm_CHAR_2;
+extern const GUI_BITMAP bm_CHAR_3;
+extern const GUI_BITMAP bm_CHAR_4;
+extern const GUI_BITMAP bm_CHAR_5;
+extern const GUI_BITMAP bm_CHAR_6;
+extern const GUI_BITMAP bm_CHAR_7;
+extern const GUI_BITMAP bm_CHAR_8;
+extern const GUI_BITMAP bm_CHAR_9;
+extern const GUI_BITMAP bm_CHAR_Q;
+extern const GUI_BITMAP bm_CHAR_W;
+extern const GUI_BITMAP bm_CHAR_E;
+extern const GUI_BITMAP bm_CHAR_R;
+extern const GUI_BITMAP bm_CHAR_T;
+extern const GUI_BITMAP bm_CHAR_Y;
+extern const GUI_BITMAP bm_CHAR_U;
+extern const GUI_BITMAP bm_CHAR_I;
+extern const GUI_BITMAP bm_CHAR_O;
+extern const GUI_BITMAP bm_CHAR_P;
+extern const GUI_BITMAP bm_CHAR_A;
+extern const GUI_BITMAP bm_CHAR_S;
+extern const GUI_BITMAP bm_CHAR_D;
+extern const GUI_BITMAP bm_CHAR_F;
+extern const GUI_BITMAP bm_CHAR_G;
+extern const GUI_BITMAP bm_CHAR_H;
+extern const GUI_BITMAP bm_CHAR_J;
+extern const GUI_BITMAP bm_CHAR_K;
+extern const GUI_BITMAP bm_CHAR_L;
+extern const GUI_BITMAP bm_CHAR_b;
+extern const GUI_BITMAP bm_CHAR_Z;
+extern const GUI_BITMAP bm_CHAR_X;
+extern const GUI_BITMAP bm_CHAR_C;
+extern const GUI_BITMAP bm_CHAR_V;
+extern const GUI_BITMAP bm_CHAR_B;
+extern const GUI_BITMAP bm_CHAR_N;
+extern const GUI_BITMAP bm_CHAR_M;
+extern const GUI_BITMAP bm_CHAR_o;
+extern const GUI_BITMAP bm_CHAR_c;
 
 #endif // __RESOURCE_H__

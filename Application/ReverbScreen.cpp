@@ -26,6 +26,23 @@
 #define REVERB_XOFFSET 2
 #define REVERB_YOFFSET 2
 
+
+// No more sliding
+#define PAGE_POSITIVE_FACTOR 175
+#define PAGE_NEGATIVE_FACTOR -175
+
+static const GUI_RECT leftsidebutton=
+{
+	0,64,39,498
+};
+static const GUI_RECT rightsidebutton=
+{
+	760,64,799,498
+};
+
+static void SlideGoNextPage();
+static void SlideGoPreviousPage();
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 
@@ -105,6 +122,7 @@ U8 TopReverbScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hReverb);
 	//WM_BringToTop(hReverb);
+	SetWindowToUpdateIfPresetModified(hReverb);
 	return 0;
 }
 
@@ -221,6 +239,10 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 {
 	int x, y;
 	int NCode,Id;
+	// No more sliding
+	GUI_PID_STATE* pPID_State;
+	static U8 sidebutton = 0;
+
 	ProcessCommComponent(pMsg, &hCOMPcomm);
 	switch (pMsg->MsgId)
 	{
@@ -240,7 +262,36 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 		GUI_DrawBitmap(&bmDISTYPEAREA, x, y);
 		GUI_SetFont(&GUI_Font32B_ASCII);
 		x = WM_GetWindowSizeX(pMsg->hWin);
-		GUI_DispStringHCenterAt("Reverb", x / 2, 5);
+		{
+			std::string title("Reverb");
+			GUI_DispStringHCenterAt(GetTitleWithPreset(title).c_str(), x / 2, 5);
+		}
+
+		// No more sliding
+		// Draw button shape
+		if(WM_HasCaptured(pMsg->hWin))
+		{
+			const GUI_RECT* prect;
+			switch(sidebutton)
+			{
+			case 1:
+				prect = &leftsidebutton;
+				break;
+			case 2:
+				prect = &rightsidebutton;
+				break;
+			case 0:
+			default:
+				prect = 0;
+			}
+			if(prect)
+			{
+				GUI_SetColor(GUI_LIGHTBLUE);
+				GUI_SetPenSize(5);
+				GUI_DrawRectEx(prect);
+			}
+		}
+
 		y += 20;
 		GUI_DispStringHCenterAt(strRevtype[revIndex], x / 2, y);
 		y = WM_GetWindowOrgY(hReverbItems[REVERB_SLIDEWINDOW]);
@@ -312,6 +363,49 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 		}
 		break;
 	case WM_TOUCH:
+		// No more sliding
+		if(pMsg->Data.p)
+		{
+			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
+			if(pPID_State->Pressed)
+			{
+				if(!WM_HasCaptured(pMsg->hWin))
+				{
+					GUI_RECT ptRect;
+					WM_SetCapture(pMsg->hWin,1);
+					ptRect.x0 = pPID_State->x;
+					ptRect.y0 = pPID_State->y;
+					ptRect.x1 = ptRect.x0+1;
+					ptRect.y1 = ptRect.y0+1;
+					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
+					{
+						sidebutton = 1;
+						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
+						SlideGoPreviousPage();
+					}
+					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
+					{
+						sidebutton = 2;
+						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
+						SlideGoNextPage();
+					}
+				}
+			}
+			else
+			{
+				//WM_ReleaseCapture();
+				sidebutton = 0;
+				if(pPID_State->x<50)
+				{
+					WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
+				}
+				else
+				{
+					WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
+				}
+			}
+		}
+		//! No more sliding
 		break;
 	default:
 		WM_DefaultProc(pMsg);
@@ -431,8 +525,8 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 	int x,y;
 	int NCode,Id;
 	std::vector<int> effect;
-	GUI_PID_STATE* pPID_State;
-	static GUI_PID_STATE PID_LastState;
+	// No more sliding GUI_PID_STATE* pPID_State;
+	//static GUI_PID_STATE PID_LastState;
 	switch (pMsg->MsgId)
 	{
 	case WM_CREATE:
@@ -498,6 +592,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 		}
 		break;
 	case WM_TOUCH:
+#if 0		// No more sliding
 		if(pMsg->Data.p)
 		{
 			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
@@ -552,6 +647,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 			PID_LastState.y = 0;
 			WM_ReleaseCapture();
 		}
+#endif		// No more sliding
 		break;
 	default:
 		WM_DefaultProc(pMsg);
@@ -563,3 +659,42 @@ static void ReverbControlMenuProc(int menuId)
 	AssginEffectControlMenuProc(menuId,ReverbGetFX());
 }
 
+
+// No more sliding
+static void SlideGoNextPage()
+{
+	int x,y;
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
+	SlidingBorder = GetSlidingBordercheck(hReverbItems[REVERB_SLIDEWINDOW],hReverb);
+}
+
+static void SlideGoPreviousPage()
+{
+	int x;
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	GUI_Delay(10);
+	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
+	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+	SlidingBorder = GetSlidingBordercheck(hReverbItems[REVERB_SLIDEWINDOW],hReverb);
+}

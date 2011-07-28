@@ -2393,7 +2393,7 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 		{
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
 		}
-		string_note[str] = -1;
+//mzmz		string_note[str] = -1;
 	}
 }
 

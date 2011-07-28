@@ -72,6 +72,12 @@ void SynthLoadPreset(std::string filename)
 	ClearModified();
 }
 
+void SynthDeletePreset(std::string filename)
+{
+	pSynth->deletePresetFile(filename);
+	ClearModified();
+}
+
 void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename)
 {
 	pSynth->savePresetToFile(pSetting, filename);

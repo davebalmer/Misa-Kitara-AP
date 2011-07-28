@@ -336,6 +336,7 @@ void ResetAllEffect();
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+void SynthDeletePreset(std::string filepath);
 void SynthLoadPreset(std::string filename);
 void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename);
 //bool GetCurrentSetting(PSYNTH_SETTING pSetting);

@@ -658,6 +658,11 @@ void Synth::loadPresetFromFile(std::string filename)
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
 }
 
+void Synth::deletePresetFile(std::string filepath)
+{
+
+}
+
 /*
 void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 {

@@ -360,15 +360,15 @@ void ControlScreen::playNotes(struct neckstate *state)
 			{
 				synth.sendNoteOn(s, state->string_button[s], true);
 
-//				if(current_note[s] != -1)
-//					synth.sendNoteOff(s, current_note[s]);
+				if(current_note[s] != -1)
+					synth.sendNoteOffRinging(s, current_note[s]);
 
 				current_note[s] = state->string_button[s];
 			}
 			else //not pressed any more
 			{
 				if(current_note[s] != -1)
-					synth.sendNoteOff(s, current_note[s]);
+					synth.sendNoteOffRinging(s, current_note[s]);
 
 				current_note[s] = -1;
 			}

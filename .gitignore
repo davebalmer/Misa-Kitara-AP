@@ -13,3 +13,5 @@ Application/*.o
 Application/*.so
 vssver.scc
 *.mz
+Release
+Debug

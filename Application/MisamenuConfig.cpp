@@ -2348,6 +2348,7 @@ void ResetAllEffect()
 	ClearModified();
 }
 
+// [mz] we must try to avoid code duplication
 void SynthLoadPreset(std::string filename)
 {
 	TiXmlDocument doc((working_directory + "/presets/" + filename +".mz").c_str());
@@ -2392,28 +2393,28 @@ void SynthLoadPreset(std::string filename)
 
 			for(TiXmlElement *e2 = e->FirstChildElement(); e2 != NULL; e2 = e2->NextSiblingElement())
 			{
-				if(e2->Value() != "eq_band") continue;
+				if(std::string(e2->Value()) != "eq_band") continue;
 				if(!e2->Attribute("type")) continue;
 
-				if(e2->Attribute("type") == "lowest")
+				if(std::string(e2->Attribute("type")) == "lowest")
 				{
 					if(e2->Attribute("gain")) EqSetLowestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) EqSetLowestBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "lower")
+				if(std::string(e2->Attribute("type")) == "lower")
 				{
 					if(e2->Attribute("gain")) EqSetLowerBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) EqSetLowerBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "higher")
+				if(std::string(e2->Attribute("type")) == "higher")
 				{
 					if(e2->Attribute("gain")) EqSetHigherBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) EqSetHigherBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "highest")
+				if(std::string(e2->Attribute("type")) == "highest")
 				{
 					if(e2->Attribute("gain")) EqSetHighestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) EqSetHighestBandFrequency(atoi(e2->Attribute("frequency")));

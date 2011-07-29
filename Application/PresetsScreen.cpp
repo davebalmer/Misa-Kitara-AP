@@ -419,9 +419,8 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 	ReadPresetsDir(preset_filenames);
 	size = preset_filenames.size();
 	if(size)
-	{
 		pPresetsItems = (BUTTON_Handle*)malloc(sizeof(BUTTON_Handle*)*size);
-	}
+
 	//preset_filenames.size();
 	if (singleColumn)
 	{
@@ -429,7 +428,9 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 		{
 			pPresetsItems[i] = MisaItem_CreateEx(10, bmSELECT.YSize * i, bmSELECT.XSize, bmSELECT.YSize,
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+			BUTTON_SetTextAlign(pPresetsItems[i], GUI_TA_LEFT);
 		}
+		y = bmSELECT.YSize*size;
 	}
 	else
 	{
@@ -438,9 +439,9 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 			pPresetsItems[i] = MisaItem_CreateEx(PRESETS_ITEM_POS+(bmSELECT.XSize+PRESETS_ITEMBLANK)*(i%3), bmSELECT.YSize*(i/3), bmSELECT.XSize, bmSELECT.YSize,
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
 		}
+		y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	}
 	x = WM_GetWindowSizeX(hParent);
-	y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	WM_SetSize(hParent, x, WM_GetWindowSizeY(hParent)<y?y:WM_GetWindowSizeY(hParent));
 	return 0;
 }

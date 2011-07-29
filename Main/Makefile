@@ -83,6 +83,7 @@ core:
 
 menu:
 	cd ../Application && make
+	cp ../Application/*.so .
 
 clean:
 	cd tinyxml && make clean

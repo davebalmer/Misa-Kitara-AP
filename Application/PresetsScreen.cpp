@@ -487,8 +487,7 @@ static bool DeletePreset()
 		{
 			GetCurrentSetting(&synthSetting);
 #ifdef Linux
-			// TO DO : Remove the file
-			// Michael ?
+			SynthDeletePreset(preset_filenames[pos]);
 #else	// Win
 			string fileToDeletePath = working_directory+"/presets/" + preset_filenames[pos]+".mz";
 			DeleteFile(fileToDeletePath.c_str());
@@ -593,7 +592,7 @@ void UpdateSynthSetting()
 	distortion.tone = synthSetting.fx_block[distortion.Fx].distortion.tone;
 	distortion.level = synthSetting.fx_block[distortion.Fx].distortion.level;
 	distortion.noisereduction = synthSetting.fx_block[distortion.Fx].distortion.noise_reduction;
-	distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster;
+	distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 	UpdateDistortionInfo(&distortion);
 	// Compression
 	GetCompressionInfo(&compression);
@@ -661,6 +660,8 @@ void UpdateSynthSetting()
 	// Eq
 	eq.lowbandgain = synthSetting.equalizer.lowest.gain;
 	eq.lowbandfreq = synthSetting.equalizer.lowest.frequency;
+	eq.lowmidbandgain = synthSetting.equalizer.lower.gain;
+	eq.lowmidbandfreq = synthSetting.equalizer.lower.frequency;
 	eq.lowmidbandQ = synthSetting.equalizer.low_mid_q;
 	eq.highmidbandgain = synthSetting.equalizer.higher.gain;
 	eq.highmidbandfreq = synthSetting.equalizer.higher.frequency;
@@ -790,7 +791,7 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 		distortion.tone = synthSetting.fx_block[distortion.Fx].distortion.tone;
 		distortion.level = synthSetting.fx_block[distortion.Fx].distortion.level;
 		distortion.noisereduction = synthSetting.fx_block[distortion.Fx].distortion.noise_reduction;
-		distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster;
+		distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 		UpdateDistortionInfo(&distortion);
 	}
 	// Modulation
@@ -852,6 +853,8 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 	{
 		eq.lowbandgain = synthSetting.equalizer.lowest.gain;
 		eq.lowbandfreq = synthSetting.equalizer.lowest.frequency;
+		eq.lowmidbandgain = synthSetting.equalizer.lower.gain;
+		eq.lowmidbandfreq = synthSetting.equalizer.lower.frequency;
 		eq.lowmidbandQ = synthSetting.equalizer.low_mid_q;
 		eq.highmidbandgain = synthSetting.equalizer.higher.gain;
 		eq.highmidbandfreq = synthSetting.equalizer.higher.frequency;

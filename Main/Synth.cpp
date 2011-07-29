@@ -8,6 +8,7 @@
 #include "tinyxml/tinystr.h"
 
 extern std::string working_directory;
+extern char *VERSION_STRING;
 
 Synth::Synth()
 {
@@ -415,12 +416,14 @@ void Synth::resetSettings(void)
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
 }
 */
+
 void Synth::loadPresetFromFile(std::string filename)
 {
-	TiXmlDocument doc((working_directory + "/presets/" + filename + ".mz").c_str());
+	std::string file = working_directory + "/presets/" + filename + ".mz";
+	TiXmlDocument doc(file.c_str());
 	if(!doc.LoadFile())
 	{
-		std::cout << "Preset file could not be opened." << std::endl << std::flush;
+		std::cout << "Preset file " + file + " could not be opened." << std::endl << std::flush;
 		return;
 	}
 
@@ -464,28 +467,27 @@ void Synth::loadPresetFromFile(std::string filename)
 
 			for(TiXmlElement *e2 = e->FirstChildElement(); e2 != NULL; e2 = e2->NextSiblingElement())
 			{
-				if(e2->Value() != "eq_band") continue;
+				if(std::string(e2->Value()) != "eq_band") continue;
 				if(!e2->Attribute("type")) continue;
-
-				if(e2->Attribute("type") == "lowest")
+				if(std::string(e2->Attribute("type")) == "lowest")
 				{
 					if(e2->Attribute("gain")) setEQLowestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQLowestBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "lower")
+				if(std::string(e2->Attribute("type")) == "lower")
 				{
 					if(e2->Attribute("gain")) setEQLowerBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQLowerBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "higher")
+				if(std::string(e2->Attribute("type")) == "higher")
 				{
 					if(e2->Attribute("gain")) setEQHigherBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQHigherBandFrequency(atoi(e2->Attribute("frequency")));
 				}
 				else
-				if(e2->Attribute("type") == "highest")
+				if(std::string(e2->Attribute("type")) == "highest")
 				{
 					if(e2->Attribute("gain")) setEQHighestBandGain(atoi(e2->Attribute("gain")));
 					if(e2->Attribute("frequency")) setEQHighestBandFrequency(atoi(e2->Attribute("frequency")));
@@ -654,7 +656,15 @@ void Synth::loadPresetFromFile(std::string filename)
 	}
 
 	setMasterVolume(temp_volume);
-	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
+	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
+}
+
+void Synth::deletePresetFile(std::string filename)
+{
+	std::string filepath = working_directory + "/presets/" + filename + ".mz";
+	std::string cmd = "rm -f " + filepath;
+	system(cmd.c_str());
+	std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
 }
 
 /*
@@ -799,6 +809,11 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 	//root node
 	root = new TiXmlElement("preset");
 	doc.LinkEndChild(root);
+
+	//identification
+	element = new TiXmlElement("kitara_id");
+	element->SetAttribute("ap", VERSION_STRING);
+	root->LinkEndChild(element);
 
 	//master settings
 	element = new TiXmlElement("master");
@@ -1167,17 +1182,17 @@ void Synth::assignSynthEffect(unsigned char touch_control, unsigned char synth_p
 
 void Synth::unAssignSynthEffect(unsigned char synth_param, unsigned char fxb)
 {
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1203,17 +1218,17 @@ std::vector<int> Synth::findAssignSynthEffect(unsigned char synth_param, unsigne
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1271,17 +1286,17 @@ void Synth::assignSynthVoiceParam(unsigned char touch_control, unsigned char syn
 
 void Synth::unAssignSynthVoiceParam(unsigned char synth_param, unsigned char str, unsigned char voice_index)
 {
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1307,17 +1322,17 @@ std::vector<int> Synth::findAssignSynthVoiceParam(unsigned char synth_param, uns
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1390,17 +1405,17 @@ std::vector<int> Synth::findAssignMidiVelocity(int str, std::vector<struct assig
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1474,17 +1489,17 @@ std::vector<int> Synth::findAssignMidiPitch(unsigned char channel, std::vector<s
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1559,17 +1574,17 @@ std::vector<int> Synth::findAssignAllCC(unsigned char output, unsigned char chan
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -1597,17 +1612,17 @@ std::vector<int> Synth::findAssignCC(unsigned char output, unsigned char channel
 {
 	std::vector<int> controls;
 
-	for(int touch_control = TOUCH_X; touch_control <= VARIATION; touch_control++)
+	for(int touch_control = TOUCH_X; touch_control < CONTROL_END; touch_control++)
 	{
 		switch(touch_control)
 		{
-/*			case STRING_TOUCH_X_0:
+			case STRING_TOUCH_X_0:
 			case STRING_TOUCH_X_1:
 			case STRING_TOUCH_X_2:
 			case STRING_TOUCH_X_3:
 			case STRING_TOUCH_X_4:
 			case STRING_TOUCH_X_5:
-*/			case STRING_DRAG_X_0:
+			case STRING_DRAG_X_0:
 			case STRING_DRAG_X_1:
 			case STRING_DRAG_X_2:
 			case STRING_DRAG_X_3:
@@ -2668,6 +2683,10 @@ void Synth::SendParamToSynth(int string_index, int voice_index)
     setPitchWheel(string_index, voice_index, current_setting.voices[string_index].at(voice_index).pitch_wheel);
     setVoiceVelocity(string_index, voice_index, current_setting.voices[string_index].at(voice_index).velocity);
     setReverbSend(string_index, voice_index, current_setting.voices[string_index].at(voice_index).reverb_send);
+	setFilterType(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_type);
+	setFilterAttack(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_attack);
+	setFilterDecay(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_decay);
+	setFilterRelease(string_index, voice_index, current_setting.voices[string_index].at(voice_index).filter_release);
 
     if(current_setting.voices[string_index].at(voice_index).insert_fx_block_on[0])
         setFxBlockOn(string_index, voice_index, 0, true);

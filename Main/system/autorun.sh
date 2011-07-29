@@ -47,3 +47,7 @@ fi
 
 cd /usr/bin
 ./otgd &
+#
+sleep 3
+cd /usr/bin
+./sgtl5000 VOL 82

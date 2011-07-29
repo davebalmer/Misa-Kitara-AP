@@ -1,3 +1,23 @@
+v0.9.8
+- UPDATED configuration menu
+
+v0.9.7
+- FIXED bug when drag and dropping new voice that not copy filter settings
+- FIXED bug where note doesn't stop if string released when ball pressed
+
+v0.9.6
+- ADDED serial number display in settings
+- FIXED minor bugs
+
+v0.9.5
+- MODIFIED drag controls to reset on drag release
+
+v0.9.4
+- ADDED settings to show/hide strings and ball
+
+v0.9.3
+- IMPROVED control behaviour
+
 v0.9.2
 - MODIFIED loadPresetFromFile() and savePresetToFile() functions to work with XML presets instead
 - FIXED bug when deleting voices in editor

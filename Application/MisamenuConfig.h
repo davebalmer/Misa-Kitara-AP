@@ -336,6 +336,7 @@ void ResetAllEffect();
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+void SynthDeletePreset(std::string filepath);
 void SynthLoadPreset(std::string filename);
 void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename);
 //bool GetCurrentSetting(PSYNTH_SETTING pSetting);
@@ -564,6 +565,8 @@ int SynthGetMastervolume(void);
 void SynthSetMastervolume(int val);
 int SynthGetTapmode();
 void SynthSetTapmode(int val);
+int SynthGetBallmode();
+void SynthSetBallmode(int val);
 int SynthGetStringmode();
 void SynthSetStringmode(int val);
 
@@ -579,5 +582,9 @@ void SynthSetStringmode(int val);
 int MisaGetHandMode();
 int MisaSetHandMode(int mode);
 int MisaSetBallTravel(int mode);
+int MisaGetShowBall();
+int MisaSetShowBall(int mode);
+int MisaGetShowStrings();
+int MisaSetShowStrings(int mode);
 
 #endif // __MISA_MENUCONFIG_H__

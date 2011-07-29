@@ -21,6 +21,11 @@ ControlScreen::ControlScreen(Graphics *g)
 	tap_mode = false;
 	string_mode = false;
 	left_handed = false;
+
+	show_ball = false;
+	show_strings = false;
+	graphics->showBall(show_ball);
+	graphics->showStrings(show_strings);
 	
 	changeScreen(UI_NORMAL);
 
@@ -137,12 +142,7 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 {
 	ts->getTouchState(&touch_state);
 	neck->getNeckState(&neck_state, left_handed);
-/*
-	if((neck_state.string_button[0] == 24) && (neck_state.string_button[1] == 24) && 
-		(neck_state.string_button[2] == 24) && (neck_state.string_button[3] == 24) &&
-		(neck_state.string_button[4] == 24) && (neck_state.string_button[5] == 24))
-		exit(1);
-*/
+
 	static int old_button[6] = {0, 0, 0, 0, 0, 0};
 
 	//identify new button presses
@@ -161,6 +161,17 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 
 			old_button[s] = neck_state.string_button[s];
 		}
+	}
+
+	if(show_strings)
+	{
+		graphics->setWindow1Width(550);
+		graphics->setWindow2Width(graphics->getScreenWidth() - 550);
+	}
+	else
+	{
+		graphics->setWindow1Width(800);
+		graphics->setWindow2Width(0);
 	}
 
 	for(int i = 0; i < 5; i++)
@@ -185,7 +196,10 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 	{
 		case UI_NORMAL:
 			updateBallWindow();
-			updateStringWindow();
+
+			if(show_strings)
+				updateStringWindow();
+
 			testForCornerSwitches();
 			break;
 	}
@@ -238,11 +252,14 @@ void ControlScreen::testForCornerSwitches(void)
 			synth.sendControl(TOUCH_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
 			synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
 			synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-			synth.sendControl(BALL_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
-			synth.sendControl(BALL_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-			xy_control.x = graphics->getWindow1Width()/2;
-			xy_control.y = graphics->getScreenHeight()/2;
-			graphics->setXYControlPosition(xy_control.x, xy_control.y);
+			if(show_ball)
+			{
+				synth.sendControl(BALL_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
+				synth.sendControl(BALL_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
+				xy_control.x = graphics->getWindow1Width()/2;
+				xy_control.y = graphics->getScreenHeight()/2;
+				graphics->setXYControlPosition(xy_control.x, xy_control.y);
+			}
 
 			graphics->hideFloatingWindows();
 			graphics->setLCDUnScaled();
@@ -439,11 +456,6 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 		if(current_note[s] != -1)
 			button_pressed = true;
 	}
-	if(!button_pressed)
-	{
-		synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
-		synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-	}
 
 	if(((screens.top() == UI_NORMAL) && ((nt.size() != 0) || (bt.size() != 0))) ||
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
@@ -503,6 +515,25 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 void ControlScreen::processEventBallPressed(struct control_message_t *msg)
 {
 //	std::cout << "Ball pressed." << std::flush;
+/*	for(int s = 0; s < 6; s++)
+	{
+		if(st[left_handed?5-s:s].size() == 0)
+		{
+			//turn off any playing notes
+			if(current_note[s] != -1)
+				synth.sendNoteOff(s, current_note[s], harmonics[s]);
+
+			//play note
+			if(neck_state.string_button[s] != 0)
+			{
+				current_note[s] = neck_state.string_button[s];
+				ringing_note[s] = current_note[s];
+				harmonics[s] = HARMONIC_MACRO;
+				synth.sendNoteOn(s, current_note[s], harmonics[s], true);
+			}
+		}
+	}
+*/
 }
 
 void ControlScreen::processEventBallDragged(struct control_message_t *msg)
@@ -576,11 +607,6 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				sustained_note[i] = false;
 	}
 */
-	if(nt.size() == 1)
-	{
-		synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
-		synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
-	}
 
 	bool flag = false;	
 	for(unsigned int s = 0; s < 6; s++)
@@ -655,12 +681,18 @@ void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 {
 //	std::cout << "Touch released " << (unsigned int) msg->touch_id << "." << std::endl << std::flush;
 
+	if(nt.size() == 0)
+	{
+		synth.sendControl(DRAG_X, graphics->getWindow1Width()/2, graphics->getWindow1Width());
+		synth.sendControl(DRAG_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
+	}
+
 	if((nt.size() == 0) && (bt.size() == 0))
 	{
 		for(int s = 0; s < 6; s++)
 		{
 //			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !sustained_note[s])
-			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0))
+			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode)
 			{
 				synth.sendNoteOff(s, current_note[s], harmonics[s]);
 				current_note[s] = -1;
@@ -743,21 +775,24 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 
 	if(st[left_handed?5-msg->string_id:msg->string_id].size() == 0)
 	{
-		if(current_note[msg->string_id] != -1)
+//		if((nt.size() == 0) && (bt.size() == 0))
 		{
-			if(tap_mode)
+			if(current_note[msg->string_id] != -1)
 			{
-				if(current_note[msg->string_id] == 0)
+				if(tap_mode)
+				{
+					if(current_note[msg->string_id] == 0)
+					{
+						synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
+						current_note[msg->string_id] = -1;
+					}
+				}
+				else
+				if(!tap_mode)
 				{
 					synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
 					current_note[msg->string_id] = -1;
 				}
-			}
-			else
-			if(!tap_mode)
-			{
-				synth.sendNoteOff(msg->string_id, current_note[msg->string_id], harmonics[msg->string_id]);
-				current_note[msg->string_id] = -1;
 			}
 		}
 
@@ -841,7 +876,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 			if((find(nt.begin(), nt.end(), i) == nt.end()) &&
 			 (find(bt.begin(), bt.end(), i) == bt.end()))
 			{
-				if(isInXYControlBounds(touch_state_w1.x[i], touch_state_w1.y[i]))
+				if((show_ball) && (isInXYControlBounds(touch_state_w1.x[i], touch_state_w1.y[i])))
 				{
 					struct coord touch_location;
 					touch_location.x = touch_state_w1.x[i];
@@ -883,26 +918,29 @@ unsigned char ControlScreen::updateBallWindow(void)
 				nt.erase(t);
 			}
 
-			t = find(bt.begin(), bt.end(), i);
-			if(t != bt.end())
+			if(show_ball)
 			{
-				struct coord temp = {0, 0};
-				if(xy_timer < 1500)
+				t = find(bt.begin(), bt.end(), i);
+				if(t != bt.end())
 				{
-					event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
-				}
-				else
-				{
-					ball_vector.x = 0; ball_vector.y = 0; ball_vector_index = 0;
-					event_queue.push_back(newTouchEvent(EVENT_BALL_RELEASED, i, temp));
-				}
+					struct coord temp = {0, 0};
+					if((xy_timer < 1500) && (ball_travel_on))
+					{
+						event_queue.push_back(newTouchEvent(EVENT_BALL_PUSHED, i, temp));
+					}
+					else
+					{
+						ball_vector.x = 0; ball_vector.y = 0; ball_vector_index = 0;
+						event_queue.push_back(newTouchEvent(EVENT_BALL_RELEASED, i, temp));
+					}
 
-				bt.erase(t);
+					bt.erase(t);
+				}
 			}
 		}
 	}
 
-	if(bt.size() > 0)
+	if((bt.size() > 0) && show_ball)
 	{
 		if((getDistance(xy_control.x, touch_state_w1.x[bt.at(0)]) >= 3) ||
 		 (getDistance(xy_control.y, touch_state_w1.y[bt.at(0)]) >= 3))
@@ -937,7 +975,7 @@ unsigned char ControlScreen::updateBallWindow(void)
 		}
 	}
 	else
-	{
+	{	//this should run even if the ball is hidden
 		if(ball_travel_on && (xy_timer > 500)) //only update ball movement every 100 iterations
 		{
 			xy_timer = 0;
@@ -1019,7 +1057,7 @@ void ControlScreen::updatePresetList(void)
 			std::string s = ep->d_name;
 			if(s.size() > 3)
 				if(s.substr(s.size() - 3, 3) == ".mz")
-					preset_filenames.push_back(ep->d_name);
+					preset_filenames.push_back(s.substr(0, s.size() - 3));
 		}
 	}
 
@@ -1145,13 +1183,24 @@ void ControlScreen::SetTapmode(bool state)
 	graphics->setGraphicsModeNormal(state);
 }
 
-bool ControlScreen::GetStringmode()
+bool ControlScreen::isShowBall(void)
 {
-	return string_mode;
+	return show_ball;
 }
 
-void ControlScreen::SetStringmode(bool state)
+void ControlScreen::showBall(bool state)
 {
-	string_mode = state;
+	show_ball = state;
+	graphics->showBall(state);
 }
 
+bool ControlScreen::isShowStrings(void)
+{
+	return show_strings;
+}
+
+void ControlScreen::showStrings(bool state)
+{
+	show_strings = state;
+	graphics->showStrings(state);
+}

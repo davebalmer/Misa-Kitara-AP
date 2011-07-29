@@ -235,7 +235,7 @@ void Synth::loadSouthpad(void)
 		setFilterType(s, 0, 5);
 		//assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 		assignSynthVoiceParam(DRAG_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
-		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 50);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 50);
@@ -266,7 +266,7 @@ void Synth::loadSouthpad(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
@@ -337,7 +337,7 @@ void Synth::loadMeltGuitar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
@@ -405,7 +405,7 @@ void Synth::loadDigitar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
@@ -471,7 +471,7 @@ void Synth::loadMeltGuitarOriginal(void) //control decay and release from TOUCH_
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
@@ -517,7 +517,7 @@ void Synth::loadRemstar(void)
 //		setDetuneCourse(s, 0, 59);
 		setPitchBendSemitones(s, 0, 2);
 //		setReverbSend(s, 0, 127);
-		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
@@ -548,7 +548,7 @@ void Synth::loadRemstar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 	for(int s = 0; s < 6; s++)
@@ -559,7 +559,7 @@ void Synth::loadRemstar(void)
 		setPitchBendSemitones(s, 1, 2);
 //		setReverbSend(s, 1, 127);
 		setAmpEnvAttack(s, 1, 64);
-		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 1, false, 0, 0);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 1, false, 0, 0);
 		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, false, 0, 0);
@@ -589,7 +589,7 @@ void Synth::loadRemstar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 1, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 	}
 
 	assignSynthEffect(BALL_Y, PARAM_DISTORTION_DRIVE, 0, true, 0, 0);
@@ -727,7 +727,7 @@ void Synth::loadWarmBass(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 	for(int s = 0; s < 6; s++)
@@ -771,7 +771,7 @@ void Synth::loadWarmBass(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 1, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
@@ -959,6 +959,13 @@ void Synth::loadSineGuitar(void)
 	resetSettings();
 //	setMasterVolume(127);
 
+	current_setting.tuning[0] = 64;
+	current_setting.tuning[1] = 59;
+	current_setting.tuning[2] = 55;
+	current_setting.tuning[3] = 50;
+	current_setting.tuning[4] = 45;
+	current_setting.tuning[5] = 40;
+
 	for(int s = 0; s < 6; s++)
 	{
 		insertNewVoice(s, 1);
@@ -975,7 +982,7 @@ void Synth::loadSineGuitar(void)
 		setFilterType(s, 0, 5);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
-		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 0, false, 0, 0);
+//		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 0, false, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
 
 		int control;
@@ -1001,7 +1008,7 @@ void Synth::loadSineGuitar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 50);
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 50);
@@ -1022,7 +1029,7 @@ void Synth::loadSineGuitar(void)
 		setPitchWheel(s, 1, 0x2000);
 		setFilterType(s, 1, 5);
 //		assignVelocity(TOUCH_X, s, true, 0, 0);
-		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 1, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, false, 0, 0);
 //		assignSynthPitch(DRAG_X, s, 1, false, 0, 0);
@@ -1052,7 +1059,7 @@ void Synth::loadSineGuitar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 1, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 1, false, 0, 50);
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 1, false, 0, 50);
@@ -1073,7 +1080,7 @@ void Synth::loadSineGuitar(void)
 		setFilterType(s, 2, 5);
 		setPitchWheel(s, 2, 0x2000);
 //		assignVelocity(TOUCH_X, s, true, 0, 0);
-		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 2, true, 0, 0);
+//		assignSynthVoiceParam(TOUCH_X, PARAM_VOICE_VELOCITY, s, 2, true, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 2, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 2, false, 0, 0);
 //		assignSynthPitch(DRAG_X, s, 2, false, 0, 0);
@@ -1103,7 +1110,7 @@ void Synth::loadSineGuitar(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 2, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 2, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 2, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 2, true, 0, 0);
 
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 2, false, 0, 50);
 		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 2, false, 0, 50);
@@ -1112,7 +1119,7 @@ void Synth::loadSineGuitar(void)
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);
 
 	assignSynthEffect(BALL_Y, PARAM_DISTORTION_DRIVE, 0, true, 0, 0);
-	assignSynthEffect(TOUCH_X, PARAM_DISTORTION_LEVEL, 0, true, 0, 0);
+//	assignSynthEffect(TOUCH_X, PARAM_DISTORTION_LEVEL, 0, true, 0, 0);
 
 	setMixerOutputLevel(0, 35);
 	setMixerLowCutFilterFrequency(0, 0);
@@ -1188,7 +1195,7 @@ void Synth::loadSineWave(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_FREQUENCY, s, 0, false, 0, 50);
 //		assignSynthVoiceParam(VARIATION, PARAM_VOICE_FILTER_RESONANCE, s, 0, false, 0, 50);
@@ -1350,7 +1357,7 @@ void Synth::loadXenoxJeff(void)
 		setAmpEnvDecay(s, 0, 75);
 		setAmpEnvRelease(s, 0, 62);
 		setFilterType(s, 0, 1);
-		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 0, false, 0, 0);
+//		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 0, false, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 0, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, false, 0, 0);
@@ -1380,7 +1387,7 @@ void Synth::loadXenoxJeff(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 0, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 0, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 0, true, 0, 0);
 	}
 
 	for(int s = 4; s < 6; s++)
@@ -1398,7 +1405,7 @@ void Synth::loadXenoxJeff(void)
 		setChannelVolume(s, 1, 127);
 		setFilterType(s, 1, 1);
 //		assignVelocity(TOUCH_X, s, true, 0, 0);
-		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 1, false, 0, 0);
+//		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_VELOCITY, s, 1, false, 0, 0);
 		assignSynthVoiceParam(DRAG_X, PARAM_VOICE_PITCH_WHEEL, s, 1, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_DECAY, s, 1, false, 0, 0);
 //		assignSynthVoiceParam(TOUCH_Y, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, false, 0, 0);
@@ -1428,7 +1435,7 @@ void Synth::loadXenoxJeff(void)
 		}
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_DECAY, s, 1, true, 0, 0);
 //		assignSynthVoiceParam(control, PARAM_VOICE_AMP_ENV_RELEASE, s, 1, true, 0, 0);
-		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
+//		assignSynthVoiceParam(control, PARAM_VOICE_VELOCITY, s, 1, true, 0, 0);
 	}
 
 //	assignSynthEffect(VARIATION, PARAM_DISTORTION_DRIVE, 0, false, 1, 120);

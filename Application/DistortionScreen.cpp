@@ -426,7 +426,7 @@ static void DistortionProc(WM_MESSAGE* pMsg)
 					break;
 				case DISTORTION_ID_PROGNOISEREDUCTION:
 					x = MisaProgressbar_GetPercent(pMsg->hWinSrc);
-					DistortionNoiseReduction(DistortionGetFX(),x<127?x/(128/5):4);
+					DistortionNoiseReduction(DistortionGetFX(),x);
 					break;
 				case DISTORTION_ID_PROGBOOSTER:
 					x = MisaProgressbar_GetPercent(pMsg->hWinSrc);

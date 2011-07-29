@@ -112,6 +112,8 @@ class ControlScreen
 
 		bool sustained_note[6];
 
+		bool show_ball, show_strings;
+
 	public:
 		ControlScreen(Graphics *g);
 		~ControlScreen(void);
@@ -151,8 +153,10 @@ class ControlScreen
 		void setLeftHandMode(bool state);
 		bool GetTapmode();
 		void SetTapmode(bool state);
-		bool GetStringmode();
-		void SetStringmode(bool state);
+		bool isShowBall(void);
+		void showBall(bool state);
+		bool isShowStrings(void);
+		void showStrings(bool state);
 };
 
 #endif

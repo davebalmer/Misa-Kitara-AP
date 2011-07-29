@@ -656,14 +656,20 @@ void Synth::loadPresetFromFile(std::string filename)
 	}
 
 	setMasterVolume(temp_volume);
+
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
 }
 
 void Synth::deletePresetFile(std::string filename)
 {
+	system("mount -o remount,rw /usr");
+
 	std::string filepath = working_directory + "/presets/" + filename + ".mz";
 	std::string cmd = "rm -f " + filepath;
 	system(cmd.c_str());
+
+	system("mount -o remount,ro /usr");
+
 	std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
 }
 
@@ -1011,12 +1017,15 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 	
 		
 	std::string filepath = working_directory + "/presets/" + filename + ".mz";
+	system("mount -o remount,rw /usr"); //mount read-write
+	sleep(1);
 	doc.SaveFile(filepath.c_str());
+	system("sync");
+	system("mount -o remount,ro /usr"); //mount read-write
+
 	currentPresetName = filename;
 
 	std::cout << "File " << filepath << " saved." << std::endl << std::flush;
-
-	system("sync");
 }
 
 void Synth::insertNewVoice(int str, int wave)

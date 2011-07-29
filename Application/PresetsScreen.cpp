@@ -485,10 +485,10 @@ static bool DeletePreset()
 		if(pos < size)
 		{
 			GetCurrentSetting(&synthSetting);
-			string fileToDeletePath = working_directory+"/presets/" + preset_filenames[pos]+".mz";
 #ifdef Linux
-			SynthDeletePreset(fileToDeletePath);
+			SynthDeletePreset(preset_filenames[pos]);
 #else	// Win
+			string fileToDeletePath = working_directory+"/presets/" + preset_filenames[pos]+".mz";
 			DeleteFile(fileToDeletePath.c_str());
 #endif	// Win
 			return true;

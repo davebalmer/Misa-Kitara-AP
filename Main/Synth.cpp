@@ -419,10 +419,11 @@ void Synth::resetSettings(void)
 
 void Synth::loadPresetFromFile(std::string filename)
 {
-	TiXmlDocument doc((working_directory + "/presets/" + filename + ".mz").c_str());
+	std::string file = working_directory + "/presets/" + filename + ".mz";
+	TiXmlDocument doc(file.c_str());
 	if(!doc.LoadFile())
 	{
-		std::cout << "Preset file could not be opened." << std::endl << std::flush;
+		std::cout << "Preset file " + file + " could not be opened." << std::endl << std::flush;
 		return;
 	}
 
@@ -658,10 +659,12 @@ void Synth::loadPresetFromFile(std::string filename)
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
 }
 
-void Synth::deletePresetFile(std::string filepath)
+void Synth::deletePresetFile(std::string filename)
 {
+	std::string filepath = working_directory + "/presets/" + filename + ".mz";
 	std::string cmd = "rm -f " + filepath;
 	system(cmd.c_str());
+	std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
 }
 
 /*

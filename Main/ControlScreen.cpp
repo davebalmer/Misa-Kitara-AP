@@ -1057,7 +1057,7 @@ void ControlScreen::updatePresetList(void)
 			std::string s = ep->d_name;
 			if(s.size() > 3)
 				if(s.substr(s.size() - 3, 3) == ".mz")
-					preset_filenames.push_back(ep->d_name);
+					preset_filenames.push_back(s.substr(0, s.size() - 3));
 		}
 	}
 

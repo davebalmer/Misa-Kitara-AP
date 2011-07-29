@@ -423,7 +423,7 @@ public:
 		~Synth(void);
 		void loadPresetFromFile(std::string filename);
 		void savePresetToFile(struct synth_setting *s, std::string filename);
-		void deletePresetFile(std::string filepath);
+		void deletePresetFile(std::string filename);
 		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
 		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
 		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);

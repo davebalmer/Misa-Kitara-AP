@@ -1,5 +1,6 @@
 v0.9.8
 - UPDATED configuration menu
+- ADDED trigger to start test mode (start configuration menu while pressing 24th fret of 1st and 6th strings)
 
 v0.9.7
 - FIXED bug when drag and dropping new voice that not copy filter settings

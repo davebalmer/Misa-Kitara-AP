@@ -655,12 +655,13 @@ void Synth::loadPresetFromFile(std::string filename)
 	}
 
 	setMasterVolume(temp_volume);
-	std::cout << "Preset file " << working_directory << "/presets/" << filename << " loaded." << std::endl << std::flush;
+	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
 }
 
 void Synth::deletePresetFile(std::string filepath)
 {
-
+	std::string cmd = "rm -f " + filepath;
+	system(cmd.c_str());
 }
 
 /*

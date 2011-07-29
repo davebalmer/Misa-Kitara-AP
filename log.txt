@@ -1,3 +1,6 @@
+v0.9.8
+- UPDATED configuration menu
+
 v0.9.7
 - FIXED bug when drag and dropping new voice that not copy filter settings
 - FIXED bug where note doesn't stop if string released when ball pressed

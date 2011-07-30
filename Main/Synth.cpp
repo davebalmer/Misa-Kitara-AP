@@ -2586,14 +2586,12 @@ void Synth::sendToEffect(struct assignable_effect *ae, int val, int scaler)
 
 		case PARAM_MIDI_VELOCITY: setVelocity(ae->str, final_val); break;
 		case PARAM_MIDI_PITCH:
-			//fix: add inverse option for pitch
 			scaled_pitch = (val * 0x4000) / scaler; //yes... we scale up... resolution limited
-			midi.sendPitch(ae->output, ae->channel, scaled_pitch);
+			midi.sendPitch(ae->output, ae->channel, ae->inverse?0x4000-scaled_pitch:scaled_pitch);
 			break;
 		case PARAM_VOICE_PITCH_WHEEL:
-			//fix: add inverse option for pitch
 			scaled_pitch = (val * 0x4000) / scaler; //yes... we scale up... resolution limited
-			setPitchWheel(ae->str, ae->voice_index, scaled_pitch);
+			setPitchWheel(ae->str, ae->voice_index, ae->inverse?0x4000-scaled_pitch:scaled_pitch);
 			break;
 		case PARAM_CC:
 			midi.sendCC(ae->output, ae->channel, ae->cc, final_val);

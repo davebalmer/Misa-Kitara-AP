@@ -1368,8 +1368,7 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 					{
 						SynthDeleteVoice();
 						TopSynthScreen(WM_GetParent(pMsg->hWin));
-						UpdateSynthSettingEx(MISAMODULE_SYNTH);
-						delete pOptionSubWin;
+						pOptionSubWin->Hide();
 					}
 					break;
 

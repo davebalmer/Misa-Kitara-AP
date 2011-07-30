@@ -540,6 +540,13 @@ static void MIDIControlProc(WM_MESSAGE* pMsg)
 					WM_HideWindow(hMIDIControlItems[MIDICONTROL_PCSTRING]);
 					WM_MoveTo(hMIDIControlItems[MIDICONTROL_PCNUMBER],5,373);
 					WM_ShowWindow(hMIDIControlItems[MIDICONTROL_PCNUMBER]);
+
+					type = 0;
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_PITCH], 1);
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_VELOCITY], 0);
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_CC], 0);
+					WM_HideWindow(hMIDIControlItems[MIDICONTROL_PCNUMBER]);
+
 					switch(control)
 					{
 					case 0:
@@ -628,6 +635,12 @@ static void MIDIControlProc(WM_MESSAGE* pMsg)
 					WM_HideWindow(hMIDIControlItems[MIDICONTROL_PCSTRING]);
 					WM_MoveTo(hMIDIControlItems[MIDICONTROL_PCNUMBER],5,373);
 					WM_ShowWindow(hMIDIControlItems[MIDICONTROL_PCNUMBER]);
+					type = 0;
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_PITCH], 1);
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_VELOCITY], 0);
+					MisaRadio_SetStatus(hMIDIControlItems[MIDICONTROL_CC], 0);
+					WM_HideWindow(hMIDIControlItems[MIDICONTROL_PCNUMBER]);
+
 					switch(control)
 					{
 					case 0:

@@ -2301,8 +2301,37 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
 		sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-		midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
-		midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+
+		if(current_setting.stop_sound_cmds[str].size() > 0)	//misa kitara mode!
+		{
+			if(attack)
+			{
+				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+
+				for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+					midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
+
+				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+			}
+			else
+			{
+				for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+					midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
+
+				if(string_note[str] != note)
+				{
+					midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+					if(string_note[str] != -1)
+						midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+				}
+			}
+		}
+		else	//"compatibility" mode (waste of time don't expect any decent result)
+		{
+			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+			if(string_note[str] != note)
+				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+		}
 		string_note[str] = note;
 	}
 	else
@@ -2340,14 +2369,21 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 
 	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
-		midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
+		if(current_setting.stop_sound_cmds[str].size() > 0) //misa kitara mode
+		{
+			for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+				midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, 0);
+		}
+		else //compatibility mode (no.)
+		{
+			midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
+		}
 	}
 	else
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
 			setMuteChannelVolume(str, i);
-			//midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
 		}
 	}
 }
@@ -2364,7 +2400,6 @@ void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			//setMuteChannelVolume(str, i);
 			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
 		}
 	}
@@ -2375,12 +2410,26 @@ void Synth::sendCurrentSynthNotesOff(void)
 {
 	for(int str = 0; str < 6; str++)
 	{
-		for(int i = 0; i < current_setting.voices[str].size(); i++)
+		if(current_setting.string_midi_out_channel[str] >= 0)
 		{
 			if(string_note[str] != -1)
-				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
-			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
-			setUnMuteChannelVolume(str, i);
+				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+			midi.sendSoundOff(MIDI_OUT, current_setting.string_midi_out_channel[str]);
+			if(current_setting.stop_sound_cmds[str].size() > 0) //misa kitara mode
+			{
+				for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+					midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
+			}
+		}
+		else
+		{
+			for(int i = 0; i < current_setting.voices[str].size(); i++)
+			{
+				if(string_note[str] != -1)
+					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+				midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
+				setUnMuteChannelVolume(str, i);
+			}
 		}
 		string_note[str] = -1;
 	}
@@ -2393,8 +2442,7 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
 		for(int i = 0; i < current_setting.stop_sound_cmds[str].size(); i++)
-			midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(i).cc_num, current_setting.stop_sound_cmds[str].at(i).value);
-//		midi.sendSoundOff(MIDI_OUT, current_setting.string_midi_out_channel[str]);
+			midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(i).cc_num, 0);
 	}
 	else
 	{
@@ -2402,7 +2450,6 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 		{
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
 		}
-//mzmz		string_note[str] = -1;
 	}
 }
 

@@ -2301,7 +2301,9 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
 		sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+		midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 		midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+		string_note[str] = note;
 	}
 	else
 	{
@@ -2354,10 +2356,17 @@ void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
-	for(int i = 0; i < current_setting.voices[str].size(); i++)
+	if(current_setting.string_midi_out_channel[str] >= 0)
 	{
-		//setMuteChannelVolume(str, i);
-		midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+		midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
+	}
+	else
+	{
+		for(int i = 0; i < current_setting.voices[str].size(); i++)
+		{
+			//setMuteChannelVolume(str, i);
+			midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+		}
 	}
 	string_note[str] = -1;
 }

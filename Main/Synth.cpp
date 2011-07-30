@@ -2716,7 +2716,7 @@ void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo
 	// Mute all other channel
 	for (int voiceIdx = 0; voiceIdx < 5; voiceIdx++)
 	{
-		if (voiceIdx == voice_index)
+		if ((voiceIdx == voice_index) || (voiceIdx >= current_setting.voices[string_index].size()))
 			continue;
 
 		SetMuteChannelForString(string_index, voiceIdx, Solo);

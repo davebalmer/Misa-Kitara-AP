@@ -11,6 +11,10 @@ Main/main
 Application/misa.a
 Application/*.o
 Application/*.so
+Main/tinyxml/*.o
+Main/tinyxml/xmltest
+Main/preset_builder/tinyxml/*.o
+Main/preset_builder/tinyxml/xmltest
 vssver.scc
 *.mz
 Release

@@ -313,6 +313,7 @@ class Synth
 
 		unsigned char velocity[6];
 		unsigned char master_volume;
+		signed char string_note[6];
 
 		struct synth_setting current_setting;
 		unsigned char midiScale(int val, int scaler);
@@ -345,6 +346,8 @@ public:
 		void setVibrateDepth(int str, int voice_index, int val);
 		void setVibrateDelay(int str, int voice_index, int val);
 		void setChannelVolume(int str, int voice_index, int val);
+		void setMuteChannelVolume(int str, int voice_index);
+		void setUnMuteChannelVolume(int str, int voice_index);
 		void setPortamentoTime(int str, int voice_index, int val);
 		void setPan(int str, int voice_index, int val);
 		void setPitchBendSemitones(int str, int voice_index, int val);
@@ -424,9 +427,13 @@ public:
 		void loadPresetFromFile(std::string filename);
 		void savePresetToFile(struct synth_setting *s, std::string filename);
 		void deletePresetFile(std::string filename);
-		void sendNoteOn(unsigned char str, unsigned char btn, bool harmonic, bool attack);
-		void sendNoteOff(unsigned char str, unsigned char btn, bool harmonic);
-		void sendStopSound(unsigned char str, unsigned char btn, bool harmonic);
+
+		void sendNoteOn(unsigned char str, unsigned char btn, bool attack);
+		void sendNoteOff(unsigned char str, unsigned char btn);
+		void sendNoteOffRinging(unsigned char str, unsigned char btn);
+		void sendCurrentSynthNotesOff(void);
+		void sendStopSound(unsigned char str, unsigned char btn);
+
 		void sendControl(unsigned char control_type, int val, int scaler);
 		void sendToEffect(struct assignable_effect *ae, int val, int scaler);
 		void sendVariation(int str, int voice_index, int channel);

@@ -567,6 +567,8 @@ static void VoiceProc(WM_MESSAGE* pMsg)
 
 					if (OptionSubWin::pOptionSubWin != NULL)
 					{
+						SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+						SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
 						delete OptionSubWin::pOptionSubWin;
 						OptionSubWin::pOptionSubWin = NULL;
 					}
@@ -1255,9 +1257,6 @@ OptionSubWin::OptionSubWin(WM_HWIN parent)
 
 OptionSubWin::~OptionSubWin()
 {
-	SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
-	SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
-
 	WM_DetachWindow(hWin); 
 	WM_DeleteWindow(hWin);
 	hWin = 0;
@@ -1348,6 +1347,8 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 	//	break;
 
 	case WM_CAPTURE_RELEASED:
+		SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+		SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
 		delete pOptionSubWin;
 		break;
 
@@ -1367,9 +1368,12 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
 					{
 						SynthTurnNotesOff();
+						SynthMuteVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
+						SynthSoloVoice(SynthGetStringIndex(), SynthGetVoiceIndex(), false);
 						SynthDeleteVoice();
 						TopSynthScreen(WM_GetParent(pMsg->hWin));
-						pOptionSubWin->Hide();
+						UpdateSynthSettingEx(MISAMODULE_SYNTH);
+						delete pOptionSubWin;
 					}
 					break;
 

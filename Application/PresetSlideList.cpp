@@ -81,7 +81,9 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 					dy = pPID_State->y-PID_LastState.y;
 					if(dy > 0)
 					{
-						WM_MoveWindow(pMsg->hWin,0,dy>bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y?bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y:dy);
+						if (y + dy > 20)
+							dy = 20 - y;
+						WM_MoveWindow(pMsg->hWin,0, dy);
 					}
 					else if(dy < 0)
 					{

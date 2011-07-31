@@ -2264,6 +2264,29 @@ int MisaSetBallTravel(int mode)
 	return mode;
 }
 
+
+
+int MisaGetShowBall()
+{
+	return 0;
+}
+
+int MisaSetShowBall(int mode)
+{
+	return 0;
+}
+
+int MisaGetShowStrings()
+{
+	return 0;
+}
+
+int MisaSetShowStrings(int mode)
+{
+	return 0;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // Misa reset all stub

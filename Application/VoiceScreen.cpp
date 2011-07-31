@@ -349,7 +349,7 @@ static void CenterVoiceControls()
 static U8 VoiceCreateItems(WM_HWIN hParent)
 {
 	int x,y;
-	hCOMPcomm = CreateCommComponentEx(hParent,COMMON_ITEM_FX1|COMMON_ITEM_FX2|COMMON_ITEM_CLOSE);
+	hCOMPcomm = CreateCommComponentEx(hParent, COMMON_ITEM_CLOSE);
 	memset(hVoiceItems,0,sizeof(hVoiceItems));
 	x = 4;
 	y = bmEMPTYTITLEBAR.YSize;
@@ -1344,12 +1344,10 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 		break;
 
 	//case WM_TOUCH:
+	//case WM_CAPTURE_RELEASED:
 	//	delete pOptionSubWin;
+	//	pOptionSubWin = NULL
 	//	break;
-
-	case WM_CAPTURE_RELEASED:
-		delete pOptionSubWin;
-		break;
 
 
 	case WM_NOTIFY_PARENT:
@@ -1370,6 +1368,7 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 						TopSynthScreen(WM_GetParent(pMsg->hWin));
 						UpdateSynthSettingEx(MISAMODULE_SYNTH);
 						delete pOptionSubWin;
+						pOptionSubWin = NULL;
 					}
 					break;
 

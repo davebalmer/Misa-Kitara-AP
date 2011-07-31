@@ -1366,6 +1366,7 @@ void VoiceSubWindowProc(WM_MESSAGE* pMsg)
 				case OPTION_VOICE_ID_DELETE:
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
 					{
+						SynthTurnNotesOff();
 						SynthDeleteVoice();
 						TopSynthScreen(WM_GetParent(pMsg->hWin));
 						pOptionSubWin->Hide();

@@ -387,6 +387,14 @@ static int ModulationGetFX()
 
 U8 ModulationLoadParameter(int index, U8 update)
 {
+	ModulationSetRate(ModulationGetFX(),pModpresets[index]->rate);
+	ModulationSetDepth(ModulationGetFX(),pModpresets[index]->depth);
+	ModulationSetLevel(ModulationGetFX(),pModpresets[index]->level);
+	ModulationSetChorusFeedback(ModulationGetFX(),pModpresets[index]->Feedback);
+	ModulationSetDelayFeedbackFilter(ModulationGetFX(),pModpresets[index]->HDAMP);
+	ModulationSetTremolo(ModulationGetFX(),pModpresets[index]->shape);
+	ModulationSetChorusDelayTime(ModulationGetFX(),pModpresets[index]->delay);
+
 	MisaProgressbar_SetPercentEx(hModulationItems[MODULATION_PROGMODRATE], pModpresets[index]->rate,update);
 	MisaProgressbar_SetPercentEx(hModulationItems[MODULATION_PROGMODDEPTH], pModpresets[index]->depth,update);
 	MisaProgressbar_SetPercentEx(hModulationItems[MODULATION_PROGLEVEL], pModpresets[index]->level,update);

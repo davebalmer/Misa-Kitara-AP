@@ -450,7 +450,7 @@ static void Misa_WarningMessageCB(WM_MESSAGE* pMsg)
 		GUI_SetBkColor(GUI_RED);
 		GUI_Clear();
 		GUI_SetFont(&GUI_Font32B_ASCII);
-		GUI_DispStringInRect("Updating!", &rect, GUI_TA_HCENTER|GUI_TA_VCENTER);
+		GUI_DispStringInRect("Updating...", &rect, GUI_TA_HCENTER|GUI_TA_VCENTER);
 		rect.x0 = 0;
 		rect.y0 = 50;
 		rect.x1 = 400;

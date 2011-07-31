@@ -656,14 +656,20 @@ void Synth::loadPresetFromFile(std::string filename)
 	}
 
 	setMasterVolume(temp_volume);
+
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
 }
 
 void Synth::deletePresetFile(std::string filename)
 {
+	system("mount -o remount,rw /usr");
+
 	std::string filepath = working_directory + "/presets/" + filename + ".mz";
 	std::string cmd = "rm -f " + filepath;
 	system(cmd.c_str());
+
+	system("mount -o remount,ro /usr");
+
 	std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
 }
 
@@ -1011,12 +1017,15 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 	
 		
 	std::string filepath = working_directory + "/presets/" + filename + ".mz";
+	system("mount -o remount,rw /usr"); //mount read-write
+	sleep(1);
 	doc.SaveFile(filepath.c_str());
+	system("sync");
+	system("mount -o remount,ro /usr"); //mount read-write
+
 	currentPresetName = filename;
 
 	std::cout << "File " << filepath << " saved." << std::endl << std::flush;
-
-	system("sync");
 }
 
 void Synth::insertNewVoice(int str, int wave)
@@ -2577,14 +2586,12 @@ void Synth::sendToEffect(struct assignable_effect *ae, int val, int scaler)
 
 		case PARAM_MIDI_VELOCITY: setVelocity(ae->str, final_val); break;
 		case PARAM_MIDI_PITCH:
-			//fix: add inverse option for pitch
 			scaled_pitch = (val * 0x4000) / scaler; //yes... we scale up... resolution limited
-			midi.sendPitch(ae->output, ae->channel, scaled_pitch);
+			midi.sendPitch(ae->output, ae->channel, ae->inverse?0x4000-scaled_pitch:scaled_pitch);
 			break;
 		case PARAM_VOICE_PITCH_WHEEL:
-			//fix: add inverse option for pitch
 			scaled_pitch = (val * 0x4000) / scaler; //yes... we scale up... resolution limited
-			setPitchWheel(ae->str, ae->voice_index, scaled_pitch);
+			setPitchWheel(ae->str, ae->voice_index, ae->inverse?0x4000-scaled_pitch:scaled_pitch);
 			break;
 		case PARAM_CC:
 			midi.sendCC(ae->output, ae->channel, ae->cc, final_val);
@@ -2709,7 +2716,7 @@ void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo
 	// Mute all other channel
 	for (int voiceIdx = 0; voiceIdx < 5; voiceIdx++)
 	{
-		if (voiceIdx == voice_index)
+		if ((voiceIdx == voice_index) || (voiceIdx >= current_setting.voices[string_index].size()))
 			continue;
 
 		SetMuteChannelForString(string_index, voiceIdx, Solo);

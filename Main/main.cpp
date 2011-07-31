@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	if(argc == 2)
 		working_directory = argv[1];
 	else
-		working_directory = "/media/usrdata";
+		working_directory = "/usr/ap";
 
 	std::cout << "Working directory: " << working_directory << std::endl << std::flush;
 

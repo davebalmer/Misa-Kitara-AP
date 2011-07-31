@@ -263,6 +263,14 @@ void ControlScreen::testForCornerSwitches(void)
 
 			graphics->hideFloatingWindows();
 			graphics->setLCDUnScaled();
+
+			//trigger to start test mode
+			if((neck_state.string_button[0] == 24) && (neck_state.string_button[5] == 24))
+			{
+				system("/usr/test_mode/testmode; reboot");
+				exit(1);
+			}
+
 			KitaraMenu();
 			graphics->setLCDScaled();
 

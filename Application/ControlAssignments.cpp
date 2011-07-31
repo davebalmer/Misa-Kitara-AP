@@ -719,13 +719,20 @@ U8 ControlAssignmentsAddItem(int para, int cc, int channel, int control, int inv
 		strcat(buf,"stop_sound");
 	}
 	strcat(buf,"\t");
-	if(invert)
+	if(control == CTL_STOPSOUND_ID)
 	{
-		strcat(buf,"yes");
+		strcat(buf, " ");
 	}
 	else
 	{
-		strcat(buf,"no");
+		if(invert)
+		{
+			strcat(buf,"yes");
+		}
+		else
+		{
+			strcat(buf,"no");
+		}
 	}
 	if(IsControlExist(0,buf))
 	{
@@ -750,7 +757,7 @@ U8 ControlAssignmentsAddItem(int para, int cc, int channel, int control, int inv
 		SynthAssignCC(SynthTranslateCtrl(control),channel,cc,invert?true:false,variation_start,variation_end);
 		break;
 	case 3:
-		SynthAssignStopSound(channel,cc,invert);
+		SynthAssignStopSound(channel,cc,invert); //chaniel hacked this - invert is actually the value to send
 	}
 	return CONTROLASSIGNMENTS_SUCCESS;
 }
@@ -815,13 +822,20 @@ U8 ControlAssignmentsEditItem(int para, int cc, int channel, int control, int in
 				strcat(buf,"stop_sound");
 			}
 			strcat(buf,"\t");
-			if(invert)
+			if(control == CTL_STOPSOUND_ID)
 			{
-				strcat(buf,"yes");
+				strcat(buf, " ");
 			}
 			else
 			{
-				strcat(buf,"no");
+				if(invert)
+				{
+					strcat(buf,"yes");
+				}
+				else
+				{
+					strcat(buf,"no");
+				}
 			}
 			if(!IsControlExist(hFocus,buf))
 			{
@@ -998,13 +1012,20 @@ static U8 ControlAddItem(int para, int cc, int channel, int control, int invert)
 		strcat(buf,"stop_sound");
 	}
 	strcat(buf,"\t");
-	if(invert)
+	if(control == CTL_STOPSOUND)
 	{
-		strcat(buf,"yes");
+		strcat(buf, " ");
 	}
 	else
 	{
-		strcat(buf,"no");
+		if(invert)
+		{
+			strcat(buf,"yes");
+		}
+		else
+		{
+			strcat(buf,"no");
+		}
 	}
 	if(IsControlExist(0,buf))
 	{

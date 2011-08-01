@@ -2336,7 +2336,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
-	if(current_setting.string_midi_out_channel[str] >= 0)
+	if(current_setting.string_midi_out_channel[str] >= 0) //midi output
 	{
 		sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
 
@@ -2364,7 +2364,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 				}
 			}
 		}
-		else	//"compatibility" mode (waste of time don't expect any decent result)
+		else	//"compatibility" mode (not very good)
 		{
 			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
 			if(string_note[str] != note)
@@ -2372,7 +2372,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 		}
 		string_note[str] = note;
 	}
-	else
+	else //synth output
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
@@ -2407,7 +2407,7 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
-	if(current_setting.string_midi_out_channel[str] >= 0)
+	if(current_setting.string_midi_out_channel[str] >= 0)	//midi mode
 	{
 		if(current_setting.stop_sound_cmds[str].size() > 0) //misa kitara mode
 		{
@@ -2419,7 +2419,7 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 			midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], note, 0);
 		}
 	}
-	else
+	else	//synth mode
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{

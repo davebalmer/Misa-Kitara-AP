@@ -146,6 +146,7 @@ struct voice
 	int filter_attack;
 	int filter_decay;
 	int filter_release;
+	bool mute;
 };
 
 struct eq_band
@@ -358,6 +359,7 @@ public:
 		void setFilterAttack(int str, int voice_index, int val);
 		void setFilterDecay(int str, int voice_index, int val);
 		void setFilterRelease(int str, int voice_index, int val);
+		void setMute(int str, int voice_index, bool state);
 
 		void setFxBlockOn(int str, int voice_index, int fxb, bool state);
 		void setDistortionOn(int fxb, bool state);

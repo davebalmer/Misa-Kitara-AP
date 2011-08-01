@@ -1079,6 +1079,7 @@ void Synth::insertNewVoice(int str, int wave)
 	setFilterAttack(str, v, 64);
 	setFilterDecay(str, v, 64);
 	setFilterRelease(str, v, 64);
+	setMute(str, v, false);
 
 	setFxBlockOn(str, v, 0, false);
 	setFxBlockOn(str, v, 1, false);
@@ -1919,6 +1920,11 @@ void Synth::setFilterRelease(int str, int voice_index, int val)
 	current_setting.voices[str].at(voice_index).filter_release = val;
 }
 
+void Synth::setMute(int str, int voice_index, bool state)
+{
+	current_setting.voices[str].at(voice_index).mute = state;
+}
+
 void Synth::setPan(int str, int voice_index, int val)
 {
 	int channel = current_setting.voices[str].at(voice_index).channel;
@@ -2378,14 +2384,16 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 			{
 				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				setUnMuteChannelVolume(str, i);
-				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+				if(!current_setting.voices[str].at(i).mute)
+					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 			}
 			else
 			{
 				setUnMuteChannelVolume(str, i);
 				if(string_note[str] != note)
 				{
-					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+					if(!current_setting.voices[str].at(i).mute)
+						midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 					if(string_note[str] != -1)
 						midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				}
@@ -2784,10 +2792,7 @@ void Synth::SendParamToSynth(int string_index, int voice_index)
 
 void Synth::SetMuteChannelForString(int string_index, int voice_index, bool Mute)
 {
-	if (Mute)
-		midi.sendCC(SYNTH, current_setting.voices[string_index].at(voice_index).channel, 7, 0);	// volume 0
-	else
-		midi.sendCC(SYNTH, current_setting.voices[string_index].at(voice_index).channel, 7, current_setting.voices[string_index].at(voice_index).channel_volume);	// restore volume
+	current_setting.voices[string_index].at(voice_index).mute = Mute;
 }
 
 void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo)
@@ -2801,4 +2806,3 @@ void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo
 		SetMuteChannelForString(string_index, voiceIdx, Solo);
 	}
 }
-

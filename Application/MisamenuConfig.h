@@ -145,6 +145,7 @@ struct voice
 	int filter_attack;
 	int filter_decay;
 	int filter_release;
+	bool mute;
 };
 
 struct eq_band

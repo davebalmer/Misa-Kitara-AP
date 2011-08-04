@@ -11,7 +11,7 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-char *VERSION_STRING = "v0.9.8 beta";
+char *VERSION_STRING = "v0.9.9 beta";
 
 Touchpanel* pts;
 Neck* pnk;

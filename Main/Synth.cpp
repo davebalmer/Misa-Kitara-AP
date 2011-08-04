@@ -2358,7 +2358,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 				if(string_note[str] != note)
 				{
 					midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
-					if(string_note[str] != -1)
+					if(string_note[str] != -1)// && (string_note[str] != note))
 						midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 				}
 			}
@@ -2387,7 +2387,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 			}
 			else
-			{
+			{std::cout << "Play it." << std::endl << std::flush;
 				setUnMuteChannelVolume(str, i);
 				if(string_note[str] != note)
 				{
@@ -2488,6 +2488,7 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
+			//setMuteChannelVolume(str, i);
 		}
 	}
 }

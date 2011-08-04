@@ -455,7 +455,7 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 
 	if(((screens.top() == UI_NORMAL) && ((nt.size() != 0) || (bt.size() != 0))) ||
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
-	  (tap_mode))
+	  (tap_mode) || sustained_note[msg->string_id])
 	{
 		synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
@@ -476,7 +476,7 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 	{
 		if(((screens.top() == UI_NORMAL) && ((nt.size() > 0) || (bt.size() > 0))) ||
 		  (((st[left_handed?5-msg->string_id:msg->string_id].size() > 0))) ||
-		  (tap_mode))
+		  (tap_mode)  || sustained_note[msg->string_id])
 		{
 			synth.sendNoteOn(msg->string_id, msg->button_id, false);
 
@@ -493,10 +493,7 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 //		if(current_note[msg->string_id] != -1)
 //			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
-//		if(ringing_note[msg->string_id] != current_note[msg->string_id])
-			synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
-
-//		synth.sendStopSound(msg->string_id, ringing_note[msg->string_id]);
+		synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
 
 		current_note[msg->string_id] = -1;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
@@ -596,10 +593,9 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 
 			if(st[left_handed?5-i:i].size() == 0)
 			{
-//				if(ringing_note[i] != -1)
-//					synth.sendNoteOff(i, ringing_note[i]);
 				synth.sendStopSound(i, ringing_note[i]);
-//				ringing_note[i] = -1;
+				current_note[i] = -1;
+				ringing_note[i] = -1;
 			}
 		}
 
@@ -636,9 +632,20 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 				{
 					sustained_note[i] = true;
 					flag = true;
+					graphics->setSustainIndicator(i, true);
+				}
+				else
+				{
+					sustained_note[i] = false;
+					if((current_note[i] != -1) && (st[i].size() == 0))
+					{
+						synth.sendNoteOffRinging(i, current_note[i]);
+						current_note[i] = -1;
+					}
+					graphics->setSustainIndicator(i, false);
 				}
 			}
-			if(!flag)
+			if(!flag) //no buttons pressed
 			{
 				for(int i = 0; i < 6; i++)
 				{
@@ -651,6 +658,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 						}
 					}
 					sustained_note[i] = false;
+					graphics->setSustainIndicator(i, false);
 				}
 			}
 		}

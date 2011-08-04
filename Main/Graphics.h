@@ -108,6 +108,8 @@ class Graphics
 		struct coordinate mainball, touch[5];
 		int touch_life[5];
 		bool touch_visible[5];
+		bool sustain_indicator[6];
+
 		int brightness;
 
 		static const int MODE_NORMAL = 1;
@@ -143,6 +145,7 @@ class Graphics
 		void drawDMAImage(int x, int y, struct image_dma_frame *img);
 		void setStringPressed(unsigned char s, bool state);
 		void setStringPosition(unsigned char s, unsigned int y);
+		void setSustainIndicator(unsigned char s, bool state);
 		void setXYControlPosition(unsigned int x, unsigned int y);
 		void setDragOriginIndicator(unsigned int x, unsigned int y);
 		void hideDragOriginIndicator(void);

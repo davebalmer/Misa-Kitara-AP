@@ -113,6 +113,10 @@ Graphics::Graphics(int argc, char **argv)
 		touch_life[i] = 0;
 		touch_visible[i] = false;
 	}
+
+	for(int i = 0; i < 6; i++)
+		sustain_indicator[i] = false;
+
 	brightness = 0;
 
 	d2d = (volatile unsigned int*) mapm(0x08003000, 0x1000);
@@ -773,6 +777,10 @@ void Graphics::drawAlgorithm(void)
 			if(show_strings)
 				for(int s = 0; s < 6; s++)
 					m += (10000 / (sx[s][x] + sy[s][y] + 1));
+			
+			for(int s = 0; s < 6; s++)
+				if(sustain_indicator[s] && (y >= ((5-s) * (75/6+1))) && (y < ((5-s) * (75/6+1)) + (75/6+1)))
+					m+=50;
 
 			int r = 0, g = 0, b = 0;
 			if(!tap_mode)
@@ -856,6 +864,11 @@ void Graphics::hideTouchIndicator(unsigned int touch_id)
 {
 	touch_life[touch_id] = 0;
 	touch_visible[touch_id] = false;
+}
+
+void Graphics::setSustainIndicator(unsigned char str, bool state)
+{
+	sustain_indicator[str] = state;
 }
 
 void Graphics::setGraphicsModeNormal(bool tap_state)

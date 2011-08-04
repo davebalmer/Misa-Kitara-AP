@@ -2387,7 +2387,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 			}
 			else
-			{std::cout << "Play it." << std::endl << std::flush;
+			{
 				setUnMuteChannelVolume(str, i);
 				if(string_note[str] != note)
 				{

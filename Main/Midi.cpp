@@ -135,7 +135,7 @@ void MIDI::sendNoteOn(unsigned char output, unsigned char channel, unsigned char
 	else
 		safeWrite(midi_fd, &midi_on_buffer, 3);
 
-std::cout << std::endl << "note on " << (unsigned int) output << ": " << (unsigned int) note << " channel: " << (unsigned int) channel << " port channel: " << (unsigned int) chan << " velocity: " << (unsigned int) velocity << "." << std::flush;
+//std::cout << std::endl << "note on " << (unsigned int) output << ": " << (unsigned int) note << " channel: " << (unsigned int) channel << " port channel: " << (unsigned int) chan << " velocity: " << (unsigned int) velocity << "." << std::flush;
 }
 
 void MIDI::sendNoteOff(unsigned char output, unsigned char channel, unsigned char note, unsigned char velocity)
@@ -151,7 +151,7 @@ void MIDI::sendNoteOff(unsigned char output, unsigned char channel, unsigned cha
 	else
 		safeWrite(midi_fd, &midi_off_buffer, 3);
 
-std::cout << std::endl << "note off " << (unsigned int) output << ": " << (unsigned int) note << "." << std::flush;
+//std::cout << std::endl << "note off " << (unsigned int) output << ": " << (unsigned int) note << "." << std::flush;
 }
 
 void MIDI::sendAllNotesOff(void)

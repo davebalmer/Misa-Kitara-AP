@@ -39,7 +39,7 @@ ControlScreen::ControlScreen(Graphics *g)
 		string_box[i].y_end = new_y + 50;
 		current_note[i] = -1;
 		ringing_note[i] = -1;
-//		sustained_note[i] = false;
+		sustained_note[i] = false;
 		old_pitch[i] = 0x2000;
 	}
 
@@ -471,8 +471,6 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 {
 //	std::cout << "Button released." << std::flush;
 
-//	if(sustained_note[msg->string_id]) return;
-
 	//pull off to another note
 	if((msg->button_id != 0) || ((msg->button_id == 0) && (st[left_handed?5-msg->string_id:msg->string_id].size() > 0)))
 	{
@@ -490,7 +488,7 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		}
 	}
 	else
-	if(ringing_note[msg->string_id] != -1)
+	if((ringing_note[msg->string_id] != -1) && (!sustained_note[msg->string_id]))
 	{
 //		if(current_note[msg->string_id] != -1)
 //			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -531,7 +529,7 @@ void ControlScreen::processEventBallReleased(struct control_message_t *msg)
 		for(int s = 0; s < 6; s++)
 		{
 			if(st[left_handed?5-s:s].size() == 0)
-				if(current_note[s] != -1)
+				if((current_note[s] != -1) && (!sustained_note[s]))
 				{
 //					synth.sendNoteOff(s, current_note[s]);
 					synth.sendNoteOffRinging(s, current_note[s]);
@@ -570,34 +568,15 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	synth.sendControl(TOUCH_X, graphics->getWindow1Width() - msg->current_location.x, graphics->getWindow1Width());
 	synth.sendControl(TOUCH_Y, left_handed?(graphics->getScreenHeight()-msg->current_location.y):msg->current_location.y, graphics->getScreenHeight());
 
-	//only reset drag if it is the first touch
-	//fix: doesn't work if two fingers pressed down at same time
-
-/*	if(nt.size() == 5)
-	{
-		for(int i = 0; i < 6; i++)
-			if(neck_state.string_button[i] != 0)
-				sustained_note[i] = true;
-			else
-				sustained_note[i] = false;
-	}
-*/
-
 	bool flag = false;	
 	for(unsigned int s = 0; s < 6; s++)
 	{
-/*		if(sustained_note[s])
-		{
-			flag = true;
-			continue;
-		}
-*/
 		if(st[left_handed?5-s:s].size() == 0)
 		{
 			//turn off any playing notes
 //			if(current_note[s] != -1)
 //				synth.sendNoteOff(s, current_note[s]);
-//might need to add code to handle above
+
 			//play note
 			if(neck_state.string_button[s] != 0)
 			{
@@ -613,8 +592,8 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	//if no buttons pressed, silence any ringing notes (happens with open strings)
 		for(int i = 0; i < 6; i++)
 		{
-//			sustained_note[i] = false;
-//			if((ringing_note[i] != -1) && (st[left_handed?5-i:i].size() == 0))
+			if(sustained_note[i]) continue;
+
 			if(st[left_handed?5-i:i].size() == 0)
 			{
 //				if(ringing_note[i] != -1)
@@ -648,6 +627,34 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 		else
 			drag_y = processDrag(msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);
 
+		if(drag_y > 500)
+		{
+			bool flag = false;
+			for(int i = 0; i < 6; i++)
+			{
+				if(neck_state.string_button[i] != 0)
+				{
+					sustained_note[i] = true;
+					flag = true;
+				}
+			}
+			if(!flag)
+			{
+				for(int i = 0; i < 6; i++)
+				{
+					if(sustained_note[i])
+					{
+						if(current_note[i] != -1)
+						{
+							synth.sendNoteOffRinging(i, current_note[i]);
+							current_note[i] = -1;
+						}
+					}
+					sustained_note[i] = false;
+				}
+			}
+		}
+
 		synth.sendControl(DRAG_Y, drag_y, graphics->getScreenHeight());
 	}
 
@@ -668,8 +675,7 @@ void ControlScreen::processEventTouchReleased(struct control_message_t *msg)
 	{
 		for(int s = 0; s < 6; s++)
 		{
-//			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !sustained_note[s])
-			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode)
+			if((current_note[s] != -1) && (st[left_handed?5-s:s].size() == 0) && !tap_mode && !sustained_note[s])
 			{
 //				synth.sendNoteOff(s, current_note[s]);
 				synth.sendNoteOffRinging(s, current_note[s]);
@@ -755,7 +761,7 @@ void ControlScreen::processEventStringReleased(struct control_message_t *msg)
 	{
 		if(((nt.size() == 0) && (bt.size() == 0)) || (((nt.size() != 0) || (bt.size() != 0)) && (neck_state.string_button[msg->string_id] == 0)))
 		{
-			if(current_note[msg->string_id] != -1)
+			if((current_note[msg->string_id] != -1) && (!sustained_note[msg->string_id]))
 			{
 				if(tap_mode)
 				{

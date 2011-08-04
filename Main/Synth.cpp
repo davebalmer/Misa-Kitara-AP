@@ -2487,9 +2487,12 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
+			if(string_note[str] != -1)
+				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 			midi.sendSoundOff(SYNTH, current_setting.voices[str].at(i).channel);
 			//setMuteChannelVolume(str, i);
 		}
+		string_note[str] = -1;
 	}
 }
 

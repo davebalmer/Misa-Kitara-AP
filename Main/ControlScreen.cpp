@@ -453,17 +453,6 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 {
 //	std::cout << "Button pressed." << std::flush;
 
-	//if all buttons were unpressed and the drag is not reset, then reset it
-	bool button_pressed = false;
-	for(int s = 0; s < 6; s++)
-	{
-		if(s == msg->string_id)
-			continue;
-
-		if(current_note[s] != -1)
-			button_pressed = true;
-	}
-
 	if(((screens.top() == UI_NORMAL) && ((nt.size() != 0) || (bt.size() != 0))) ||
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode))

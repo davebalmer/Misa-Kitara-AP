@@ -17,7 +17,7 @@ static void DelimiterWindowProc(WM_MESSAGE* pMsg)
 	switch (pMsg->MsgId)
 	{
 	case WM_CREATE:
-		hSlideWin = WM_CreateWindowAsChild(0, 0, WM_GetWindowSizeX(pMsg->hWin), WM_GetWindowSizeY(pMsg->hWin), pMsg->hWin, WM_CF_SHOW|WM_CF_MEMDEV, SlideWindowProc,0);
+		hSlideWin = WM_CreateWindowAsChild(0, 0, WM_GetWindowSizeX(pMsg->hWin), WM_GetWindowSizeY(pMsg->hWin), pMsg->hWin, WM_CF_SHOW|WM_CF_MEMDEV, SlideWindowProc, sizeof(int));
 		WM_SetUserData(pMsg->hWin, &hSlideWin, sizeof(void *));
 		break;
 	case WM_DELETE:
@@ -35,18 +35,18 @@ static void DelimiterWindowProc(WM_MESSAGE* pMsg)
 
 static void SlideWindowProc(WM_MESSAGE* pMsg)
 {
-	int x,y;
+	int SlideSizeY, y;
 	int NCode,Id;
 	GUI_PID_STATE* pPID_State;
-	static GUI_PID_STATE PID_LastState;
+	static int LastY = 0;
 	switch (pMsg->MsgId)
 	{
 	case WM_CREATE:
-		//PresetSlideCreateItems(pMsg->hWin);
 		break;
+
 	case WM_DELETE:
-		//PresetSlideDeleteItems();
 		break;
+
 	case WM_PAINT:
 		GUI_SetBkColor(GUI_BLACK);
 		GUI_Clear();
@@ -65,6 +65,9 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 	case WM_TOUCH:
 		if(pMsg->Data.p)
 		{
+			int OffsetY;
+			WM_GetUserData(pMsg->hWin, &OffsetY, sizeof(int));
+
 			pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
 			if(pPID_State->Pressed)
 			{
@@ -72,40 +75,35 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 				if(!WM_HasCaptured(pMsg->hWin))
 				{
 					WM_SetCapture(pMsg->hWin,0);
-					PID_LastState = *pPID_State;
+					LastY = pPID_State->y;
 				}
 				else
 				{
 					y = WM_GetWindowOrgY(pMsg->hWin);
-					x = WM_GetWindowSizeY(pMsg->hWin);
-					dy = pPID_State->y-PID_LastState.y;
+					SlideSizeY = WM_GetWindowSizeY(pMsg->hWin);
+					dy = pPID_State->y - LastY;
+					if(dy > 10)
+					{
+						int n= 5;
+					}
 					if(dy > 0)
 					{
-						if (y + dy > 20)
-							dy = 20 - y;
-						WM_MoveWindow(pMsg->hWin,0, dy);
+						if (y + dy > OffsetY)
+							dy = OffsetY - y;
 					}
 					else if(dy < 0)
 					{
-						WM_MoveWindow(pMsg->hWin,0,dy<GUI_GetScreenSizeY()-INDICATORFRAME-100-y-x?GUI_GetScreenSizeY()-100-INDICATORFRAME-y-x:dy);
+						int DelimiterSizeY = WM_GetWindowSizeY(WM_GetParent(pMsg->hWin));
+						if (y + dy + SlideSizeY < DelimiterSizeY + OffsetY)
+							dy = DelimiterSizeY + OffsetY - y - SlideSizeY;
 					}
-					//WM_MoveWindow(pMsg->hWin,0,pPID_State->y-PID_LastState.y);
+					WM_MoveWindow(pMsg->hWin,0, dy);
+					//LastY = pPID_State->y;
 				}
 			}
 			else
 			{
 				WM_ReleaseCapture();
-				y = WM_GetWindowOrgY(pMsg->hWin);
-				x = WM_GetWindowSizeY(pMsg->hWin);
-				if(bmEMPTYTITLEBAR.YSize+INDICATORFRAME < y)
-				{
-					WM_MoveWindow(pMsg->hWin,0,bmEMPTYTITLEBAR.YSize+INDICATORFRAME-y);
-				}
-				else if(GUI_GetScreenSizeY()-INDICATORFRAME-100 > y+x)
-				{
-					WM_MoveWindow(pMsg->hWin,0,GUI_GetScreenSizeY()-100-INDICATORFRAME-y-x);
-				}
-				// SlidingBorder = GetSlidingBordercheck(pMsg->hWin,hPresets);
 			}
 		}
 		else
@@ -127,7 +125,9 @@ bool PresetSlideList::CreateWidget(int x0, int y0, int width, int height, WM_HWI
 	WM_GetUserData(hWinDelimiter, &hWinSlide, sizeof(void *));
 	PresetSlideList *pObj = this;
 	WM_SetUserData(hWinDelimiter, &pObj, sizeof(void *));
-
+	int OffsetY = (singleColumn == true ? 20 : 77);
+	WM_SetUserData(hWinSlide, &OffsetY, sizeof(int));
+						
 	return (hWinDelimiter != 0);
 }
 

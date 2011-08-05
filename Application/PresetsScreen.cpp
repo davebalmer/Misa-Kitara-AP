@@ -81,7 +81,7 @@ typedef enum __PRESETS_ID
 	PRESETS_ID_DELETE,
 	//PRESETS_ID_NEW,
 	PRESETS_ID_ITEMSBASE,
-	PRESETS_ID_MAX
+
 } PRESETS_ID;
 
 ///////////////////////////////////////////////////////////////////////////////

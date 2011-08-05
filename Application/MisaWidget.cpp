@@ -3416,13 +3416,27 @@ static void MisaItemProc(WM_MESSAGE* pMsg)
 {
 	BUTTON_Handle hObj = pMsg->hWin;
 	BUTTON_Obj * pObj = (BUTTON_Obj *)GUI_ALLOC_h2p(hObj);
+	GUI_PID_STATE* pPID_State;
+	int X, Y;
+
 	switch (pMsg->MsgId)
 	{
 	case WM_TOUCH:
-	//	MisaItemOntouch(hObj, pObj, pMsg);
-		WM_SendMessage(WM_GetParent(hObj), pMsg);
+		pPID_State = (GUI_PID_STATE*)pMsg->Data.p;
+		if (pPID_State)
+		{
+			X = pPID_State->x + WM_GetWindowOrgX(hObj);
+			Y = pPID_State->y + WM_GetWindowOrgY(hObj) - WM_GetWindowOrgY(WM_GetParent(hObj));
+		}
 		DefaultItemProc(pMsg);
+		if (pPID_State)
+		{
+			pPID_State->x = X;
+			pPID_State->y = Y;
+			WM_SendToParent(hObj, pMsg);
+		}
 		break;
+
 	case WM_PAINT:
 		MisaItemPaint(pObj,hObj);
 		break;

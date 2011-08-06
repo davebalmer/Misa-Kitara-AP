@@ -58,7 +58,7 @@ U8 QuickScreen::CreateItems()
 	int x1 = 2, x2 = 250, x3 = 523;
 	int y = 0;
 
-	hWinMasterVolume = MisaProgressbar_CreateEx(x1, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hQuickWin,MISAQUICKSET_ID_MASTERVOLUME,"Volume","",MISAPROG_FONT32, 0);
+	hWinMasterVolume = MisaProgressbar_CreateEx(x1, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hQuickWin,MISAQUICKSET_ID_MASTERVOLUME, NULL,"",MISAPROG_FONT32, 0);
 
 #ifdef PRESET_IN_LIST
 	hPresetList =  LISTBOX_CreateAsChild (NULL, hQuickWin, 400, 150, 250, 250, WM_CF_SHOW | WM_CF_MEMDEV);
@@ -77,7 +77,7 @@ U8 QuickScreen::CreateItems()
 	//LISTBOX_SetScrollbarColor(LISTBOX_Handle hObj, SCROLLBAR_CI_THUMB or SCROLLBAR_CI_SHAFT or SCROLLBAR_CI_ARROW, GUI_COLOR Color);
 
 #else // PRESET_IN_SLIDEWIN
-	hPresetList = presetSlideList.CreateWidget(x2 + 16, y + 16, bmQS_PRESET_BKG.XSize - 32, bmQS_PRESET_BKG.YSize - 32, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
+	hPresetList = presetSlideList.CreateWidget(x2 + 16, y + 20, bmQS_PRESET_BKG.XSize - 32, bmQS_PRESET_BKG.YSize - 32, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
 #endif  // PRESET_IN_SLIDEWIN
 
 	hWinTapMode = MisaCheckbox_Create(x3, y , bmQS_TAP_UN.XSize, bmQS_TAP_UN.YSize, hQuickWin,MISAQUICKSET_ID_TAPMODE,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_TAP_UN, &bmQS_TAP_SE);
@@ -85,7 +85,7 @@ U8 QuickScreen::CreateItems()
 	y += bmQS_TAP_UN.YSize + 1;
 	hWinBallMode = MisaCheckbox_Create(x3, y, bmQS_BALL_UN.XSize,bmQS_BALL_UN.YSize, hQuickWin, MISAQUICKSET_ID_BALL,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_BALL_UN, &bmQS_BALL_SE);
 
-	y += bmQS_BALL_UN.YSize + 1;
+	y += bmQS_BALL_UN.YSize;
 	hWinStringMode = MisaCheckbox_Create(x3, y, bmQS_STRING_UN.XSize,bmQS_STRING_UN.YSize, hQuickWin, MISAQUICKSET_ID_STRINGS,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_STRING_UN, &bmQS_STRING_SE);
 
 	y += bmQS_STRING_UN.YSize + 1;

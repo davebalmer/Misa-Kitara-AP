@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 
+
 #ifdef Linux
 #include <dirent.h>
 #endif
@@ -80,7 +81,7 @@ typedef enum __PRESETS_ID
 	PRESETS_ID_DELETE,
 	//PRESETS_ID_NEW,
 	PRESETS_ID_ITEMSBASE,
-	PRESETS_ID_MAX
+
 } PRESETS_ID;
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,6 +92,7 @@ static WM_HWIN hPresets;
 static void PresetsProc(WM_MESSAGE* pMsg);
 static WM_HWIN hPresetsItems[PRESETS_MAX];
 static U8 PresetsDeleteItems();
+bool DoesPresetExists(string fileName);
 
 // static U8 SlidingBorder;
 
@@ -383,7 +385,22 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 
 	case WM_CUST_KEYBOARD_DONE:
 		{
-			char *fileName = (char *)pMsg->Data.p;
+			string fileName((char *)pMsg->Data.p);
+			bool Exists = false;
+		
+			if (fileName.empty())
+				break;
+
+			// Does a preset with the same name already exists ?
+			if (DoesPresetExists(fileName))
+			{
+				std::string msg("Are you sure? You will OVERWRITE ");
+				msg += (string)fileName + " !";
+				if(GUI_ID_OK != Misa_ConfirmBox(msg.c_str(), "Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
+					break;
+			}
+
+
 			SynthSavePreset(&synthSetting, fileName);
 			presetSlideList.CreateSlideItem();		 //update the list
 			GUI_RECT RectToInvalidate ={0, 0, 800, 62};
@@ -399,6 +416,21 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 	default:
 		WM_DefaultProc(pMsg);
 	}
+}
+	
+bool DoesPresetExists(string fileName)
+{
+	vector<string>::iterator it;
+	bool Exists = false;
+	for (it = preset_filenames.begin(); it != preset_filenames.end(); it++)
+	{
+		if (*it == fileName)
+		{
+			Exists = true;
+			break;
+		}
+	}
+	return Exists;
 }
 
 
@@ -419,9 +451,8 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 	ReadPresetsDir(preset_filenames);
 	size = preset_filenames.size();
 	if(size)
-	{
 		pPresetsItems = (BUTTON_Handle*)malloc(sizeof(BUTTON_Handle*)*size);
-	}
+
 	//preset_filenames.size();
 	if (singleColumn)
 	{
@@ -429,7 +460,12 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 		{
 			pPresetsItems[i] = MisaItem_CreateEx(10, bmSELECT.YSize * i, bmSELECT.XSize, bmSELECT.YSize,
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+			// BUTTON_SetTextAlign(pPresetsItems[i], GUI_TA_LEFT | GUI_TA_VCENTER);
+			if (preset_filenames[i] == GetCurrentPresetName())
+				WM_SetFocus(pPresetsItems[i]);
+
 		}
+		y = bmSELECT.YSize*size;
 	}
 	else
 	{
@@ -437,11 +473,14 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 		{
 			pPresetsItems[i] = MisaItem_CreateEx(PRESETS_ITEM_POS+(bmSELECT.XSize+PRESETS_ITEMBLANK)*(i%3), bmSELECT.YSize*(i/3), bmSELECT.XSize, bmSELECT.YSize,
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
+			if (preset_filenames[i] == GetCurrentPresetName())
+				WM_SetFocus(pPresetsItems[i]);
 		}
+		y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	}
 	x = WM_GetWindowSizeX(hParent);
-	y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	WM_SetSize(hParent, x, WM_GetWindowSizeY(hParent)<y?y:WM_GetWindowSizeY(hParent));
+				BUTTON_SetPressed(pPresetsItems[2], int(true));
 	return 0;
 }
 
@@ -507,6 +546,8 @@ static int SaveEffect()
 {
 	int size,pos;
 	WM_HWIN hFocus;
+	bool ReCreateList = true;
+
 	std::string presetFileName;
 	size = preset_filenames.size();
 	hFocus = WM_GetFocussedWindow();
@@ -523,18 +564,25 @@ static int SaveEffect()
 		presetFileName = GetCurrentPresetName();		// Overwrite the current preset
 	}
 
-	if (!presetFileName.empty())
+	if (presetFileName.empty())
+		return 0;
+
+	if (DoesPresetExists(presetFileName))
 	{
 		std::string msg("Are you sure? You will OVERWRITE ");
 		msg += presetFileName + " !";
-		if(GUI_ID_OK == Misa_ConfirmBox(msg.c_str(), "Delete this preset!",GUI_MESSAGEBOX_CF_MODAL))
-		{
-			GetCurrentSetting(&synthSetting);
-			SynthSavePreset(&synthSetting, presetFileName);
-			GUI_RECT RectToInvalidate ={0, 0, 800, 62};
-			WM_InvalidateRect(hPresets, &RectToInvalidate);
-		}
+		if(GUI_ID_OK != Misa_ConfirmBox(msg.c_str(), "Overwrite this preset!",GUI_MESSAGEBOX_CF_MODAL))
+			return 0;
+		ReCreateList = false;
 	}
+
+	GetCurrentSetting(&synthSetting);
+	SynthSavePreset(&synthSetting, presetFileName);
+	GUI_RECT RectToInvalidate ={0, 0, 800, 62};
+	WM_InvalidateRect(hPresets, &RectToInvalidate);
+
+	if (ReCreateList)
+		presetSlideList.CreateSlideItem();
 
 	return 1;
 }

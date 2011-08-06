@@ -28,6 +28,7 @@
 #include "MainMenu.h"
 
 #include "MisamenuConfig.h"
+#include "MisaQuickSetScreen.h"
 
 #include "Resource.h"
 
@@ -357,7 +358,9 @@ static void MainmenuProc(WM_MESSAGE* pMsg)
 				TopSystemScreen(pMsg->hWin);
 				break;
 			case MAINMENU_ID_CLOSE:
-				TerminateApplication();
+				// OR return to the Quick menu.  // TerminateApplication();
+				WM_HideWindow(hMainmenu);
+				BeginMisaquicksetScreen();
 				break;
 			default:
 				;

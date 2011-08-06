@@ -1,5 +1,6 @@
 v0.9.9
 - ADDED sustain function (drag up)
+- FIXED configuration menu scroll bugs
 
 v0.9.8
 - UPDATED configuration menu

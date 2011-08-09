@@ -151,7 +151,7 @@ void Synth::resetSettings(void)
 		setDelayFeedback(i, 0);
 		setDelayFeedbackFilter(i, 0);
 
-		setMixerLowCutFilterFrequency(i, 0x7F); //fix: datasheet says opposite
+		setMixerLowCutFilterFrequency(i, 0); //fix: datasheet says opposite
 		setMixerHighCutFilterFrequency(i, 0x7F);
 		setMixerInputGain(i, 0x7F);
 		setMixerOutputLevel(i, 0x7F);

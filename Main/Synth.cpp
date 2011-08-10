@@ -624,10 +624,10 @@ void Synth::loadPresetFromFile(std::string filename)
 			{
 				int i = atoi(e->Attribute("string"));
 				int j = current_setting.voices[i].size();
-				insertNewVoice(i, j);
 
-				setChannel(i, j, atoi(e->Attribute("channel")));
-				setWave(i, j, atoi(e->Attribute("wavetable_index")));
+				insertNewVoice(i, atoi(e->Attribute("wavetable_index")));
+				//setChannel(i, j, atoi(e->Attribute("channel")));
+				//setWave(i, j, atoi(e->Attribute("wavetable_index")));
 				if(e->Attribute("amplitude_attack")) setAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
 				if(e->Attribute("amplitude_decay")) setAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
 				if(e->Attribute("amplitude_release")) setAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
@@ -1766,6 +1766,7 @@ void Synth::setChannel(int str, int voice_index, int val)
 
 void Synth::setWave(int str, int voice_index, int program)
 {
+std::cout << "Set wave str: " << str << " vi: " << voice_index << " prog: " << program << std::endl << std::flush;
 	int channel = current_setting.voices[str].at(voice_index).channel;
 	midi.sendProgramChange(channel, 0, program);
 //	current_setting.voices[str].at(voice_index).bank = bank;

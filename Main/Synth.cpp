@@ -958,7 +958,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 			element = new TiXmlElement("voice");
 			element->SetAttribute("string", str);
 //			element->SetAttribute("index", vi);
-			element->SetAttribute("channel", s->voices[str].at(vi).channel);
+//			element->SetAttribute("channel", s->voices[str].at(vi).channel); //not saved, auto-generated
 			element->SetAttribute("wavetable_index", s->voices[str].at(vi).wavetable_index);
 			element->SetAttribute("amplitude_attack", s->voices[str].at(vi).amp_env_attack);
 			element->SetAttribute("amplitude_decay", s->voices[str].at(vi).amp_env_decay);

@@ -623,7 +623,8 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 		else
 			drag_y = processDrag(msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);
 
-		if(drag_y > 500)
+		int sustain_trigger = drag_origin[msg->touch_id].y - msg->current_location.y;
+		if(sustain_trigger > 200)
 		{
 			bool flag = false;
 			for(int i = 0; i < 6; i++)

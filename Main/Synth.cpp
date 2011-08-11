@@ -1766,7 +1766,6 @@ void Synth::setChannel(int str, int voice_index, int val)
 
 void Synth::setWave(int str, int voice_index, int program)
 {
-std::cout << "Set wave str: " << str << " vi: " << voice_index << " prog: " << program << std::endl << std::flush;
 	int channel = current_setting.voices[str].at(voice_index).channel;
 	midi.sendProgramChange(channel, 0, program);
 //	current_setting.voices[str].at(voice_index).bank = bank;

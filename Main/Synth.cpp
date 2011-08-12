@@ -2176,6 +2176,12 @@ void Synth::setReverbType(int val)
 	unsigned char sysex[11] = {0xF0, 0x41, 0x00, 0x42, 0x12, 0x40, 0x01, 0x30, val, 0x00, 0xF7};
 	midi.sendSysex(SYNTH, sysex, 11);
 	current_setting.reverb.type = val;
+	setReverbCharacter(current_setting.reverb.character);
+	setReverbPreLpf(current_setting.reverb.pre_lpf);
+	setReverbLevel(current_setting.reverb.level);
+	setReverbTime(current_setting.reverb.time);
+	setReverbDelayFeedback(current_setting.reverb.delay_feedback);
+	setReverbPreDelay(current_setting.reverb.pre_delay_time);
 }
 
 void Synth::setReverbCharacter(int val)

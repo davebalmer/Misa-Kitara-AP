@@ -620,7 +620,7 @@ void Synth::loadPresetFromFile(std::string filename)
 		else
 		if(e_str == "voice")
 		{
-			if((e->Attribute("string")) && (e->Attribute("channel")) && (e->Attribute("wavetable_index")))
+			if((e->Attribute("string")) && (e->Attribute("wavetable_index")))
 			{
 				int i = atoi(e->Attribute("string"));
 				int j = current_setting.voices[i].size();

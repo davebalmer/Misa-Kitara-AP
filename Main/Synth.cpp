@@ -116,7 +116,7 @@ void Synth::resetSettings(void)
 	setEQLowMidQ(0x40);
 	setEQHighMidQ(0x40);
 	setReverbType(0x04);
-	setReverbCharacter(0x04);
+	//setReverbCharacter(0x04);
 	setReverbPreLpf(0);
 	setReverbLevel(0x40);
 	setReverbTime(0);
@@ -503,7 +503,7 @@ void Synth::loadPresetFromFile(std::string filename)
 		if(e_str == "reverb")
 		{
 			if(e->Attribute("type")) setReverbType(atoi(e->Attribute("type")));
-			if(e->Attribute("character")) setReverbCharacter(atoi(e->Attribute("character")));
+			//if(e->Attribute("character")) setReverbCharacter(atoi(e->Attribute("character")));
 			if(e->Attribute("pre_lpf")) setReverbPreLpf(atoi(e->Attribute("pre_lpf")));
 			if(e->Attribute("level")) setReverbLevel(atoi(e->Attribute("level")));
 			if(e->Attribute("time")) setReverbTime(atoi(e->Attribute("time")));
@@ -883,7 +883,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 	//reverb
 	element = new TiXmlElement("reverb");
 	element->SetAttribute("type", s->reverb.type);
-	element->SetAttribute("character", s->reverb.character);
+	//element->SetAttribute("character", s->reverb.character);
 	element->SetAttribute("pre_lpf", s->reverb.pre_lpf);
 	element->SetAttribute("level", s->reverb.level);
 	element->SetAttribute("time", s->reverb.time);
@@ -2176,7 +2176,7 @@ void Synth::setReverbType(int val)
 	unsigned char sysex[11] = {0xF0, 0x41, 0x00, 0x42, 0x12, 0x40, 0x01, 0x30, val, 0x00, 0xF7};
 	midi.sendSysex(SYNTH, sysex, 11);
 	current_setting.reverb.type = val;
-	setReverbCharacter(current_setting.reverb.character);
+	//setReverbCharacter(current_setting.reverb.character);
 	setReverbPreLpf(current_setting.reverb.pre_lpf);
 	setReverbLevel(current_setting.reverb.level);
 	setReverbTime(current_setting.reverb.time);
@@ -2186,9 +2186,10 @@ void Synth::setReverbType(int val)
 
 void Synth::setReverbCharacter(int val)
 {
-	unsigned char sysex[11] = {0xF0, 0x41, 0x00, 0x42, 0x12, 0x40, 0x01, 0x31, val, 0x00, 0xF7};
+/*	unsigned char sysex[11] = {0xF0, 0x41, 0x00, 0x42, 0x12, 0x40, 0x01, 0x31, val, 0x00, 0xF7};
 	midi.sendSysex(SYNTH, sysex, 11);
 	current_setting.reverb.character = val;
+*/
 }
 
 void Synth::setReverbPreLpf(int val)

@@ -478,9 +478,9 @@ static U8 SlideCreateItems(WM_HWIN hParent)
 	hReverbItems[REVERB_PROGPRELPF] = MisaProgressbar_CreateEx(x,y,0,0,hParent,REVERB_ID_PROGPRELPF,"PRE","LPF",MISAPROG_FONT24,0);
 	x += bmSLIDER.XSize;
 	x += 100;
-	hReverbItems[REVERB_PROGCHAR] = MisaProgressbar_Create(x,y,0,0,hParent,REVERB_ID_PROGCHAR,"CHAR",MISAPROG_FONT24);
-	x += bmSLIDER.XSize;
-	x += 100;
+//	hReverbItems[REVERB_PROGCHAR] = MisaProgressbar_Create(x,y,0,0,hParent,REVERB_ID_PROGCHAR,"CHAR",MISAPROG_FONT24);
+//	x += bmSLIDER.XSize;
+//	x += 100;
 	hReverbItems[REVERB_PROGTIME] = MisaProgressbar_Create(x,y,0,0,hParent,REVERB_ID_PROGTIME,"TIME",MISAPROG_FONT24);
 	x += bmSLIDER.XSize;
 	x += 100;

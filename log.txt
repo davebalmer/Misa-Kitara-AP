@@ -1,5 +1,6 @@
 v0.9.10
 - FIXED bug when changing reverb type (parameters would reset)
+- REMOVED reverb "character" parameter
 
 v0.9.9
 - ADDED sustain function (drag up)

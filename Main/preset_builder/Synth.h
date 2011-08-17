@@ -320,6 +320,9 @@ class Synth
 
 	public:
 		void resetSettings(void);
+		std::vector<std::string> wavetable;
+		void readWavetable(void);
+		int getWavetableIndex(std::string wave);
 
 	private:
 		void setMasterVolume(int val);

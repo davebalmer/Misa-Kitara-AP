@@ -320,6 +320,9 @@ class Synth
 		unsigned char midiScale(int val, int scaler);
 
 		std::string currentPresetName;	// OR : added for displaying current preset name (can alternatively be in synth_setting)
+		std::vector<std::string> wavetable;
+		void readWavetable(void);
+		int getWavetableIndex(std::string wave);
 
 	public:
 		void resetSettings(void);

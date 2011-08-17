@@ -18,6 +18,8 @@ Synth::Synth()
 	for(int s = 0; s < 6; s++)
 		string_note[s] = 0;
 
+	readWavetable();
+
 	midi.sendAllNotesOff(); //in case AP incorrectly shut down and the notes are not turned off inside the chip
 }
 
@@ -25,6 +27,20 @@ Synth::~Synth()
 {
 //	delete presets and voices here
 	resetSettings();
+}
+
+void Synth::readWavetable(void)
+{
+	std::ifstream ifs(std::string(working_directory+"/wavetable.txt").c_str());
+	wavetable.clear();
+	if(ifs.is_open())
+	{
+		std::string s;
+		while(getline(ifs, s))
+			wavetable.push_back(s);
+	}
+
+	ifs.close();
 }
 
 void Synth::resetSettings(void)
@@ -620,41 +636,46 @@ void Synth::loadPresetFromFile(std::string filename)
 		else
 		if(e_str == "voice")
 		{
-			if((e->Attribute("string")) && (e->Attribute("wavetable_index")))
+			if((e->Attribute("string")) && (e->Attribute("wave_id")))
 			{
-				int i = atoi(e->Attribute("string"));
-				int j = current_setting.voices[i].size();
+				int wi = getWavetableIndex(e->Attribute("wave_id"));
+				if(wi != -1)
+				{
+					int i = atoi(e->Attribute("string"));
+					int j = current_setting.voices[i].size();
 
-				insertNewVoice(i, atoi(e->Attribute("wavetable_index")));
-				//setChannel(i, j, atoi(e->Attribute("channel")));
-				//setWave(i, j, atoi(e->Attribute("wavetable_index")));
-				if(e->Attribute("amplitude_attack")) setAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
-				if(e->Attribute("amplitude_decay")) setAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
-				if(e->Attribute("amplitude_release")) setAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
-				if(e->Attribute("filter_frequency")) setFilterFrequency(i, j, atoi(e->Attribute("filter_frequency")));
-				if(e->Attribute("filter_resonance")) setFilterResonance(i, j, atoi(e->Attribute("filter_resonance")));
-				if(e->Attribute("detune_course")) setDetuneCourse(i, j, atoi(e->Attribute("detune_course")));
-				if(e->Attribute("detune_fine")) setDetuneFine(i, j, atoi(e->Attribute("detune_fine")));
-				if(e->Attribute("vibrate_rate")) setVibrateRate(i, j, atoi(e->Attribute("vibrate_rate")));
-				if(e->Attribute("vibrate_depth")) setVibrateDepth(i, j, atoi(e->Attribute("vibrate_depth")));
-				if(e->Attribute("vibrate_delay")) setVibrateDelay(i, j, atoi(e->Attribute("vibrate_delay")));
-				if(e->Attribute("channel_volume")) setChannelVolume(i, j, atoi(e->Attribute("channel_volume")));
-				if(e->Attribute("portamento_time")) setPortamentoTime(i, j, atoi(e->Attribute("portamento_time")));
-				if(e->Attribute("pan")) setPan(i, j, atoi(e->Attribute("pan")));
-				if(e->Attribute("pitch_bend_semitones")) setPitchBendSemitones(i, j, atoi(e->Attribute("pitch_bend_semitones")));
-				if(e->Attribute("pitch_wheel")) setPitchWheel(i, j, atoi(e->Attribute("pitch_wheel")));
-				if(e->Attribute("velocity")) setVoiceVelocity(i, j, atoi(e->Attribute("velocity")));
-				if(e->Attribute("reverb_send")) setReverbSend(i, j, atoi(e->Attribute("reverb_send")));
-				if(e->Attribute("filter_type")) setFilterType(i, j, atoi(e->Attribute("filter_type")));
-				if(e->Attribute("filter_attack")) setFilterAttack(i, j, atoi(e->Attribute("filter_attack")));
-				if(e->Attribute("filter_decay")) setFilterDecay(i, j, atoi(e->Attribute("filter_decay")));
-				if(e->Attribute("filter_release")) setFilterRelease(i, j, atoi(e->Attribute("filter_release")));
+					//insertNewVoice(i, atoi(e->Attribute("wavetable_index")));
+					insertNewVoice(i, wi);
+					//setChannel(i, j, atoi(e->Attribute("channel")));
+					//setWave(i, j, atoi(e->Attribute("wavetable_index")));
+					if(e->Attribute("amplitude_attack")) setAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
+					if(e->Attribute("amplitude_decay")) setAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
+					if(e->Attribute("amplitude_release")) setAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
+					if(e->Attribute("filter_frequency")) setFilterFrequency(i, j, atoi(e->Attribute("filter_frequency")));
+					if(e->Attribute("filter_resonance")) setFilterResonance(i, j, atoi(e->Attribute("filter_resonance")));
+					if(e->Attribute("detune_course")) setDetuneCourse(i, j, atoi(e->Attribute("detune_course")));
+					if(e->Attribute("detune_fine")) setDetuneFine(i, j, atoi(e->Attribute("detune_fine")));
+					if(e->Attribute("vibrate_rate")) setVibrateRate(i, j, atoi(e->Attribute("vibrate_rate")));
+					if(e->Attribute("vibrate_depth")) setVibrateDepth(i, j, atoi(e->Attribute("vibrate_depth")));
+					if(e->Attribute("vibrate_delay")) setVibrateDelay(i, j, atoi(e->Attribute("vibrate_delay")));
+					if(e->Attribute("channel_volume")) setChannelVolume(i, j, atoi(e->Attribute("channel_volume")));
+					if(e->Attribute("portamento_time")) setPortamentoTime(i, j, atoi(e->Attribute("portamento_time")));
+					if(e->Attribute("pan")) setPan(i, j, atoi(e->Attribute("pan")));
+					if(e->Attribute("pitch_bend_semitones")) setPitchBendSemitones(i, j, atoi(e->Attribute("pitch_bend_semitones")));
+					if(e->Attribute("pitch_wheel")) setPitchWheel(i, j, atoi(e->Attribute("pitch_wheel")));
+					if(e->Attribute("velocity")) setVoiceVelocity(i, j, atoi(e->Attribute("velocity")));
+					if(e->Attribute("reverb_send")) setReverbSend(i, j, atoi(e->Attribute("reverb_send")));
+					if(e->Attribute("filter_type")) setFilterType(i, j, atoi(e->Attribute("filter_type")));
+					if(e->Attribute("filter_attack")) setFilterAttack(i, j, atoi(e->Attribute("filter_attack")));
+					if(e->Attribute("filter_decay")) setFilterDecay(i, j, atoi(e->Attribute("filter_decay")));
+					if(e->Attribute("filter_release")) setFilterRelease(i, j, atoi(e->Attribute("filter_release")));
 
-				if((e->Attribute("fxb0_on")) && (atoi(e->Attribute("fxb0_on"))))
-					setFxBlockOn(i, j, 0, true);
-				else
-				if((e->Attribute("fxb1_on")) && (atoi(e->Attribute("fxb1_on"))))
-					setFxBlockOn(i, j, 1, true);
+					if((e->Attribute("fxb0_on")) && (atoi(e->Attribute("fxb0_on"))))
+						setFxBlockOn(i, j, 0, true);
+					else
+					if((e->Attribute("fxb1_on")) && (atoi(e->Attribute("fxb1_on"))))
+						setFxBlockOn(i, j, 1, true);
+				}
 			}
 		}
 
@@ -663,6 +684,16 @@ void Synth::loadPresetFromFile(std::string filename)
 	setMasterVolume(temp_volume);
 
 	std::cout << "Preset file " << working_directory << "/presets/" << filename << ".mz loaded." << std::endl << std::flush;
+}
+
+int Synth::getWavetableIndex(std::string wave)
+{
+	for(int i = i; i < wavetable.size(); i++)
+		if(wavetable.at(i) == wave)
+			return i;
+
+	std::cout << "Wavetable index not found for: " << wave << "." << std::endl << std::flush;
+	return -1;
 }
 
 void Synth::deletePresetFile(std::string filename)
@@ -959,7 +990,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 			element->SetAttribute("string", str);
 //			element->SetAttribute("index", vi);
 //			element->SetAttribute("channel", s->voices[str].at(vi).channel); //not saved, auto-generated
-			element->SetAttribute("wavetable_index", s->voices[str].at(vi).wavetable_index);
+			element->SetAttribute("wave_id", wavetable.at(s->voices[str].at(vi).wavetable_index).c_str());
 			element->SetAttribute("amplitude_attack", s->voices[str].at(vi).amp_env_attack);
 			element->SetAttribute("amplitude_decay", s->voices[str].at(vi).amp_env_decay);
 			element->SetAttribute("amplitude_release", s->voices[str].at(vi).amp_env_release);

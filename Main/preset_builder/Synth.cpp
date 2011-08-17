@@ -18,12 +18,27 @@ Synth::Synth()
 {
 	resetSettings();
 	srand(time(NULL));
+
+	readWavetable();
 }
 
 Synth::~Synth()
 {
 //	delete presets and voices here
 	resetSettings();
+}
+
+void Synth::readWavetable(void)
+{
+	std::ifstream ifs("wavetable.txt");
+	wavetable.clear();
+	if(ifs.is_open())
+	{
+		std::string s;
+		while(getline(ifs, s))
+			wavetable.push_back(s);
+	}
+	ifs.close();
 }
 
 void Synth::resetSettings(void)
@@ -1989,10 +2004,13 @@ void Synth::loadPresetFromFile(std::string filename)
 		{
 			int i = atoi(e->Attribute("string"));
 			int j = current_setting.voices[i].size();
-			insertNewVoice(i, j);
 
-			setChannel(i, j, atoi(e->Attribute("channel")));
-			setWave(i, j, atoi(e->Attribute("wavetable_index")));
+			int wi = getWavetableIndex(e->Attribute("wave_id"));
+
+			insertNewVoice(i, wi);
+
+			//setChannel(i, j, atoi(e->Attribute("channel")));
+			//setWave(i, j, atoi(e->Attribute("wavetable_index")));
 			setAmpEnvAttack(i, j, atoi(e->Attribute("amplitude_attack")));
 			setAmpEnvDecay(i, j, atoi(e->Attribute("amplitude_decay")));
 			setAmpEnvRelease(i, j, atoi(e->Attribute("amplitude_release")));
@@ -2022,6 +2040,16 @@ void Synth::loadPresetFromFile(std::string filename)
 				setFxBlockOn(i, j, 1, true);
 		}
 	}
+}
+
+int Synth::getWavetableIndex(std::string wave)
+{
+	for(int i = 0; i < wavetable.size(); i++)
+		if(wavetable.at(i) == wave)
+			return i;
+
+	std::cout << "Wavetable index not found for: " << wave << "." << std::endl << std::flush;
+	return -1;
 }
 
 void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
@@ -2170,8 +2198,8 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 			element = new TiXmlElement("voice");
 			element->SetAttribute("string", str);
 //			element->SetAttribute("index", vi);
-			element->SetAttribute("channel", s->voices[str].at(vi).channel);
-			element->SetAttribute("wavetable_index", s->voices[str].at(vi).wavetable_index);
+//			element->SetAttribute("channel", s->voices[str].at(vi).channel);
+			element->SetAttribute("wave_id", wavetable.at(s->voices[str].at(vi).wavetable_index).c_str());
 			element->SetAttribute("amplitude_attack", s->voices[str].at(vi).amp_env_attack);
 			element->SetAttribute("amplitude_decay", s->voices[str].at(vi).amp_env_decay);
 			element->SetAttribute("amplitude_release", s->voices[str].at(vi).amp_env_release);

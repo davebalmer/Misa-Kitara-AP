@@ -726,15 +726,18 @@ void Graphics::drawAlgorithm(void)
 	{
 		for(int x = 0; x < 800/8; x++)
 			vx[x] = (mx - x) * (mx - x);
+
+		for(int y = 0; y < 600/8; y++)
+			vy[y] = (my - y) * (my - y);
 	}
 	else
 	{
 		for(int x = 0; x < 800/8; x++)
 			vx[x] = (mx) * (mx);
-	}
 
-	for(int y = 0; y < 600/8; y++)
-		vy[y] = (my - y) * (my - y);
+		for(int y = 0; y < 600/8; y++)
+			vy[y] = (my) * (my);
+	}
 
 	if(show_strings)
 	{
@@ -765,7 +768,7 @@ void Graphics::drawAlgorithm(void)
 //			if(show_ball)
 				m = (ms / (vx[x] + vy[y] + 1)) + 1;
 
-			if(!show_ball) m+=25;
+//			if(!show_ball) m+=25;
 
 			for(int i = 0; i < 5; i++)
 				if(touch_life[i] > 0)

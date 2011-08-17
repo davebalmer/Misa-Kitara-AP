@@ -37,7 +37,7 @@ void Synth::readWavetable(void)
 	{
 		std::string s;
 		while(getline(ifs, s))
-			wavetable.push_back(s);
+			wavetable.push_back(s.substr(0,s.size()-1));
 	}
 
 	ifs.close();
@@ -688,7 +688,7 @@ void Synth::loadPresetFromFile(std::string filename)
 
 int Synth::getWavetableIndex(std::string wave)
 {
-	for(int i = i; i < wavetable.size(); i++)
+	for(int i = 0; i < wavetable.size(); i++)
 		if(wavetable.at(i) == wave)
 			return i;
 

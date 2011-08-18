@@ -150,7 +150,7 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 			}
 			else
 			{
-				TerminateApplication();
+//				TerminateApplication();
 			}
 		}
 		break;

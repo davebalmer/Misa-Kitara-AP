@@ -116,6 +116,8 @@ class ControlScreen
 	public:
 		ControlScreen(Graphics *g);
 		~ControlScreen(void);
+		void loadConfigFile(void);
+		void saveConfigFile(void);
 		void draw(Neck *neck, Touchpanel *ts);
 		unsigned char update(Neck *neck, Touchpanel *ts);
 		unsigned char updateBallWindow(void);

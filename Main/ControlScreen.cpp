@@ -6,6 +6,8 @@
 #include "Synth.h"
 #include <sys/types.h>
 #include <dirent.h>
+#include "tinyxml/tinyxml.h"
+#include "tinyxml/tinystr.h"
 
 #include "GUI.h"
 #include "ucGuiMain.h"
@@ -20,6 +22,9 @@ ControlScreen::ControlScreen(Graphics *g)
 	string_mode = false;
 	left_handed = false;
 	sustain_enabled = false;
+	ball_travel_on = false;
+
+	loadConfigFile();
 
 	show_ball = false;
 	show_strings = false;
@@ -52,7 +57,6 @@ ControlScreen::ControlScreen(Graphics *g)
 	synth.sendControl(TOUCH_Y, graphics->getScreenHeight()/2, graphics->getScreenHeight());
 	graphics->setDragOriginIndicator(graphics->getWindow1Width()/2, graphics->getScreenHeight()/2);
 
-	ball_travel_on = false;
 	ball_vector_index = 0;
 	ball_vector.x = 0; ball_vector.y = 0;
 	for(int i = 0; i < 10; i++)
@@ -81,6 +85,77 @@ ControlScreen::ControlScreen(Graphics *g)
 
 ControlScreen::~ControlScreen()
 {
+}
+
+void ControlScreen::loadConfigFile(void)
+{
+	std::string file = working_directory + "/config.xml";
+	TiXmlDocument doc(file.c_str());
+	if(!doc.LoadFile())
+	{
+		std::cout << "Config file " << file << " could not be opened." << std::endl << std::flush;
+		saveConfigFile();
+		return;
+	}
+
+	TiXmlElement *root = doc.RootElement();
+
+	for(TiXmlElement *e = root->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
+	{
+		std::string e_str = e->Value();
+
+		if(e_str == "ball_travel")
+		{
+			if(e->Attribute("on") != NULL)
+				ball_travel_on = atoi(e->Attribute("on"));
+		}
+		else
+		if(e_str == "left_handed")
+		{
+			if(e->Attribute("on") != NULL)
+				left_handed = atoi(e->Attribute("on"));
+		}
+		else
+		if(e_str == "sustain_enabled")
+		{
+			if(e->Attribute("on") != NULL)
+				sustain_enabled = atoi(e->Attribute("on"));
+		}
+	}
+}
+
+void ControlScreen::saveConfigFile(void)
+{
+	TiXmlDocument doc;
+	TiXmlDeclaration *decl;
+	TiXmlElement *root, *element;
+
+	decl = new TiXmlDeclaration("1.0", "", "");
+	doc.LinkEndChild(decl);
+
+	root = new TiXmlElement("config");
+	doc.LinkEndChild(root);
+
+	element = new TiXmlElement("ball_travel");
+	element->SetAttribute("on", ball_travel_on);
+	root->LinkEndChild(element);
+
+	element = new TiXmlElement("left_handed");
+	element->SetAttribute("on", left_handed);
+	root->LinkEndChild(element);
+
+	element = new TiXmlElement("sustain_enabled");
+	element->SetAttribute("on", sustain_enabled);
+	root->LinkEndChild(element);
+
+	std::string filepath = working_directory + "/config.xml";
+	system("mount -o remount,rw /usr");
+	sleep(1);
+	doc.SaveFile(filepath.c_str());
+	system("sync");
+	system("mount -o remount,ro /usr");
+
+	std::cout << "Config file " << filepath << " saved." << std::endl << std::flush;
 }
 
 void ControlScreen::draw(Neck *neck, Touchpanel *ts)

@@ -1,6 +1,8 @@
 v0.9.10
 - FIXED bug when changing reverb type (parameters would reset)
 - REMOVED reverb "character" parameter
+- MODIFIED system menu so that sustain mode is optional
+- ADDED config.xml file to save settings like left handed mode etc
 
 v0.9.9
 - ADDED sustain function (drag up)

@@ -698,13 +698,18 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 		unsigned int drag_x = processDrag(msg->current_location.x, graphics->getWindow1Width(), drag_origin[msg->touch_id].x);
 		synth.sendControl(DRAG_X, drag_x, graphics->getWindow1Width());
 
-		unsigned int drag_y;
+		unsigned int drag_y, sustain_trigger;
 		if(left_handed)
+		{
 			drag_y = processDrag(graphics->getScreenHeight()-msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);
+			sustain_trigger = drag_origin[msg->touch_id].y - (graphics->getScreenHeight()-msg->current_location.y);
+		}
 		else
+		{
 			drag_y = processDrag(msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);
+			sustain_trigger = drag_origin[msg->touch_id].y - msg->current_location.y;
+		}
 
-		int sustain_trigger = drag_origin[msg->touch_id].y - msg->current_location.y;
 		if((sustain_trigger > 200) && (sustain_enabled))
 		{
 			bool flag = false;
@@ -714,7 +719,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 				{
 					sustained_note[i] = true;
 					flag = true;
-					graphics->setSustainIndicator(i, true);
+					graphics->setSustainIndicator(left_handed?5-i:i, true);
 				}
 				else
 				{
@@ -724,7 +729,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 						synth.sendNoteOffRinging(i, current_note[i]);
 						current_note[i] = -1;
 					}
-					graphics->setSustainIndicator(i, false);
+					graphics->setSustainIndicator(left_handed?5-i:i, false);
 				}
 			}
 			if(!flag) //no buttons pressed
@@ -740,7 +745,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 						}
 					}
 					sustained_note[i] = false;
-					graphics->setSustainIndicator(i, false);
+					graphics->setSustainIndicator(left_handed?5-i:i, false);
 				}
 			}
 		}

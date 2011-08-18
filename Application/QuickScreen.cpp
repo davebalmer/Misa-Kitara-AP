@@ -1,3 +1,4 @@
+#include <iostream>
 #include "QuickScreen.h"
 #include "PresetsScreen.h"
 
@@ -7,7 +8,6 @@
 
 #include "MisamenuConfig.h"
 #include "MisaWidget.h"
-
 
 #ifdef Linux
 #include <dirent.h>
@@ -77,7 +77,7 @@ U8 QuickScreen::CreateItems()
 	//LISTBOX_SetScrollbarColor(LISTBOX_Handle hObj, SCROLLBAR_CI_THUMB or SCROLLBAR_CI_SHAFT or SCROLLBAR_CI_ARROW, GUI_COLOR Color);
 
 #else // PRESET_IN_SLIDEWIN
-	hPresetList = presetSlideList.CreateWidget(x2 + 16, y + 20, bmQS_PRESET_BKG.XSize - 32, bmQS_PRESET_BKG.YSize - 32, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
+	hPresetList = presetSlideList.CreateWidget(x2 + 16+15, y + 20-4, bmQS_PRESET_BKG.XSize - 32 - 16, bmQS_PRESET_BKG.YSize - 32, hQuickWin, WM_CF_SHOW | WM_CF_MEMDEV | SLIDE_PANEL_SINGLE_COLUMN);
 #endif  // PRESET_IN_SLIDEWIN
 
 	hWinTapMode = MisaCheckbox_Create(x3, y , bmQS_TAP_UN.XSize, bmQS_TAP_UN.YSize, hQuickWin,MISAQUICKSET_ID_TAPMODE,WM_CF_SHOW|WM_CF_MEMDEV, &bmQS_TAP_UN, &bmQS_TAP_SE);

@@ -583,8 +583,8 @@ void SynthSetStringmode(int val);
 int MisaGetHandMode();
 int MisaSetHandMode(int mode);
 int MisaSetBallTravel(int mode);
-int MisaGetShowBall();
-int MisaSetShowBall(int mode);
+int MisaGetEnableSustain();
+int MisaSetEnableSustain(int mode);
 int MisaGetShowStrings();
 int MisaSetShowStrings(int mode);
 

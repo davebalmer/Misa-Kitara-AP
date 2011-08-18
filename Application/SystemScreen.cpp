@@ -43,9 +43,9 @@ typedef enum __SYSTEMITEMS
 	SYSTEM_LEFTHANDLABEL,
 	SYSTEM_RIGHTHANDLABEL,
 	SYSTEM_BALLTRAVELLABEL,
-//	SYSTEM_SHOWBALL,
+	SYSTEM_ENABLESUSTAIN,
 //	SYSTEM_SHOWSTRINGS,
-//	SYSTEM_SHOWBALLLABEL,
+	SYSTEM_ENABLESUSTAINLABEL,
 //	SYSTEM_SHOWSTRINGSLABEL,
 	SYSTEM_MAX
 } SYSTEMITEMS;
@@ -57,7 +57,7 @@ typedef enum __SYSTEM_ID
 	SYSTEM_ID_RIGHTHANDSWITCH,
 	SYSTEM_ID_BALLTRAVEL,
 	SYSTEM_ID_TEXT,
-//	SYSTEM_ID_SHOWBALL,
+	SYSTEM_ID_ENABLESUSTAIN,
 //	SYSTEM_ID_SHOWSTRINGS,
 	SYSTEM_ID_MAX
 } SYSTEM_ID;
@@ -106,11 +106,11 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 	TEXT_SetTextColor(hSystemItems[SYSTEM_RIGHTHANDLABEL],GUI_WHITE);
 
 	x+= 160;
-/*	hSystemItems[SYSTEM_SHOWBALLLABEL] = TEXT_CreateAsChild(x+20,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ball",GUI_TA_HCENTER|GUI_TA_VCENTER);
-	TEXT_SetFont(hSystemItems[SYSTEM_SHOWBALLLABEL],&GUI_Font24B_ASCII);
-	TEXT_SetTextColor(hSystemItems[SYSTEM_SHOWBALLLABEL],GUI_WHITE);
-	hSystemItems[SYSTEM_SHOWBALL] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_SHOWBALL,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
-*/
+	hSystemItems[SYSTEM_ENABLESUSTAINLABEL] = TEXT_CreateAsChild(x+50,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Sustain Mode",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	TEXT_SetFont(hSystemItems[SYSTEM_ENABLESUSTAINLABEL],&GUI_Font24B_ASCII);
+	TEXT_SetTextColor(hSystemItems[SYSTEM_ENABLESUSTAINLABEL],GUI_WHITE);
+	hSystemItems[SYSTEM_ENABLESUSTAIN] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_ENABLESUSTAIN,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+
 	y += bmSM_WF_UN.YSize;
 	y += 10;
 /*	hSystemItems[SYSTEM_SHOWSTRINGSLABEL] = TEXT_CreateAsChild(x+20,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Strings",GUI_TA_HCENTER|GUI_TA_VCENTER);
@@ -167,11 +167,11 @@ static U8 SystemDeleteItems()
 	{
 		MisaCheckbox_Delete(hSystemItems[SYSTEM_BALLTRAVEL]);
 	}
-/*	if(hSystemItems[SYSTEM_SHOWBALL])
+	if(hSystemItems[SYSTEM_ENABLESUSTAIN])
 	{
-		MisaCheckbox_Delete(hSystemItems[SYSTEM_SHOWBALL]);
+		MisaCheckbox_Delete(hSystemItems[SYSTEM_ENABLESUSTAIN]);
 	}
-	if(hSystemItems[SYSTEM_SHOWSTRINGS])
+/*	if(hSystemItems[SYSTEM_SHOWSTRINGS])
 	{
 		MisaCheckbox_Delete(hSystemItems[SYSTEM_SHOWSTRINGS]);
 	}
@@ -187,11 +187,11 @@ static U8 SystemDeleteItems()
 	{
 		TEXT_Delete(hSystemItems[SYSTEM_BALLTRAVELLABEL]);
 	}
-/*	if(hSystemItems[SYSTEM_SHOWBALLLABEL])
+	if(hSystemItems[SYSTEM_ENABLESUSTAINLABEL])
 	{
-		TEXT_Delete(hSystemItems[SYSTEM_SHOWBALLLABEL]);
+		TEXT_Delete(hSystemItems[SYSTEM_ENABLESUSTAINLABEL]);
 	}
-	if(hSystemItems[SYSTEM_SHOWSTRINGSLABEL])
+/*	if(hSystemItems[SYSTEM_SHOWSTRINGSLABEL])
 	{
 		TEXT_Delete(hSystemItems[SYSTEM_SHOWSTRINGSLABEL]);
 	}
@@ -316,10 +316,10 @@ static void SystemProc(WM_MESSAGE* pMsg)
 				case SYSTEM_ID_BALLTRAVEL:
 					MisaSetBallTravel(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_BALLTRAVEL]));
 					break;
-/*				case SYSTEM_ID_SHOWBALL:
-					MisaSetShowBall(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_SHOWBALL]));
+				case SYSTEM_ID_ENABLESUSTAIN:
+					MisaSetEnableSustain(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN]));
 					break;
-				case SYSTEM_ID_SHOWSTRINGS:
+/*				case SYSTEM_ID_SHOWSTRINGS:
 					MisaSetShowStrings(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_SHOWSTRINGS]));
 					break;
 */				default:

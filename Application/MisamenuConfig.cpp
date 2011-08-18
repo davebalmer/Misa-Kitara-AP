@@ -1018,14 +1018,14 @@ int MisaSetBallTravel(int mode)
 	return 0;
 }
 
-int MisaGetShowBall()
+int MisaGetEnableSustain()
 {
-	return pcs->isShowBall()?1:0;
+	return pcs->isSustainEnabled()?1:0;
 }
 
-int MisaSetShowBall(int mode)
+int MisaSetEnableSustain(int mode)
 {
-	pcs->showBall(mode?true:false);
+	pcs->setSustainEnabled(mode?true:false);
 	return 0;
 }
 
@@ -2266,12 +2266,12 @@ int MisaSetBallTravel(int mode)
 
 
 
-int MisaGetShowBall()
+int MisaGetGetEnableSustain()
 {
 	return 0;
 }
 
-int MisaSetShowBall(int mode)
+int MisaSetEnableSustain(int mode)
 {
 	return 0;
 }

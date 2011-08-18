@@ -19,6 +19,7 @@ ControlScreen::ControlScreen(Graphics *g)
 	tap_mode = false;
 	string_mode = false;
 	left_handed = false;
+	sustain_enabled = false;
 
 	show_ball = false;
 	show_strings = false;
@@ -269,6 +270,11 @@ void ControlScreen::testForCornerSwitches(void)
 			}
 
 			synth.sendCurrentSynthNotesOff();
+			for(int i = 0; i < 6; i++)
+			{
+				sustained_note[i] = false;
+				graphics->setSustainIndicator(i, false);
+			}
 
 			KitaraMenu();
 			graphics->setLCDScaled();
@@ -624,7 +630,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 			drag_y = processDrag(msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);
 
 		int sustain_trigger = drag_origin[msg->touch_id].y - msg->current_location.y;
-		if(sustain_trigger > 200)
+		if((sustain_trigger > 200) && (sustain_enabled))
 		{
 			bool flag = false;
 			for(int i = 0; i < 6; i++)
@@ -1198,4 +1204,14 @@ void ControlScreen::showStrings(bool state)
 {
 	show_strings = state;
 	graphics->showStrings(state);
+}
+
+bool ControlScreen::isSustainEnabled(void)
+{
+	return sustain_enabled;
+}
+
+void ControlScreen::setSustainEnabled(bool state)
+{
+	sustain_enabled = state;
 }

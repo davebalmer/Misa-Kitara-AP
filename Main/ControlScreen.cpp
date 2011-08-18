@@ -698,7 +698,8 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 		unsigned int drag_x = processDrag(msg->current_location.x, graphics->getWindow1Width(), drag_origin[msg->touch_id].x);
 		synth.sendControl(DRAG_X, drag_x, graphics->getWindow1Width());
 
-		unsigned int drag_y, sustain_trigger;
+		unsigned int drag_y;
+		int sustain_trigger;
 		if(left_handed)
 		{
 			drag_y = processDrag(graphics->getScreenHeight()-msg->current_location.y, graphics->getScreenHeight(), drag_origin[msg->touch_id].y);

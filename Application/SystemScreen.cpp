@@ -240,6 +240,7 @@ U8 UpdateSystemInfo()
 static void SystemProc(WM_MESSAGE* pMsg)
 {
 	int x, y;
+	static bool state_updated = false;
 	int NCode,Id;
 	ProcessCommComponent(pMsg, &hCOMPcomm);
 	switch (pMsg->MsgId)
@@ -278,7 +279,9 @@ static void SystemProc(WM_MESSAGE* pMsg)
 				switch(Id)
 				{
 				case COMMON_ID_CLOSE:
-					SaveToConfigFile();
+					if(state_updated)
+						SaveToConfigFile();
+					state_updated = false;
 					break;
 				case SYSTEM_ID_UPDATESOUNDBANK:
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
@@ -313,17 +316,21 @@ static void SystemProc(WM_MESSAGE* pMsg)
 					}
 					break;
 				case SYSTEM_ID_LEFTHANDSWITCH:
+					state_updated = true;
 					MisaRadio_SetStatus(hSystemItems[SYSTEM_RIGHTHANDSWITCH],0);
 					MisaSetHandMode(MISA_LEFTHAND_MODE);
 					break;
 				case SYSTEM_ID_RIGHTHANDSWITCH:
+					state_updated = true;
 					MisaRadio_SetStatus(hSystemItems[SYSTEM_LEFTHANDSWITCH],0);
 					MisaSetHandMode(MISA_RIGHTHAND_MODE);
 					break;
 				case SYSTEM_ID_BALLTRAVEL:
+					state_updated = true;
 					MisaSetBallTravel(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_BALLTRAVEL]));
 					break;
 				case SYSTEM_ID_ENABLESUSTAIN:
+					state_updated = true;
 					MisaSetEnableSustain(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN]));
 					break;
 /*				case SYSTEM_ID_SHOWSTRINGS:

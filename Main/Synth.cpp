@@ -698,15 +698,20 @@ int Synth::getWavetableIndex(std::string wave)
 
 void Synth::deletePresetFile(std::string filename)
 {
-	system("mount -o remount,rw /usr");
+	if(filename == "default")
+		std::cout << "Cannot delete default preset." << std::endl << std::flush;
+	else
+	{
+		system("mount -o remount,rw /usr");
 
-	std::string filepath = working_directory + "/presets/" + filename + ".mz";
-	std::string cmd = "rm -f " + filepath;
-	system(cmd.c_str());
+		std::string filepath = working_directory + "/presets/" + filename + ".mz";
+		std::string cmd = "rm -f " + filepath;
+		system(cmd.c_str());
 
-	system("mount -o remount,ro /usr");
+		system("mount -o remount,ro /usr");
 
-	std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
+		std::cout << "Preset file " << filepath << " deleted." << std::endl << std::flush;
+	}
 }
 
 /*

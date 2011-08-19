@@ -152,6 +152,7 @@ class ControlScreen
 		bool getBallTravelOn();
 		void setBallTravelOn(bool state);
 		void setLeftHandMode(bool state);
+		bool getLeftHandMode(void);
 		bool GetTapmode();
 		void SetTapmode(bool state);
 		bool isShowBall(void);

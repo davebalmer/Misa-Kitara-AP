@@ -1248,6 +1248,11 @@ void ControlScreen::setLeftHandMode(bool state)
 	}
 }
 
+bool ControlScreen::getLeftHandMode(void)
+{
+	return left_handed;
+}
+
 Synth* ControlScreen::GetSynth()
 {
 	return &synth;

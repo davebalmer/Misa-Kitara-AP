@@ -141,6 +141,10 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 		MisaRadio_SetStatus(hSystemItems[SYSTEM_LEFTHANDSWITCH],0);
 		MisaRadio_SetStatus(hSystemItems[SYSTEM_RIGHTHANDSWITCH],1);
 	}
+
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_BALLTRAVEL], MisaGetBallTravel());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN], MisaGetEnableSustain());
+
 	return 0;
 }
 
@@ -273,6 +277,9 @@ static void SystemProc(WM_MESSAGE* pMsg)
 			case WM_NOTIFICATION_RELEASED:
 				switch(Id)
 				{
+				case COMMON_ID_CLOSE:
+					SaveToConfigFile();
+					break;
 				case SYSTEM_ID_UPDATESOUNDBANK:
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
 					{

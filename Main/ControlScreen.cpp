@@ -539,7 +539,31 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode) || sustained_note[msg->string_id])
 	{
-		synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
+		bool silence = true;
+		for(int i = 0; i < 6; i++)
+			if(ringing_note[i] != -1)
+			{
+				silence = false;
+				break;
+			}
+
+		if(silence)
+		{
+			for(int i = 0; i < 6; i++)
+			{
+				if(msg->string_id == i)
+				{
+					synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
+				}
+				else
+				{
+					synth.sendNoteOn(i, 0, true, false);
+					synth.sendNoteOff(i, 0);
+				}
+			}
+		}
+		else
+			synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
 
 //		if(current_note[msg->string_id] != -1)
 //			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -666,10 +690,11 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 			}
 			else //start envelope
 			{
-				current_note[s] = 0;
-				ringing_note[s] = current_note[s];
-				synth.sendNoteOn(s, current_note[s], true, false);
-				synth.sendNoteOff(s, current_note[s]);
+				if(!sustained_note[s])
+				{
+					synth.sendNoteOn(s, 0, true, false);
+					synth.sendNoteOff(s, 0);
+				}
 			}
 		}
 	}

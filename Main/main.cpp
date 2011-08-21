@@ -1,4 +1,3 @@
-
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
@@ -11,7 +10,7 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-char *VERSION_STRING = "v0.9.10 beta";
+char *VERSION_STRING = "v0.9.11 beta";
 
 Touchpanel* pts;
 Neck* pnk;

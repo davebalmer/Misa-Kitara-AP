@@ -449,7 +449,7 @@ void ControlScreen::playNotes(struct neckstate *state)
 		{
 			if(state->string_button[s] != 0)
 			{
-				synth.sendNoteOn(s, state->string_button[s], true);
+				synth.sendNoteOn(s, state->string_button[s], true, true);
 
 				if(current_note[s] != -1)
 					synth.sendNoteOffRinging(s, current_note[s]);
@@ -539,7 +539,7 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode) || sustained_note[msg->string_id])
 	{
-		synth.sendNoteOn(msg->string_id, msg->button_id, false);
+		synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
 
 //		if(current_note[msg->string_id] != -1)
 //			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -560,7 +560,7 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		  (((st[left_handed?5-msg->string_id:msg->string_id].size() > 0))) ||
 		  (tap_mode)  || sustained_note[msg->string_id])
 		{
-			synth.sendNoteOn(msg->string_id, msg->button_id, false);
+			synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
 
 //			if(current_note[msg->string_id] != -1)
 //				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -662,7 +662,14 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				flag = true;
 				current_note[s] = neck_state.string_button[s];
 				ringing_note[s] = current_note[s];
-				synth.sendNoteOn(s, current_note[s], true);
+				synth.sendNoteOn(s, current_note[s], true, true);
+			}
+			else //start envelope
+			{
+				current_note[s] = 0;
+				ringing_note[s] = current_note[s];
+				synth.sendNoteOn(s, current_note[s], true, false);
+				synth.sendNoteOff(s, current_note[s]);
 			}
 		}
 	}
@@ -825,7 +832,7 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 	//play note
 	current_note[msg->string_id] = neck_state.string_button[msg->string_id];
 	ringing_note[msg->string_id] = current_note[msg->string_id];
-	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], true);
+	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], true, true);
 
 	graphics->setStringPressed(left_handed?5-msg->string_id:msg->string_id, true);
 }

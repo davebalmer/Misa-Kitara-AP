@@ -2375,7 +2375,7 @@ void Synth::setMixerReverbSend(int fxb, int val)
 	The functions below handle this. They are very important and it wouldn't be the misa kitara without them.
 */
 
-void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
+void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
@@ -2388,8 +2388,16 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
 				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 
-				for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
-					midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
+				if(make_sound)
+				{
+					for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+						midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
+				}
+				else
+				{
+					for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
+						midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, 0);
+				}
 
 				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
 			}
@@ -2425,7 +2433,11 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack)
 			{
 				sendVariation(str, i, current_setting.voices[str].at(i).channel);
 				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
-				setUnMuteChannelVolume(str, i);
+				if(make_sound)
+					setUnMuteChannelVolume(str, i);
+				else
+					setMuteChannelVolume(str, i);
+
 				if(!current_setting.voices[str].at(i).mute)
 					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
 			}

@@ -560,15 +560,15 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 					{
 						synth.sendNoteOn(i, 0, true, false, false);
 						synth.sendNoteOff(i, 0);
+
+						current_note[i] = -1;
+						ringing_note[i] = -1;
 					}
 				}
 			}
 		}
 		else
 			synth.sendNoteOn(msg->string_id, msg->button_id, false, true, portamento_off);
-
-//		if(current_note[msg->string_id] != -1)
-//			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
 
 		current_note[msg->string_id] = msg->button_id;
 		ringing_note[msg->string_id] = current_note[msg->string_id];
@@ -700,6 +700,8 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				{
 					synth.sendNoteOn(s, 0, true, false, false);
 					synth.sendNoteOff(s, 0);
+					current_note[s] = -1;
+					ringing_note[s] = -1;
 				}
 			}
 		}

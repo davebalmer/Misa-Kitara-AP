@@ -449,7 +449,7 @@ void ControlScreen::playNotes(struct neckstate *state)
 		{
 			if(state->string_button[s] != 0)
 			{
-				synth.sendNoteOn(s, state->string_button[s], true, true);
+				synth.sendNoteOn(s, state->string_button[s], true, true, false);
 
 				if(current_note[s] != -1)
 					synth.sendNoteOffRinging(s, current_note[s]);
@@ -539,6 +539,10 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode) || sustained_note[msg->string_id])
 	{
+		bool portamento_off = false;
+		if(current_note[msg->string_id] == -1) //sustain support here
+			portamento_off = true;
+
 		bool silence = true;
 		for(int i = 0; i < 6; i++)
 			if(ringing_note[i] != -1)
@@ -553,17 +557,17 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 			{
 				if(msg->string_id == i)
 				{
-					synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
+					synth.sendNoteOn(msg->string_id, msg->button_id, false, true, portamento_off);
 				}
 				else
 				{
-					synth.sendNoteOn(i, 0, true, false);
+					synth.sendNoteOn(i, 0, true, false, false);
 					synth.sendNoteOff(i, 0);
 				}
 			}
 		}
 		else
-			synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
+			synth.sendNoteOn(msg->string_id, msg->button_id, false, true, portamento_off);
 
 //		if(current_note[msg->string_id] != -1)
 //			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -584,7 +588,7 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		  (((st[left_handed?5-msg->string_id:msg->string_id].size() > 0))) ||
 		  (tap_mode)  || sustained_note[msg->string_id])
 		{
-			synth.sendNoteOn(msg->string_id, msg->button_id, false, true);
+			synth.sendNoteOn(msg->string_id, msg->button_id, false, true, false);
 
 //			if(current_note[msg->string_id] != -1)
 //				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
@@ -674,6 +678,10 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	bool flag = false;	
 	for(unsigned int s = 0; s < 6; s++)
 	{
+		bool portamento_off = false;
+		if(current_note[s] == -1) //sustain support here
+			portamento_off = true;
+
 		if(st[left_handed?5-s:s].size() == 0)
 		{
 			//turn off any playing notes
@@ -686,13 +694,13 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				flag = true;
 				current_note[s] = neck_state.string_button[s];
 				ringing_note[s] = current_note[s];
-				synth.sendNoteOn(s, current_note[s], true, true);
+				synth.sendNoteOn(s, current_note[s], true, true, portamento_off);
 			}
 			else //start envelope
 			{
 				if(!sustained_note[s])
 				{
-					synth.sendNoteOn(s, 0, true, false);
+					synth.sendNoteOn(s, 0, true, false, false);
 					synth.sendNoteOff(s, 0);
 				}
 			}
@@ -854,10 +862,14 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 		synth.sendControl(drag_control, graphics->getWindow2Width()/2, graphics->getWindow2Width());
 	}
 
+	bool portamento_off = false;
+	if(current_note[msg->string_id] == -1) //sustain support here
+		portamento_off = true;
+
 	//play note
 	current_note[msg->string_id] = neck_state.string_button[msg->string_id];
 	ringing_note[msg->string_id] = current_note[msg->string_id];
-	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], true, true);
+	synth.sendNoteOn(msg->string_id, current_note[msg->string_id], true, true, portamento_off);
 
 	graphics->setStringPressed(left_handed?5-msg->string_id:msg->string_id, true);
 }

@@ -2375,7 +2375,7 @@ void Synth::setMixerReverbSend(int fxb, int val)
 	The functions below handle this. They are very important and it wouldn't be the misa kitara without them.
 */
 
-void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound)
+void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off)
 {
 	unsigned char note = current_setting.tuning[str] + btn;
 
@@ -2447,7 +2447,12 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 				if(string_note[str] != note)
 				{
 					if(!current_setting.voices[str].at(i).mute)
+					{
+						int temp_porta = current_setting.voices[str].at(i).portamento_time;
+						if(portamento_off) midi.sendCC(SYNTH, i, 84, note); //setPortamentoTime(str, i, 0);
 						midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+//						if(portamento_off) setPortamentoTime(str, i, temp_porta);
+					}
 					if(string_note[str] != -1)
 						midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				}

@@ -433,7 +433,7 @@ public:
 		void savePresetToFile(struct synth_setting *s, std::string filename);
 		void deletePresetFile(std::string filename);
 
-		void sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound);
+		void sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off);
 		void sendNoteOff(unsigned char str, unsigned char btn);
 		void sendNoteOffRinging(unsigned char str, unsigned char btn);
 		void sendCurrentSynthNotesOff(void);

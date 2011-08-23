@@ -678,10 +678,6 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	bool flag = false;	
 	for(unsigned int s = 0; s < 6; s++)
 	{
-		bool portamento_off = false;
-		if((current_note[msg->string_id] == -1) && (!sustained_note[msg->string_id]))
-			portamento_off = true;
-
 		if(st[left_handed?5-s:s].size() == 0)
 		{
 			//turn off any playing notes
@@ -691,6 +687,10 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 			//play note
 			if(neck_state.string_button[s] != 0)
 			{
+				bool portamento_off = false;
+				if((current_note[s] == -1) && (!sustained_note[s]))
+					portamento_off = true;
+
 				flag = true;
 				current_note[s] = neck_state.string_button[s];
 				ringing_note[s] = current_note[s];

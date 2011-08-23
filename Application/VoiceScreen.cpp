@@ -1104,7 +1104,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 			}
 			break;
 		case WM_NOTIFICATION_SEL_CHANGED:
-			if(pMsg->hWinSrc != hVoiceItems[VOICE_FILTER_TYPE])
+			if((pMsg->hWinSrc != hVoiceItems[VOICE_FILTER_TYPE]) && (pMsg->hWinSrc != hVoiceItems[VOICE_LEVEL]))
 			{
 				x = WM_GetWindowOrgX(pMsg->hWinSrc);
 				y = WM_GetWindowOrgY(pMsg->hWinSrc);

@@ -49,6 +49,8 @@ ControlScreen::ControlScreen(Graphics *g)
 		old_pitch[i] = 0x2000;
 	}
 
+	no_buttons_pressed = true;
+
 	xy_control.x = graphics->getWindow1Width()/2;
 	xy_control.y = 300;
 	graphics->setXYControlPosition(xy_control.x, xy_control.y);
@@ -543,16 +545,9 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 		if((current_note[msg->string_id] == -1) && (!sustained_note[msg->string_id]))
 			portamento_off = true;
 
-		bool silence = true;
-		for(int i = 0; i < 6; i++)
-			if(ringing_note[i] != -1)
-			{
-				silence = false;
-				break;
-			}
-
-		if(silence)
+		if(no_buttons_pressed)
 		{
+			no_buttons_pressed = false;
 			for(int i = 0; i < 6; i++)
 			{
 				if(msg->string_id == i)
@@ -707,8 +702,9 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 		}
 	}
 	
-	if(!flag)
-	//if no buttons pressed, silence any ringing notes (happens with open strings)
+	if(!flag) //if no buttons pressed, silence any ringing notes (happens with open strings)
+	{
+		no_buttons_pressed = true;
 		for(int i = 0; i < 6; i++)
 		{
 			if(sustained_note[i]) continue;
@@ -720,6 +716,7 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				ringing_note[i] = -1;
 			}
 		}
+	}
 
 	graphics->setDragOriginIndicator(msg->current_location.x, msg->current_location.y);
 	graphics->setTouchIndicator(msg->touch_id, msg->current_location.x, msg->current_location.y);

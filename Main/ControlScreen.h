@@ -89,6 +89,7 @@ class ControlScreen
 		struct coord xy_control, ball_vector_samples[10], ball_vector;
 		int ball_vector_index;
 		bool ball_travel_on;
+		bool no_buttons_pressed;
 
 		std::vector<unsigned int> nt, bt, st[6], ost[6], touch_history;
 

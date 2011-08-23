@@ -556,8 +556,11 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 				}
 				else
 				{
-					synth.sendNoteOn(i, 0, true, false, false);
-					synth.sendNoteOff(i, 0);
+					if(!sustained_note[i])
+					{
+						synth.sendNoteOn(i, 0, true, false, false);
+						synth.sendNoteOff(i, 0);
+					}
 				}
 			}
 		}

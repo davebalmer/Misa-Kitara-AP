@@ -540,7 +540,7 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 	  (tap_mode) || sustained_note[msg->string_id])
 	{
 		bool portamento_off = false;
-		if(current_note[msg->string_id] == -1) //sustain support here
+		if((current_note[msg->string_id] == -1) && (!sustained_note[msg->string_id]))
 			portamento_off = true;
 
 		bool silence = true;
@@ -679,7 +679,7 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	for(unsigned int s = 0; s < 6; s++)
 	{
 		bool portamento_off = false;
-		if(current_note[s] == -1) //sustain support here
+		if((current_note[msg->string_id] == -1) && (!sustained_note[msg->string_id]))
 			portamento_off = true;
 
 		if(st[left_handed?5-s:s].size() == 0)
@@ -863,7 +863,7 @@ void ControlScreen::processEventStringPressed(struct control_message_t *msg)
 	}
 
 	bool portamento_off = false;
-	if(current_note[msg->string_id] == -1) //sustain support here
+	if((current_note[msg->string_id] == -1) && (!sustained_note[msg->string_id]))
 		portamento_off = true;
 
 	//play note

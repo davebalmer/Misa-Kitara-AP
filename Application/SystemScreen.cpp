@@ -301,6 +301,7 @@ static void SystemProc(WM_MESSAGE* pMsg)
 							Misa_WarningBox("Cannot open device!", "", GUI_MESSAGEBOX_CF_MODAL);
 							break;
 						case 0x300:
+						case 65280:
 							Misa_WarningBox("Cannot open file!", "", GUI_MESSAGEBOX_CF_MODAL);
 							break;
 						case 0x400:

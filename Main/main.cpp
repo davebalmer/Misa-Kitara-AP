@@ -10,7 +10,8 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-char *VERSION_STRING = "v0.9.11 beta";
+char *VERSION_STRING = "v1.0";
+char *VERSION_ID = "Misa Kitara Control System v1.0";
 
 Touchpanel* pts;
 Neck* pnk;
@@ -120,7 +121,7 @@ std::string getSystemInfo(void)
 
 //	std::cout << info << std::endl << std::flush;
 
-	return std::string("Misa Kitara Control System ") + VERSION_STRING + "\n\n" + info;
+	return std::string(VERSION_ID) + "\n\n" + info;
 }
 
 bool doesFileExist(std::string path)

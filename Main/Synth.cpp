@@ -37,7 +37,18 @@ void Synth::readWavetable(void)
 	{
 		std::string s;
 		while(getline(ifs, s))
-			wavetable.push_back(s.substr(0,s.size()-1));
+		{
+			if(s.length() > 0)
+			{
+				std::string str;
+				if(s[s.size()-1] == '\r')
+					str = s.substr(0,s.size()-1);
+				else
+					str = s;
+
+				wavetable.push_back(str);
+			}
+		}
 	}
 
 	ifs.close();

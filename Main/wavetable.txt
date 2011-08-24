@@ -1,6 +1,6 @@
 saw
 saw_attack
-sinus
+sine
 square
 triangle
 noise

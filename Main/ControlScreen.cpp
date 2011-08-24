@@ -82,7 +82,7 @@ ControlScreen::ControlScreen(Graphics *g)
 	else
 	{
 		//synth.loadPresetFromFile(preset_filenames.at(0));
-		synth.loadPresetFromFile("default");
+		synth.loadPresetFromFile("[default]");
 	}
 }
 

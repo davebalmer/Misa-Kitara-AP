@@ -698,8 +698,11 @@ int Synth::getWavetableIndex(std::string wave)
 
 void Synth::deletePresetFile(std::string filename)
 {
-	if(filename == "default")
-		std::cout << "Cannot delete default preset." << std::endl << std::flush;
+	if(filename == "[default]")
+		std::cout << "Cannot delete [default] preset." << std::endl << std::flush;
+	else
+	if(filename == "[new]")
+		std::cout << "Cannot delete [new] preset." << std::endl << std::flush;
 	else
 	{
 		system("mount -o remount,rw /usr");
@@ -845,6 +848,18 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 */
 void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 {
+	if(filename == "[default]")
+	{
+		std::cout << "Cannot overwrite [default] preset." << std::endl << std::flush;
+		return;
+	}
+	else
+	if(filename == "[new]")
+	{
+		std::cout << "Cannot overwrite [new] preset." << std::endl << std::flush;
+		return;
+	}
+
 	TiXmlDocument doc;
 	TiXmlDeclaration *decl;
 	TiXmlElement *root, *element, *element2;

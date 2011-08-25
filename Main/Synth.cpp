@@ -15,6 +15,7 @@ Synth::Synth()
 	resetSettings();
 	srand(time(NULL));
 	setMasterVolume(64);
+//	setSynthesizerVolume(64);
 	for(int s = 0; s < 6; s++)
 		string_note[s] = 0;
 
@@ -1816,9 +1817,14 @@ void Synth::setMasterVolume(int val)
 //	unsigned char sysex[8] = {0xF0, 0x7F, 0x7F, 0x04, 0x01, 0x00, val, 0xF7};
 //	midi.sendSysex(SYNTH, sysex, 8);
 
-	midi.sendNRPN(SYNTH, 0, 0x37, 0x5E, val);
+	midi.sendNRPN(SYNTH, 0, 0x37, 0x5E, val/2); //anything greater than 64 is > 0dB up to +6dB
 	master_volume = val;
 //	current_setting.master_volume = val; //we use preset-independent volume now
+}
+
+void Synth::setSynthesizerVolume(int val)
+{
+	midi.sendNRPN(SYNTH, 0, 0x37, 0x07, val);
 }
 
 void Synth::setChannel(int str, int voice_index, int val)

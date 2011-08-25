@@ -337,6 +337,7 @@ class Synth
 public:	
 		int getMasterVolume(void);
 		void setMasterVolume(int val);
+		void setSynthesizerVolume(int val);
 		void setChannel(int str, int voice_index, int val);
 		void setWave(int str, int voice_index, int program);
 		void setAmpEnvAttack(int str, int voice_index, int val);

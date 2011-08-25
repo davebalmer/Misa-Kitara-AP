@@ -190,7 +190,7 @@ void Synth::resetSettings(void)
 
 		setMixerLowCutFilterFrequency(i, 0); //fix: datasheet says opposite
 		setMixerHighCutFilterFrequency(i, 0x7F);
-		setMixerInputGain(i, 0x7F);
+		setMixerInputGain(i, 0x40);
 		setMixerOutputLevel(i, 0x7F);
 		setMixerPan(i, 0x40);
 		setMixerReverbSend(i, 0);

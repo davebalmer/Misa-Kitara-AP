@@ -753,7 +753,7 @@ static U8 SlideCreateItems(WM_HWIN hParent)
 	y += 86;
 	hVoiceItems[VOICE_REVERBSEND] = MisaSmallProgressCombo_Create(x,y,0,0,hParent,WM_CF_SHOW|WM_CF_MEMDEV,VOICE_ID_REVERBSEND,"REVERB SEND");
 	y += 86;
-	hVoiceItems[VOICE_DETUNECOURSE] = MisaSmallProgressCombo_Create(x,y,0,0,hParent,WM_CF_SHOW|WM_CF_MEMDEV,VOICE_ID_DETUNECOURSE,"DETUNE COURSE");
+	hVoiceItems[VOICE_DETUNECOURSE] = MisaSmallProgressCombo_Create(x,y,0,0,hParent,WM_CF_SHOW|WM_CF_MEMDEV,VOICE_ID_DETUNECOURSE,"DETUNE COARSE");
 	y += 86;
 	hVoiceItems[VOICE_DETUNEFINE] = MisaSmallProgressCombo_Create(x,y,0,0,hParent,WM_CF_SHOW|WM_CF_MEMDEV,VOICE_ID_DETUNEFINE,"DETUNE FINE");
 

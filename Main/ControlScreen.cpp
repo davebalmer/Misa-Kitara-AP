@@ -471,13 +471,7 @@ void ControlScreen::playNotes(struct neckstate *state)
 
 void ControlScreen::turnCurrentNotesOff(struct neckstate *state)
 {
-	for(unsigned int s = 0; s < 6; s++)
-	{
-		if(current_note[s] != -1)
-			synth.sendNoteOff(s, current_note[s]);
-
-		current_note[s] = -1;
-	}
+	synth.sendCurrentSynthNotesOff();
 }
 
 unsigned int ControlScreen::getDistance(unsigned int v1, unsigned int v2)

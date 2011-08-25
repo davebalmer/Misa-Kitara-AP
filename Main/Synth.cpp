@@ -15,7 +15,7 @@ Synth::Synth()
 	resetSettings();
 	srand(time(NULL));
 	setMasterVolume(64);
-//	setSynthesizerVolume(64);
+	setSynthesizerVolume(64); //stop clipping
 	for(int s = 0; s < 6; s++)
 		string_note[s] = 0;
 

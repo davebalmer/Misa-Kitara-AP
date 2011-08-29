@@ -2,6 +2,7 @@ v1.0.1
 - FIXED MIDI bug introduced when adding envelope control code
 - IMPROVED soundbank (levels and envelopes)
 - IMPROVED presets (pitch bend on all controls)
+- CHANGED default preset to jazzlead
 
 v0.9.11
 - IMPROVED controls to restart the envelopes for all strings when touchpanel pressed, regardless of whether a string is actually being played

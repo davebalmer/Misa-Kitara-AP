@@ -2408,7 +2408,7 @@ void Synth::setMixerReverbSend(int fxb, int val)
 */
 
 void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off)
-{
+{std::cout << "Send note on: str: " << (unsigned int) str << " btn: " << (unsigned int) btn << std::endl << std::flush;
 	unsigned char note = current_setting.tuning[str] + btn;
 
 	if(current_setting.string_midi_out_channel[str] >= 0) //midi output
@@ -2500,6 +2500,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 
 void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 {
+std::cout << "Send note off: str: " << (unsigned int) str << " btn: " << (unsigned int) btn << std::endl << std::flush;
 	unsigned char note = current_setting.tuning[str] + btn;
 
 	if(current_setting.string_midi_out_channel[str] >= 0)	//midi mode
@@ -2525,6 +2526,7 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 
 void Synth::sendNoteOffRinging(unsigned char str, unsigned char btn)
 {
+std::cout << "Send note off R: str: " << (unsigned int) str << " btn: " << (unsigned int) btn << std::endl << std::flush;
 	unsigned char note = current_setting.tuning[str] + btn;
 
 	if(current_setting.string_midi_out_channel[str] >= 0)

@@ -552,8 +552,9 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 				{
 					if(!sustained_note[i])
 					{
-						synth.sendNoteOn(i, 0, true, false, false);
-						synth.sendNoteOff(i, 0);
+						synth.startEnvelope(i, 0, true, false, false);
+//						synth.sendNoteOn(i, 0, true, false, false);
+//						synth.sendNoteOff(i, 0);
 
 						current_note[i] = -1;
 						ringing_note[i] = -1;

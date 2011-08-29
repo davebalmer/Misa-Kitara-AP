@@ -753,6 +753,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 			{
 				if(neck_state.string_button[i] != 0)
 				{
+					current_note[i] = neck_state.string_button[i]; //its a timing issue - ya gotta do this
 					sustained_note[i] = true;
 					flag = true;
 					graphics->setSustainIndicator(left_handed?5-i:i, true);
@@ -768,6 +769,7 @@ void ControlScreen::processEventTouchDragged(struct control_message_t *msg)
 					graphics->setSustainIndicator(left_handed?5-i:i, false);
 				}
 			}
+
 			if(!flag) //no buttons pressed
 			{
 				for(int i = 0; i < 6; i++)

@@ -2549,9 +2549,11 @@ void Synth::sendCurrentSynthNotesOff(void)
 		{
 			if(string_note[str] != -1)
 				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+
 			midi.sendSoundOff(MIDI_OUT, current_setting.string_midi_out_channel[str]);
 			if(current_setting.stop_sound_cmds[str].size() > 0) //misa kitara mode
 			{
+				//this may make some noise if the sendSoundOff function above is not supported by the connected synthesizer
 				for(int cmd = 0; cmd < current_setting.stop_sound_cmds[str].size(); cmd++)
 					midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], current_setting.stop_sound_cmds[str].at(cmd).cc_num, current_setting.stop_sound_cmds[str].at(cmd).value);
 			}

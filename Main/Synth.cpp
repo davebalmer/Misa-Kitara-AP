@@ -2452,7 +2452,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 			{
 				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
 				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
-				if(string_note[str] != note)
+				if((string_note[str] != note) && (string_note[str] != -1))
 					midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 			}
 		}

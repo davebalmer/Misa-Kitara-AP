@@ -672,10 +672,6 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 	{
 		if(st[left_handed?5-s:s].size() == 0)
 		{
-			//turn off any playing notes
-//			if(current_note[s] != -1)
-//				synth.sendNoteOff(s, current_note[s]);
-
 			//play note
 			if(neck_state.string_button[s] != 0)
 			{

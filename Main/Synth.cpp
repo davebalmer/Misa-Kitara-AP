@@ -2448,10 +2448,13 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 		}
 		else	//"compatibility" mode (not very good)
 		{
-			sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
-			if(string_note[str] != note)
-				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+			if(make_sound) //otherwise it's envelope control stuff
+			{
+				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+				if(string_note[str] != note)
+					midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+			}
 		}
 		string_note[str] = note;
 	}
@@ -2587,6 +2590,24 @@ void Synth::sendStopSound(unsigned char str, unsigned char btn)
 //			midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], current_setting.voices[str].at(i).velocity); //note envelope will auto restart
 		}
 		string_note[str] = -1;
+	}
+}
+
+void Synth::startEnvelope(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off)
+{
+	bool env = false;
+	if(current_setting.string_midi_out_channel[str] >= 0)
+	{
+		if(current_setting.stop_sound_cmds[str].size() > 0)
+			env = true;
+	}
+	else
+		env = true;
+
+	if(env)
+	{
+		sendNoteOn(str, 0, true, false, false);
+		sendNoteOff(str, 0);
 	}
 }
 

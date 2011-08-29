@@ -439,7 +439,7 @@ public:
 		void sendNoteOffRinging(unsigned char str, unsigned char btn);
 		void sendCurrentSynthNotesOff(void);
 		void sendStopSound(unsigned char str, unsigned char btn);
-
+		void startEnvelope(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off);
 		void sendControl(unsigned char control_type, int val, int scaler);
 		void sendToEffect(struct assignable_effect *ae, int val, int scaler);
 		void sendVariation(int str, int voice_index, int channel);

@@ -13,6 +13,7 @@
 #include "ucGuiMain.h"
 
 extern std::string working_directory;
+extern char *VERSION_STRING;
 
 ControlScreen::ControlScreen(Graphics *g)
 {
@@ -138,6 +139,10 @@ void ControlScreen::saveConfigFile(void)
 
 	root = new TiXmlElement("config");
 	doc.LinkEndChild(root);
+
+	element = new TiXmlElement("firmware");
+	element->SetAttribute("version", VERSION_STRING);
+	root->LinkEndChild(element);
 
 	element = new TiXmlElement("ball_travel");
 	element->SetAttribute("on", ball_travel_on);

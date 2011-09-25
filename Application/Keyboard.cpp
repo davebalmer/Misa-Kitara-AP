@@ -184,10 +184,13 @@ void Keyboard::DeleteSubWin()
 void Keyboard::UpdateText(int line, int column, WM_HWIN hWin)
 {
 	char c = KbdLines[line][column];
-	if (c == 'B' && keyboard->currentText.size() > 0)
+	if (c == 'B')
 	{
-		currentText.erase(keyboard->currentText.size() - 1, 1);
-		TEXT_SetText(hTextDisplay, currentText.c_str());
+		if (keyboard->currentText.size() > 0)
+		{
+			currentText.erase(keyboard->currentText.size() - 1, 1);
+			TEXT_SetText(hTextDisplay, currentText.c_str());
+		}
 	}
 	else if (c == '*')
 	{

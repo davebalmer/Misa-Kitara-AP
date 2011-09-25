@@ -104,10 +104,19 @@ void ControlScreen::loadConfigFile(void)
 
 	TiXmlElement *root = doc.RootElement();
 
+	bool update_version = false, firmware_tag_found = false;
 	for(TiXmlElement *e = root->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
 	{
 		std::string e_str = e->Value();
 
+		if(e_str == "firmware")
+		{
+			firmware_tag_found = true;
+			if(e->Attribute("version") != NULL)
+				if(strcmp(e->Attribute("version"), VERSION_STRING) != 0)
+					update_version = true;
+		}
+		else
 		if(e_str == "ball_travel")
 		{
 			if(e->Attribute("on") != NULL)
@@ -126,6 +135,9 @@ void ControlScreen::loadConfigFile(void)
 				sustain_enabled = atoi(e->Attribute("on"));
 		}
 	}
+
+	if((update_version) || (!firmware_tag_found))
+		saveConfigFile();
 }
 
 void ControlScreen::saveConfigFile(void)

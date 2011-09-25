@@ -1,3 +1,8 @@
+v1.0.2
+- ADDED version number to config.xml
+- MODIFIED master volume to boost up to 6dB (and we decrease the volume of the SGTL5000 in /usr/autorun.sh)
+- FIXED minor keyboard bug
+
 v1.0.1
 - FIXED MIDI bug introduced when adding envelope control code
 - IMPROVED soundbank (levels and envelopes)

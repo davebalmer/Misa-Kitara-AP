@@ -219,7 +219,7 @@ static U8 ReverbDeleteItems()
 }
 
 static int ReverbGetFX()
-{
+{return 0; //reverb is FX block independent
 	int stFx1,stFx2;
 	stFx1 = MisaRadio_GetStatus(hCOMPcomm.hFX1);
 	stFx2 = MisaRadio_GetStatus(hCOMPcomm.hFX2);

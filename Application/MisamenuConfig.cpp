@@ -1041,14 +1041,14 @@ int MisaSetEnableSustain(int mode)
 	return 0;
 }
 
-int MisaGetShowStrings()
+int MisaGetRingingNotes()
 {
-	return pcs->isShowStrings()?1:0;
+	return pcs->isRingingNotes()?1:0;
 }
 
-int MisaSetShowStrings(int mode)
+int MisaSetRingingNotes(int mode)
 {
-	pcs->showStrings(mode?true:false);
+	pcs->setRingingNotes(mode?true:false);
 	return 0;
 }
 

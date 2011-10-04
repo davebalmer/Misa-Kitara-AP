@@ -323,10 +323,12 @@ class Synth
 		std::vector<std::string> wavetable;
 		void readWavetable(void);
 		int getWavetableIndex(std::string wave);
+		bool mode_ringing_notes;
 
 	public:
 		void resetSettings(void);
 		const std::string &getCurrentPresetName(void) {return currentPresetName;}
+		void setModeRingingNotes(bool state);
 
 	private:
 		void setLfoRate(int val);

@@ -594,7 +594,7 @@ int MisaGetBallTravel(void);
 int MisaSetBallTravel(int mode);
 int MisaGetEnableSustain();
 int MisaSetEnableSustain(int mode);
-int MisaGetShowStrings();
-int MisaSetShowStrings(int mode);
+int MisaGetRingingNotes();
+int MisaSetRingingNotes(int mode);
 
 #endif // __MISA_MENUCONFIG_H__

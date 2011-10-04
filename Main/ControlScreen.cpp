@@ -23,6 +23,7 @@ ControlScreen::ControlScreen(Graphics *g)
 	string_mode = false;
 	left_handed = false;
 	sustain_enabled = false;
+	mode_ringing_notes = false;
 	ball_travel_on = false;
 
 	loadConfigFile();
@@ -134,6 +135,12 @@ void ControlScreen::loadConfigFile(void)
 			if(e->Attribute("on") != NULL)
 				sustain_enabled = atoi(e->Attribute("on"));
 		}
+		else
+		if(e_str == "ringing_notes")
+		{
+			if(e->Attribute("on") != NULL)
+				mode_ringing_notes = atoi(e->Attribute("on"));
+		}
 	}
 
 	if((update_version) || (!firmware_tag_found))
@@ -166,6 +173,10 @@ void ControlScreen::saveConfigFile(void)
 
 	element = new TiXmlElement("sustain_enabled");
 	element->SetAttribute("on", sustain_enabled);
+	root->LinkEndChild(element);
+
+	element = new TiXmlElement("ringing_notes");
+	element->SetAttribute("on", mode_ringing_notes);
 	root->LinkEndChild(element);
 
 	std::string filepath = working_directory + "/config.xml";
@@ -1358,4 +1369,15 @@ bool ControlScreen::isSustainEnabled(void)
 void ControlScreen::setSustainEnabled(bool state)
 {
 	sustain_enabled = state;
+}
+
+bool ControlScreen::isRingingNotes(void)
+{
+	return mode_ringing_notes;
+}
+
+void ControlScreen::setRingingNotes(bool state)
+{
+	mode_ringing_notes = state;
+	synth.setModeRingingNotes(state);
 }

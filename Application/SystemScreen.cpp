@@ -44,9 +44,9 @@ typedef enum __SYSTEMITEMS
 	SYSTEM_RIGHTHANDLABEL,
 	SYSTEM_BALLTRAVELLABEL,
 	SYSTEM_ENABLESUSTAIN,
-//	SYSTEM_SHOWSTRINGS,
+	SYSTEM_RINGINGNOTES,
 	SYSTEM_ENABLESUSTAINLABEL,
-//	SYSTEM_SHOWSTRINGSLABEL,
+	SYSTEM_RINGINGNOTESLABEL,
 	SYSTEM_MAX
 } SYSTEMITEMS;
 
@@ -58,7 +58,7 @@ typedef enum __SYSTEM_ID
 	SYSTEM_ID_BALLTRAVEL,
 	SYSTEM_ID_TEXT,
 	SYSTEM_ID_ENABLESUSTAIN,
-//	SYSTEM_ID_SHOWSTRINGS,
+	SYSTEM_ID_RINGINGNOTES,
 	SYSTEM_ID_MAX
 } SYSTEM_ID;
 
@@ -113,11 +113,10 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 
 	y += bmSM_WF_UN.YSize;
 	y += 10;
-/*	hSystemItems[SYSTEM_SHOWSTRINGSLABEL] = TEXT_CreateAsChild(x+20,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Strings",GUI_TA_HCENTER|GUI_TA_VCENTER);
-	TEXT_SetFont(hSystemItems[SYSTEM_SHOWSTRINGSLABEL],&GUI_Font24B_ASCII);
-	TEXT_SetTextColor(hSystemItems[SYSTEM_SHOWSTRINGSLABEL],GUI_WHITE);
-	hSystemItems[SYSTEM_SHOWSTRINGS] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_SHOWSTRINGS,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
-*/
+	hSystemItems[SYSTEM_RINGINGNOTESLABEL] = TEXT_CreateAsChild(x+50,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ringing Notes",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	TEXT_SetFont(hSystemItems[SYSTEM_RINGINGNOTESLABEL],&GUI_Font24B_ASCII);
+	TEXT_SetTextColor(hSystemItems[SYSTEM_RINGINGNOTESLABEL],GUI_WHITE);
+	hSystemItems[SYSTEM_RINGINGNOTES] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_RINGINGNOTES,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
 
 	x = SYSTEM_TYPE_XPOS;
 	hSystemItems[SYSTEM_BALLTRAVELLABEL] = TEXT_CreateAsChild(x,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ball control travel:",GUI_TA_HCENTER|GUI_TA_VCENTER);
@@ -175,11 +174,11 @@ static U8 SystemDeleteItems()
 	{
 		MisaCheckbox_Delete(hSystemItems[SYSTEM_ENABLESUSTAIN]);
 	}
-/*	if(hSystemItems[SYSTEM_SHOWSTRINGS])
+	if(hSystemItems[SYSTEM_RINGINGNOTES])
 	{
-		MisaCheckbox_Delete(hSystemItems[SYSTEM_SHOWSTRINGS]);
+		MisaCheckbox_Delete(hSystemItems[SYSTEM_RINGINGNOTES]);
 	}
-*/	if(hSystemItems[SYSTEM_LEFTHANDLABEL])
+	if(hSystemItems[SYSTEM_LEFTHANDLABEL])
 	{
 		TEXT_Delete(hSystemItems[SYSTEM_LEFTHANDLABEL]);
 	}
@@ -195,11 +194,11 @@ static U8 SystemDeleteItems()
 	{
 		TEXT_Delete(hSystemItems[SYSTEM_ENABLESUSTAINLABEL]);
 	}
-/*	if(hSystemItems[SYSTEM_SHOWSTRINGSLABEL])
+	if(hSystemItems[SYSTEM_RINGINGNOTESLABEL])
 	{
-		TEXT_Delete(hSystemItems[SYSTEM_SHOWSTRINGSLABEL]);
+		TEXT_Delete(hSystemItems[SYSTEM_RINGINGNOTESLABEL]);
 	}
-*/	return 0;
+	return 0;
 }
 
 U8 CreateSystemScreen(void* pPara)
@@ -333,10 +332,11 @@ static void SystemProc(WM_MESSAGE* pMsg)
 					state_updated = true;
 					MisaSetEnableSustain(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN]));
 					break;
-/*				case SYSTEM_ID_SHOWSTRINGS:
-					MisaSetShowStrings(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_SHOWSTRINGS]));
+				case SYSTEM_ID_RINGINGNOTES:
+					state_updated = true;
+					MisaSetRingingNotes(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_RINGINGNOTES]));
 					break;
-*/				default:
+				default:
 					;
 				}
 				DEBUG_STDOUT("SYSTEM button released!");

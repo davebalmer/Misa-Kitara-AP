@@ -13,6 +13,8 @@ extern char *VERSION_STRING;
 Synth::Synth()
 {
 	resetSettings();
+	mode_ringing_notes = false;
+
 	srand(time(NULL));
 	setMasterVolume(64);
 	setSynthesizerVolume(100); //stop clipping
@@ -2460,7 +2462,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 	}
 	else //synth output
 	{
-		if(false) //MZ
+		if(!mode_ringing_notes)
 		{
 			for(int i = 0; i < current_setting.voices[str].size(); i++)
 			{
@@ -2534,7 +2536,7 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			if(true) //MZ
+			if(mode_ringing_notes)
 				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
 			else
 				setMuteChannelVolume(str, i);
@@ -2944,4 +2946,9 @@ void Synth::SetSoloChannelForString(int string_index, int voice_index, bool Solo
 
 		SetMuteChannelForString(string_index, voiceIdx, Solo);
 	}
+}
+
+void Synth::setModeRingingNotes(bool mode)
+{
+	mode_ringing_notes = mode;
 }

@@ -93,7 +93,7 @@ class ControlScreen
 
 		std::vector<unsigned int> nt, bt, st[6], ost[6], touch_history;
 
-		bool tap_mode, string_mode, left_handed, sustain_enabled;
+		bool tap_mode, string_mode, left_handed, sustain_enabled, mode_ringing_notes;
 		bool corner_pressed[4], quickset_start, tap_mode_toggle;
 
 		Synth synth;
@@ -162,6 +162,8 @@ class ControlScreen
 		void showStrings(bool state);
 		bool isSustainEnabled(void);
 		void setSustainEnabled(bool state);
+		bool isRingingNotes(void);
+		void setRingingNotes(bool state);
 };
 
 #endif

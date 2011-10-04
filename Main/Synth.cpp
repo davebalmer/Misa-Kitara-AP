@@ -2460,36 +2460,52 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 	}
 	else //synth output
 	{
-		for(int i = 0; i < current_setting.voices[str].size(); i++)
+		if(false) //MZ
 		{
-			int vel = current_setting.voices[str].at(i).velocity;
-
-			if(attack)
+			for(int i = 0; i < current_setting.voices[str].size(); i++)
 			{
-				sendVariation(str, i, current_setting.voices[str].at(i).channel);
-				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
-				if(make_sound)
-					setUnMuteChannelVolume(str, i);
-				else
-					setMuteChannelVolume(str, i);
+				int vel = current_setting.voices[str].at(i).velocity;
 
-				if(!current_setting.voices[str].at(i).mute)
-					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
-			}
-			else
-			{
-				setUnMuteChannelVolume(str, i);
-				if(string_note[str] != note)
+				if(attack)
 				{
+					sendVariation(str, i, current_setting.voices[str].at(i).channel);
+					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
+					if(make_sound)
+						setUnMuteChannelVolume(str, i);
+					else
+						setMuteChannelVolume(str, i);
+
 					if(!current_setting.voices[str].at(i).mute)
-					{
-						//the synth IC uses some timer code causing commands to not be sequential
-						midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, current_setting.voices[str].at(i).portamento_time);
-						if(portamento_off) midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, 0);
 						midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
-						//if(portamento_off) midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, current_setting.voices[str].at(i).portamento_time);
+				}
+				else
+				{
+					setUnMuteChannelVolume(str, i);
+					if(string_note[str] != note)
+					{
+						if(!current_setting.voices[str].at(i).mute)
+						{
+							//the synth IC uses some timer code causing commands to not be sequential
+							midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, current_setting.voices[str].at(i).portamento_time);
+							if(portamento_off) midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, 0);
+							midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, vel);
+							//if(portamento_off) midi.sendCC(SYNTH, current_setting.voices[str].at(i).channel, 5, current_setting.voices[str].at(i).portamento_time);
+						}
+						if(string_note[str] != -1)
+							midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 					}
-					if(string_note[str] != -1)
+				}
+			}
+		}
+		else //ringing notes mode (customer request) - no sliding
+		{
+			if(make_sound) //otherwise it's envelope control stuff
+			{
+				for(int i = 0; i < current_setting.voices[str].size(); i++)
+				{
+					sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, current_setting.voices[str].at(i).velocity);
+					if((string_note[str] != note) && (string_note[str] != -1))
 						midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 				}
 			}
@@ -2518,7 +2534,10 @@ void Synth::sendNoteOff(unsigned char str, unsigned char btn)
 	{
 		for(int i = 0; i < current_setting.voices[str].size(); i++)
 		{
-			setMuteChannelVolume(str, i);
+			if(true) //MZ
+				midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, note, 0);
+			else
+				setMuteChannelVolume(str, i);
 		}
 	}
 }

@@ -1,3 +1,6 @@
+v1.0.3
+- ADDED "Ringing Notes" option (System screen)
+
 v1.0.2
 - ADDED version number to config.xml
 - MODIFIED master volume to boost up to 6dB (and we decrease the volume of the SGTL5000 in /usr/autorun.sh)

@@ -139,7 +139,10 @@ void ControlScreen::loadConfigFile(void)
 		if(e_str == "ringing_notes")
 		{
 			if(e->Attribute("on") != NULL)
+			{
 				mode_ringing_notes = atoi(e->Attribute("on"));
+				setRingingNotes(mode_ringing_notes);
+			}
 		}
 	}
 

@@ -143,6 +143,7 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 
 	MisaRadio_SetStatus(hSystemItems[SYSTEM_BALLTRAVEL], MisaGetBallTravel());
 	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN], MisaGetEnableSustain());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_RINGINGNOTES], MisaGetRingingNotes());
 
 	return 0;
 }

@@ -2450,7 +2450,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 		}
 		else	//"compatibility" mode (not very good)
 		{
-			if(make_sound) //otherwise it's envelope control stuff
+//			if(make_sound) //otherwise it's envelope control stuff
 			{
 				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
 				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
@@ -2499,17 +2499,14 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 				}
 			}
 		}
-		else //ringing notes mode (customer request) - no sliding
+		else //ringing notes mode (customer request) - no envelope control / sliding
 		{
-			if(make_sound) //otherwise it's envelope control stuff
+			for(int i = 0; i < current_setting.voices[str].size(); i++)
 			{
-				for(int i = 0; i < current_setting.voices[str].size(); i++)
-				{
-					sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-					midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, current_setting.voices[str].at(i).velocity);
-					if((string_note[str] != note) && (string_note[str] != -1))
-						midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
-				}
+				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+				midi.sendNoteOn(SYNTH, current_setting.voices[str].at(i).channel, note, current_setting.voices[str].at(i).velocity);
+				if((string_note[str] != note) && (string_note[str] != -1))
+					midi.sendNoteOff(SYNTH, current_setting.voices[str].at(i).channel, string_note[str], 0);
 			}
 		}
 		string_note[str] = note;
@@ -2625,6 +2622,7 @@ void Synth::startEnvelope(unsigned char str, unsigned char btn, bool attack, boo
 			env = true;
 	}
 	else
+	if(!mode_ringing_notes)
 		env = true;
 
 	if(env)

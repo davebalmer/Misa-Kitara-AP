@@ -721,8 +721,6 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 				if(!sustained_note[s])
 				{
 					synth.startEnvelope(s, 0, true, false, false);
-					//synth.sendNoteOn(s, 0, true, false, false);
-					//synth.sendNoteOff(s, 0);
 					current_note[s] = -1;
 					ringing_note[s] = -1;
 				}

@@ -584,8 +584,6 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 					if(!sustained_note[i])
 					{
 						synth.startEnvelope(i, 0, true, false, false);
-//						synth.sendNoteOn(i, 0, true, false, false);
-//						synth.sendNoteOff(i, 0);
 
 						current_note[i] = -1;
 						ringing_note[i] = -1;
@@ -614,9 +612,6 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 		{
 			synth.sendNoteOn(msg->string_id, msg->button_id, false, true, false);
 
-//			if(current_note[msg->string_id] != -1)
-//				synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
-
 			current_note[msg->string_id] = msg->button_id;
 			ringing_note[msg->string_id] = current_note[msg->string_id];
 		}
@@ -624,9 +619,6 @@ void ControlScreen::processEventButtonReleased(struct control_message_t *msg)
 	else
 	if((ringing_note[msg->string_id] != -1) && (!sustained_note[msg->string_id]))
 	{
-//		if(current_note[msg->string_id] != -1)
-//			synth.sendNoteOff(msg->string_id, current_note[msg->string_id]);
-
 		synth.sendNoteOff(msg->string_id, ringing_note[msg->string_id]);
 
 		current_note[msg->string_id] = -1;
@@ -743,6 +735,8 @@ void ControlScreen::processEventTouchPressed(struct control_message_t *msg)
 			}
 		}
 	}
+	else
+		no_buttons_pressed = false;
 
 	graphics->setDragOriginIndicator(msg->current_location.x, msg->current_location.y);
 	graphics->setTouchIndicator(msg->touch_id, msg->current_location.x, msg->current_location.y);

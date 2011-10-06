@@ -2450,13 +2450,10 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 		}
 		else	//"compatibility" mode (not very good)
 		{
-//			if(make_sound) //otherwise it's envelope control stuff
-			{
-				sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
-				midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
-				if((string_note[str] != note) && (string_note[str] != -1))
-					midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
-			}
+			sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
+			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
+			if((string_note[str] != note) && (string_note[str] != -1))
+				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 		}
 		string_note[str] = note;
 	}

@@ -804,6 +804,12 @@ void SynthUnassignCC(unsigned char touch_control, unsigned char channel, unsigne
 	SetModified();
 }
 
+void SynthSendLearnCC(unsigned char channel, unsigned int cc)
+{
+	pSynth->sendLearnCC(channel, cc);
+//	SetModified();
+}
+
 void SynthAssignStopSound(unsigned char str, unsigned char cc, unsigned char val)
 {
 	pSynth->assignMidiStopSound(str, cc, val);
@@ -814,6 +820,12 @@ void SynthUnassignStopSound(unsigned char str, unsigned char cc)
 {
 	pSynth->unAssignMidiStopSound(str, cc);
 	SetModified();
+}
+
+void SynthSendLearnStopSound(unsigned char str, unsigned char cc)
+{
+	pSynth->sendLearnStopSound(str, cc);
+//	SetModified();
 }
 
 std::vector<int> MidiPitchFindEffect(unsigned char chan)

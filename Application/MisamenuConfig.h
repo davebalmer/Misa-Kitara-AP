@@ -534,8 +534,10 @@ void SynthAssignMidiVelocity(unsigned char touch_control, unsigned char channel,
 void SynthUnassignMidiVelocity(unsigned char touch_control, unsigned char str);
 void SynthAssignCC(unsigned char touch_control, unsigned char channel, unsigned int cc, bool inverse, unsigned int variation_start, unsigned int variation_end);
 void SynthUnassignCC(unsigned char touch_control, unsigned char channel, unsigned int cc);
+void SynthSendLearnCC(unsigned char channel, unsigned int cc);
 void SynthAssignStopSound(unsigned char str, unsigned char cc, unsigned char val);
 void SynthUnassignStopSound(unsigned char str, unsigned char cc);
+void SynthSendLearnStopSound(unsigned char str, unsigned char cc);
 
 std::vector<int> MidiPitchFindEffect(unsigned char chan);
 std::vector<int> MidiVelocityFindEffect(unsigned char str);

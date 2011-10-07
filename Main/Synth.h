@@ -449,6 +449,7 @@ public:
 		void setPitch(unsigned char output, unsigned char str, unsigned int p);
 		void assignMidiStopSound(unsigned char str,unsigned char cc,unsigned char val);
 		void unAssignMidiStopSound(unsigned char str,unsigned char cc);
+		void sendLearnStopSound(unsigned char str, unsigned char cc);
 		std::vector<int> findAssignStopSound(unsigned char str);
 		void assignSynthEffect(unsigned char touch_control, unsigned char synth_param, unsigned char fxb, bool inverse, unsigned int variation_start, unsigned int variation_end);
 		void unAssignSynthEffect(unsigned char synth_param, unsigned char fxb);
@@ -468,6 +469,7 @@ public:
 		void setDragCenterMidiPitch(unsigned char channel, unsigned int drag_center);
 		void assignCC(unsigned char touch_control, unsigned char output, unsigned char channel, unsigned int cc, bool inverse, unsigned int variation_start, unsigned int variation_end);
 		void unAssignCC(unsigned char output, unsigned char touch_control, unsigned char channel, unsigned int cc);
+		void sendLearnCC(unsigned char channel, unsigned int cc);
 		std::vector<int> findAssignCC(unsigned char output, unsigned char channel, unsigned int cc, std::vector<struct assignable_effect *> *ae);
 		std::vector<int> findAssignAllCC(unsigned char output, unsigned char channel, std::vector<struct assignable_effect *> *ae);
 		void setDragCenterCC(unsigned char output, unsigned char channel, unsigned int cc, unsigned int drag_center);

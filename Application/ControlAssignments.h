@@ -21,6 +21,7 @@ U8 UpdateControlAssignmentsInfo(PCONTROLASSIGNMENTS_INFO pInfo);
 U8 GetControlAssignmentsInfo(PCONTROLASSIGNMENTS_INFO pInfo);
 
 U8 ControlAssignmentsAddItem(int para, int cc, int channel, int control, int invert, unsigned int variation_start, unsigned int variation_end);
+U8 ControlAssignmentsSendLearn(int pos);
 U8 ControlAssignmentsEditItem(int para, int cc, int channel, int control, int invert, unsigned int variation_start, unsigned int variation_end);
 U8 ControlAssignmentsDelItem(int pos);
 U8 ControlAssignmentsDelAllItem();

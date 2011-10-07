@@ -1245,6 +1245,16 @@ void Synth::unAssignMidiStopSound(unsigned char str, unsigned char cc)
 	}
 }
 
+void Synth::sendLearnStopSound(unsigned char str, unsigned char cc)
+{
+	for(int i = 0; i < current_setting.stop_sound_cmds[str].size(); i++)
+		if(current_setting.stop_sound_cmds[str].at(i).cc_num == cc)
+		{
+			midi.sendCC(MIDI_OUT, current_setting.string_midi_out_channel[str], cc, current_setting.stop_sound_cmds[str].at(i).value);
+			break;
+		}
+}
+
 void Synth::assignSynthEffect(unsigned char touch_control, unsigned char synth_param, unsigned char fxb, bool inverse, unsigned int variation_start, unsigned int variation_end)
 {
 	struct assignable_effect ae;
@@ -1648,6 +1658,11 @@ void Synth::unAssignCC(unsigned char output, unsigned char touch_control, unsign
 		else
 			t++;
 	}
+}
+
+void Synth::sendLearnCC(unsigned char channel, unsigned int cc)
+{
+	midi.sendCC(MIDI_OUT, channel, cc, 64);
 }
 
 std::vector<int> Synth::findAssignAllCC(unsigned char output, unsigned char channel, std::vector<struct assignable_effect *> *ae)

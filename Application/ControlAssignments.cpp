@@ -41,6 +41,7 @@ typedef enum __CONTROLASSIGNMENTSITEMS
 	CONTROLASSIGNMENTS_SLIDEWINDOW,
 	CONTROLASSIGNMENTS_NEW,
 	CONTROLASSIGNMENTS_EDIT,
+	CONTROLASSIGNMENTS_LEARN,
 	CONTROLASSIGNMENTS_DEL,
 	CONTROLASSIGNMENTS_DELALL,
 	CONTROLASSIGNMENTS_CLOSE,
@@ -51,6 +52,7 @@ typedef enum __CONTROLASSIGNMENTS_ID
 {
 	CONTROLASSIGNMENTS_ID_NEW=GUI_ID_CONTROLASSIGNMENTS_BASE,
 	CONTROLASSIGNMENTS_ID_EDIT,
+	CONTROLASSIGNMENTS_ID_LEARN,
 	CONTROLASSIGNMENTS_ID_DEL,
 	CONTROLASSIGNMENTS_ID_DELALL,
 	CONTROLASSIGNMENTS_ID_CLOSE,
@@ -97,6 +99,13 @@ static U8 ControlAssignmentsCreateItems(WM_HWIN hParent)
 	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_NEW],BUTTON_CI_PRESSED,&bmVOICE_NEW_SE);
 	x += bmVOICE_NEW_UN.XSize;
 	x += CONTROLASSIGNMENTS_XOFFSET;
+//	MZ hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN] = BUTTON_CreateAsChild(x,y,bmVOICE_LEARN_UN.XSize,bmVOICE_LEARN_UN.YSize,hParent,CONTROLASSIGNMENTS_ID_LEARN,WM_CF_SHOW|WM_CF_MEMDEV);
+	hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN] = BUTTON_CreateAsChild(x,y,bmVOICE_EDIT_UN.XSize,bmVOICE_EDIT_UN.YSize,hParent,CONTROLASSIGNMENTS_ID_LEARN,WM_CF_SHOW|WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN],0);
+//	MZ BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN],BUTTON_CI_UNPRESSED,&bmVOICE_LEARN_UN);
+//	MZ BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN],BUTTON_CI_PRESSED,&bmVOICE_LEARN_SE);
+	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN],BUTTON_CI_UNPRESSED,&bmVOICE_EDIT_UN);
+	BUTTON_SetBitmap(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN],BUTTON_CI_PRESSED,&bmVOICE_EDIT_SE);
 	// Remove edit button temporary
 	hControlAssignmentsItems[CONTROLASSIGNMENTS_EDIT] = 0;//BUTTON_CreateAsChild(x,y,bmVOICE_EDIT_UN.XSize,bmVOICE_EDIT_UN.YSize,hParent,CONTROLASSIGNMENTS_ID_EDIT,WM_CF_SHOW|WM_CF_MEMDEV);
 	//BUTTON_SetFocussable(hControlAssignmentsItems[CONTROLASSIGNMENTS_EDIT],0);
@@ -132,6 +141,10 @@ static U8 ControlAssignmentsDeleteItems()
 	if(hControlAssignmentsItems[CONTROLASSIGNMENTS_NEW])
 	{
 		BUTTON_Delete(hControlAssignmentsItems[CONTROLASSIGNMENTS_NEW]);
+	}
+	if(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN])
+	{
+		BUTTON_Delete(hControlAssignmentsItems[CONTROLASSIGNMENTS_LEARN]);
 	}
 	if(hControlAssignmentsItems[CONTROLASSIGNMENTS_EDIT])
 	{
@@ -301,6 +314,21 @@ static void ControlAssignmentsProc(WM_MESSAGE* pMsg)
 				memset(&midinfo,0,sizeof(MIDICTRL_INFO));
 				UpdateMIDIControlInfo(&midinfo);
 				TopMIDIControlScreen(pMsg->hWin);
+				break;
+			case CONTROLASSIGNMENTS_ID_LEARN:
+				hFocus = WM_GetFocussedWindow();
+				if(hFocus)
+				{
+					if(GUI_ID_OK == Misa_ConfirmBox("Prepare receiver...","Learn",GUI_MESSAGEBOX_CF_MODAL))
+					{
+						WM_SetFocus(hFocus);
+						ControlAssignmentsSendLearn(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW]);
+					}
+					else
+					{
+						WM_SetFocus(hFocus);
+					}
+				}
 				break;
 			case CONTROLASSIGNMENTS_ID_EDIT:
 				hFocus = WM_GetFocussedWindow();
@@ -490,7 +518,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 					PID_LastState = *pPID_State;
 				}
 				else
-				{
+				{	//sliding
 					y = WM_GetWindowOrgY(pMsg->hWin);
 					x = WM_GetWindowSizeY(pMsg->hWin);
 					dy = pPID_State->y-PID_LastState.y;
@@ -896,6 +924,65 @@ U8 ControlAssignmentsDelItem(int pos)
 			{
 				WM_MoveWindow(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW],0,GUI_GetScreenSizeY()-100-y-x);
 			}
+			return CONTROLASSIGNMENTS_SUCCESS;
+		}
+		else
+		{
+			return CONTROLASSIGNMENTS_TOOMANY;
+		}
+	}
+	return CONTROLASSIGNMENTS_UNKNOWN;
+}
+
+U8 ControlAssignmentsSendLearn(int pos)
+{
+	char buf[32];
+	int x,y;
+	MIDICTRL_INFO midiinfo;
+	WM_HWIN hFocus = WM_GetFocussedWindow();
+	if(WM_GetParent(hFocus) != hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW])
+	{
+		return CONTROLASSIGNMENTS_UNKNOWN;
+	}
+	if(hFocus)
+	{
+		pos = WM_GetId(hFocus)-CONTROLASSIGNMENTS_ID_ITEMSBASE;
+		if(pos < hCtrlItems.size())
+		{
+			BUTTON_GetText(hCtrlItems[pos],buf,32);
+			ControlAssignmentParse(buf,&midiinfo);
+			switch(midiinfo.type)
+			{
+			case 0:
+				//don't send anything for pitch
+				break;
+			case 1:
+				//don't send anything for velocity
+				break;
+			case 2:
+			default:
+				SynthSendLearnCC(midiinfo.channel,midiinfo.cc);
+				break;
+			case 3:
+				SynthSendLearnStopSound(midiinfo.string, midiinfo.cc);
+				break;
+			}
+			/*MisaItem_Delete(hCtrlItems[pos]);
+			hCtrlItems.erase(hCtrlItems.begin()+pos);
+			SorControlList(pos);
+			x = WM_GetWindowSizeX(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW]);
+			y = bmVOICE_SELECTED.YSize*hCtrlItems.size();
+			WM_SetSize(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW], x, WM_GetWindowSizeY(hControlAssignmentsItems[CONTROLASSIGNMENTS_INDICATOR])<y?y:WM_GetWindowSizeY(hControlAssignmentsItems[CONTROLASSIGNMENTS_INDICATOR]));
+			y = WM_GetWindowOrgY(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW]);
+			x = WM_GetWindowSizeY(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW]);
+			if(bmEMPTYTITLEBAR.YSize+bmVOICE_LIST.YSize < y)
+			{
+				WM_MoveWindow(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW],0,bmEMPTYTITLEBAR.YSize+bmVOICE_LIST.YSize-y);
+			}
+			else if(GUI_GetScreenSizeY()-bmVOICE_LIST.YSize > y+x)
+			{
+				WM_MoveWindow(hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW],0,GUI_GetScreenSizeY()-100-y-x);
+			}*/
 			return CONTROLASSIGNMENTS_SUCCESS;
 		}
 		else

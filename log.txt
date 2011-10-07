@@ -1,6 +1,7 @@
 v1.0.3
 - ADDED "Ringing Notes" option (System screen)
 - FIXED bug that either stopped playing notes (synth) or caused stuck notes (midi)
+- ADDED "Learn" button to MIDI control assignment screen
 
 v1.0.2
 - ADDED version number to config.xml

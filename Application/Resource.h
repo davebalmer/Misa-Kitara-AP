@@ -172,6 +172,8 @@ extern const GUI_BITMAP bmVOICE_LIST;
 extern const GUI_BITMAP bmVOICE_SELECTED;
 extern const GUI_BITMAP bmVOICE_NEW_UN;
 extern const GUI_BITMAP bmVOICE_NEW_SE;
+extern const GUI_BITMAP bmVOICE_LEARN_UN;
+extern const GUI_BITMAP bmVOICE_LEARN_SE;
 extern const GUI_BITMAP bmVOICE_EDIT_UN;
 extern const GUI_BITMAP bmVOICE_EDIT_SE;
 extern const GUI_BITMAP bmVOICE_DEL_UN;

@@ -275,7 +275,7 @@ U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp)
 	return reBack;
 }
 
-void AssginEffectControlMenuProc(int menuId,int fx)
+void AssignEffectControlMenuProc(int menuId,int fx)
 {
 	int Id;
 	WM_HWIN src;
@@ -305,7 +305,7 @@ void AssginEffectControlMenuProc(int menuId,int fx)
 	}
 }
 
-void AssginEffectControlMenuProc_SPC(int menuId,int fx)
+void AssignEffectControlMenuProc_SPC(int menuId,int fx)
 {
 	int Id;
 	WM_HWIN src;
@@ -335,7 +335,7 @@ void AssginEffectControlMenuProc_SPC(int menuId,int fx)
 	}
 }
 
-void AssginVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index)
+void AssignVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index)
 {
 	int Id;
 	WM_HWIN src;

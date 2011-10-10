@@ -1292,14 +1292,14 @@ static void EqSlideGoPreviousPage()
 
 static void EqControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc_SPC(menuId,0);
+	AssignEffectControlMenuProc_SPC(menuId,0);
 }
 
 #else // MISA_SMALLPROGRESSBARLAYOUT
 
 static void EqControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,0);
+	AssignEffectControlMenuProc(menuId,0);
 }
 
 #endif //  MISA_SMALLPROGRESSBARLAYOUT

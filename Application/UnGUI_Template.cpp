@@ -593,7 +593,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void xxxMisaxxxControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,xxxMisaxxxGetFX());
+	AssignEffectControlMenuProc(menuId,xxxMisaxxxGetFX());
 }
 
 #if 0 // Slide window processing

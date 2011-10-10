@@ -665,7 +665,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void CompressionControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,CompressionGetFX());
+	AssignEffectControlMenuProc(menuId,CompressionGetFX());
 }
 
 // No more sliding

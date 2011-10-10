@@ -1220,7 +1220,7 @@ void SlideGoPreviousPage()
 
 static void VoiceControlMenuProc(int menuId)
 {
-	AssginVoiceControlMenuProc(menuId,SynthGetStringIndex(),SynthGetVoiceIndex());
+	AssignVoiceControlMenuProc(menuId,SynthGetStringIndex(),SynthGetVoiceIndex());
 }
 
 void ReadVoiceTypesFromFile(void)

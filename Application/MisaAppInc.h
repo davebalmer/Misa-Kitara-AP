@@ -96,9 +96,9 @@ U8 DeleteCommComponent(COMMCOMPONENT hComponents);
 U8 ProcessCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
 U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
 U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent);
-void AssginEffectControlMenuProc(int menuId,int fx);
-void AssginEffectControlMenuProc_SPC(int menuId,int fx);
-void AssginVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index);
+void AssignEffectControlMenuProc(int menuId,int fx);
+void AssignEffectControlMenuProc_SPC(int menuId,int fx);
+void AssignVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index);
 void Misa_SmoothlyMoveWindow(WM_HWIN hWin,WM_HWIN hParent,int Dx);
 
 #define MISAMODULE_COMPRESSION 0x00000001

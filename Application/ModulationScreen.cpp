@@ -905,7 +905,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void ModulationControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,ModulationGetFX());
+	AssignEffectControlMenuProc(menuId,ModulationGetFX());
 }
 
 // No more sliding

@@ -656,7 +656,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void ReverbControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,ReverbGetFX());
+	AssignEffectControlMenuProc(menuId,ReverbGetFX());
 }
 
 

@@ -681,7 +681,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void MixerControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,MixerGetFX());
+	AssignEffectControlMenuProc(menuId,MixerGetFX());
 }
 
 

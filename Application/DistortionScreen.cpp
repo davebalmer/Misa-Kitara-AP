@@ -468,6 +468,6 @@ static void DistortionProc(WM_MESSAGE* pMsg)
 
 static void DistortionControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,DistortionGetFX());
+	AssignEffectControlMenuProc(menuId,DistortionGetFX());
 }
 

@@ -593,7 +593,7 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 
 static void DelayControlMenuProc(int menuId)
 {
-	AssginEffectControlMenuProc(menuId,DelayGetFX());
+	AssignEffectControlMenuProc(menuId,DelayGetFX());
 }
 
 // No more sliding

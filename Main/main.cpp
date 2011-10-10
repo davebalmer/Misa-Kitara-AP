@@ -121,7 +121,7 @@ std::string getSystemInfo(void)
 
 //	std::cout << info << std::endl << std::flush;
 
-	return std::string(VERSION_ID) + "\n\n" + info;
+	return std::string(VERSION_ID) + "\nCopyright 2011 Misa Digital Instruments. Patent pending." + "\n\n" + info;
 }
 
 bool doesFileExist(std::string path)

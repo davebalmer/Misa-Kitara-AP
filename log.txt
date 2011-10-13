@@ -2,6 +2,7 @@ v1.0.3
 - ADDED "Ringing Notes" option (System screen)
 - FIXED bug that either stopped playing notes (synth) or caused stuck notes (midi)
 - ADDED "Learn" button to MIDI control assignment screen
+- This is the first source code release made public.
 
 v1.0.2
 - ADDED version number to config.xml
@@ -67,7 +68,7 @@ v0.9.0
 - FIXED bugs in left handed mode that made it not react the same as in right hand mode
 - FIXED ball to reset in center after configuration screen loaded
 - ADDED filter type, attack, decay and release controls for new version of synth firmware
-- ADDED Dream DSP firmware version to System menu
+- ADDED DSP firmware version to System menu
 
 v0.8.3
 - IMPROVED string reaction to not stop playing when touch pad window pressed

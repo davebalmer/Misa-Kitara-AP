@@ -25,3 +25,10 @@ In the Main subdirectory,
 	"make core"		build core files
 	"make"			build main executable
 	"make cleanall"		clean everything
+
+DIRECTORY STRUCTURE
+
+The source code is contained in two important directories:
+
+Misa-Kitara-AP/Main 		- code for the main control system
+Misa-Kitara-AP/Application 	- code for the configuration menu (includes Windows simulator that can be built with Visual Studio)

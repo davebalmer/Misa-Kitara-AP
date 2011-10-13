@@ -14,8 +14,8 @@ logic, I/O, graphics and synthesizer control.
 
 ON WHAT HARDWARE DOES IT RUN?
 
-The Misa Kitara AP only runs on the Misa Kitara digital guitar. This is an ARM9 
-architecture.
+The Misa Kitara AP only runs on the Misa Kitara digital guitar. This uses the ARM9 
+processor family.
 
 WHICH COMPILE TOOLS ARE REQUIRED?
 

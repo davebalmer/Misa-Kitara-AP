@@ -17,6 +17,30 @@ ON WHAT HARDWARE DOES IT RUN?
 The Misa Kitara AP only runs on the Misa Kitara digital guitar. This is an ARM9 
 architecture.
 
+WHICH COMPILE TOOLS ARE REQUIRED?
+
+The source code is compiled with the GNU tools. In particular you require the GNU toolchain 
+for ARM targets. Here's the version I'm using (output of "arm-linux-g++ -v"):
+
+	Reading specs from /usr/local/arm/3.4.6/lib/gcc/arm-linux/3.4.6/specs
+	Configured with: /home/mikey/Projects/toolchain/crosstool-0.43/build/arm-linux/gcc-3.4.6-glibc-2.3.6/gcc-3.4.6/configure 
+	--target=arm-linux
+	--host=i686-host_pc-linux-gnu
+	--prefix=/usr/local/arm/3.4.6
+	--with-float=soft
+	--with-headers=/usr/local/arm/3.4.6/arm-linux/include
+	--with-local-prefix=/usr/local/arm/3.4.6/arm-linux
+	--disable-nls
+	--enable-threads=posix
+	--enable-symvers=gnu
+	--enable-__cxa_atexit
+	--enable-languages=c,c++,java
+	--enable-shared
+	--enable-c99
+	--enable-long-long
+	Thread model: posix
+	gcc version 3.4.6
+
 HOW TO COMPILE?
 
 In the Main subdirectory,

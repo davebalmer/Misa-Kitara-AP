@@ -2465,6 +2465,12 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 		}
 		else	//"compatibility" mode (not very good)
 		{
+			if(string_note[str] != -1)
+			{
+				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
+				string_note[str] = -1;
+				usleep(5); //I have no idea why. But Ableton seems to miss / ignore messages if I don't do this. Outside Ableton I have no problem. WTF.
+			}
 			sendVariation(str, 0, current_setting.string_midi_out_channel[str]);
 			midi.sendNoteOn(MIDI_OUT, current_setting.string_midi_out_channel[str], note, velocity[str]);
 			if((string_note[str] != note) && (string_note[str] != -1))

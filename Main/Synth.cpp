@@ -2465,7 +2465,7 @@ void Synth::sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool m
 		}
 		else	//"compatibility" mode (not very good)
 		{
-			if(string_note[str] != -1)
+			if((string_note[str] != -1) && attack)
 			{
 				midi.sendNoteOff(MIDI_OUT, current_setting.string_midi_out_channel[str], string_note[str], 0);
 				string_note[str] = -1;

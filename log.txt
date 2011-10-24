@@ -1,3 +1,6 @@
+v1.0.4
+- FIXED MIDI incompatibility for synths that use multi key assign (eg. access virus ti)
+
 v1.0.3
 - ADDED "Ringing Notes" option (System screen)
 - FIXED bug that either stopped playing notes (synth) or caused stuck notes (midi)

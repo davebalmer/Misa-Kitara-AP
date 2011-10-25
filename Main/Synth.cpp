@@ -196,6 +196,11 @@ void Synth::resetSettings(void)
 		setMixerOutputLevel(i, 0x7F);
 		setMixerPan(i, 0x40);
 		setMixerReverbSend(i, 0);
+
+		setBitCrusherOn(i, 0);
+		setBitcrusherBitResolution(i, 0);
+		setBitcrusherBrightness(i, 0);
+		setBitcrusherDownsampling(i, 0);
 	}
 
 	//this sets all the internal "parts" as normal sound (not drumset)

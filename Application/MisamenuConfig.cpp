@@ -26,6 +26,7 @@ static bool IsModified();
 
 #include "SynthScreen.h"
 #include "CompressionScreen.h"
+#include "BitcrusherScreen.h"
 #include "DistortionScreen.h"
 #include "ModulationScreen.h"
 #include "DelayScreen.h"
@@ -105,6 +106,36 @@ PSYNTH_SETTING GetCurrentSettingPtr()
 void SaveToConfigFile(void)
 {
 	pcs->saveConfigFile();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// Misa bitcrusher stub
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void BitCrusherOn(int fxb, bool state)
+{
+	pSynth->setBitCrusherOn(fxb, state);
+	SetModified();
+}
+
+void BitCrusherSetBitResolution(int fxb, int val)
+{
+	pSynth->setBitcrusherBitResolution(fxb, val);
+	SetModified();
+}
+
+void BitCrusherSetBrightness(int fxb, int val)
+{
+	pSynth->setBitcrusherBrightness(fxb, val);
+	SetModified();
+}
+
+void BitCrusherSetDownsampling(int fxb, int val)
+{
+	pSynth->setBitcrusherDownsampling(fxb, val);
+	SetModified();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1088,7 +1119,7 @@ void SynthSoloVoice(int string_index, int voice_index, bool Solo)
 	pSynth->SetSoloChannelForString(string_index, voice_index, Solo);
 }
 
-#else
+#else		// !Linux || MISA_APPLICATION
 
 #include <fstream>
 #include <iostream>
@@ -1108,6 +1139,7 @@ void SynthSoloVoice(int string_index, int voice_index, bool Solo)
 
 #include "SynthScreen.h"
 #include "Compressionscreen.h"
+#include "BitcrusherScreen.h"
 #include "DistortionScreen.h"
 #include "ModulationScreen.h"
 #include "DelayScreen.h"
@@ -1138,6 +1170,37 @@ std::vector<int> MidiStopSoundFind(unsigned char str)
 	std::vector<int> vectInt;
 	return vectInt;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// Misa bitcrusher stub
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void BitCrusherOn(int fxb, bool state)
+{
+	current_setting.fx_block[fxb].bitcrusher.on = state;
+	SetModified();
+}
+
+void BitCrusherSetBitResolution(int fxb, int val)
+{
+	current_setting.fx_block[fxb].bitcrusher.bitresolution = val;
+	SetModified();
+}
+
+void BitCrusherSetBrightness(int fxb, int val)
+{
+	current_setting.fx_block[fxb].bitcrusher.brightness = val;
+	SetModified();
+}
+
+void BitCrusherSetDownsampling(int fxb, int val)
+{
+	current_setting.fx_block[fxb].bitcrusher.downsampling = val;
+	SetModified();
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -2028,6 +2091,10 @@ void SynthUnassignCC(unsigned char touch_control, unsigned char channel, unsigne
 	SetModified();
 }
 
+void SynthSendLearnCC(unsigned char channel, unsigned int cc)
+{
+}
+
 void SynthAssignStopSound(unsigned char str, unsigned char cc, unsigned char val)
 {
 	SetModified();
@@ -2036,6 +2103,10 @@ void SynthAssignStopSound(unsigned char str, unsigned char cc, unsigned char val
 void SynthUnassignStopSound(unsigned char str, unsigned char cc)
 {
 	SetModified();
+}
+
+void SynthSendLearnStopSound(unsigned char str, unsigned char cc)
+{
 }
 
 std::vector<int> MidiPitchFindEffect(unsigned char chan)
@@ -2306,6 +2377,16 @@ int MisaSetEnableSustain(int mode)
 	return 0;
 }
 
+int MisaGetRingingNotes()
+{
+	return 0;
+}
+
+int MisaSetRingingNotes(int mode)
+{
+	return 0;
+}
+
 int MisaGetShowStrings()
 {
 	return 0;
@@ -2358,6 +2439,11 @@ void ResetAllEffect()
 	ReverbSetPreDelay(0);
 	for(int i = 0; i < 2; i++)
 	{
+		BitCrusherOn(i, false);
+		BitCrusherSetBitResolution(i, 0);
+		BitCrusherSetBrightness(i, 0);
+		BitCrusherSetDownsampling(i, 0);
+
 		DistortionOn(i, false);
 		DistortionSetType(i, 0);
 		DistortionSetLevel(i, 0);
@@ -2484,6 +2570,19 @@ void SynthLoadPreset(std::string filename)
 			if(e->Attribute("time")) ReverbSetTime(atoi(e->Attribute("time")));
 			if(e->Attribute("delay_feedback")) ReverbSetDelayFeedback(atoi(e->Attribute("delay_feedback")));
 			if(e->Attribute("pre_delay_time")) ReverbSetPreDelay(atoi(e->Attribute("pre_delay_time")));
+		}
+		else
+		if(e_str == "bitcrusher")
+		{
+			int fxb = 0;
+			if(e->Attribute("fxblock"))
+			{
+				fxb = atoi(e->Attribute("fxblock"));
+				if(e->Attribute("on")) BitCrusherOn(fxb, atoi(e->Attribute("on")));
+				if(e->Attribute("bitresolution")) BitCrusherSetBitResolution(fxb, atoi(e->Attribute("bitresolution")));
+				if(e->Attribute("brightness")) BitCrusherSetBrightness(fxb, atoi(e->Attribute("brightness")));
+				if(e->Attribute("downsampling")) BitCrusherSetDownsampling(fxb, atoi(e->Attribute("downsampling")));
+			}
 		}
 		else
 		if(e_str == "distortion")
@@ -2683,7 +2782,11 @@ void SynthSoloVoice(int string_index, int voice_index, bool Solo)
 	// Do nothing in the Windows simulation
 }
 
-#endif // Linux
+void SaveToConfigFile(void)
+{
+}
+
+#endif // !Linux || MISA_APPLICATION
 
 //***********************************************************************
 //
@@ -2839,6 +2942,19 @@ int SynthTranslateEffect(int effect)
 	case COMPRESSION_ID_PROGRATIO:
 		ret = PARAM_COMPRESSION_RATIO;
 		break;
+
+	case BITCRUSHER_ID_BITRESOLUTION:
+		ret = PARAM_BITCRUSHER_RESOLUTION;
+		break;
+
+	case BITCRUSHER_ID_BRIGHTNESS:
+		ret = PARAM_BITCRUSHER_BRIGHTNESS;
+		break;
+
+	case BITCRUSHER_ID_DOWNSAMPLINGFACTOR:
+		ret = PARAM_BITCRUSHER_DOWNSAMPLING;
+		break;
+
 	case DISTORTION_ID_PROGDRIVE:
 		ret = PARAM_DISTORTION_DRIVE;
 		break;

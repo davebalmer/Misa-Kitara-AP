@@ -35,7 +35,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 
-#define MAINMENU_BUTTONS_XOFFSET 2
+#define MAINMENU_BUTTONS_XOFFSET 1
 #define MAINMENU_BUTTONS_YOFFSET 6
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,6 +47,7 @@ typedef enum __MAINMENUBUTTONS
 	MAINMENU_SYNTH_MIDI,
 	MAINMENU_COMPRESSION,
 	MAINMENU_DISTORTION,
+	MAINMENU_BITCRUSHER,
 	MAINMENU_MODULATION,
 	MAINMENU_DELAY,
 	MAINMENU_REVERB,
@@ -63,6 +64,7 @@ typedef enum __MAINMENU_ID
 	MAINMENU_ID_SYNTH_MIDI,
 	MAINMENU_ID_COMPRESSION,
 	MAINMENU_ID_DISTORTION,
+	MAINMENU_ID_BITCRUSHER,
 	MAINMENU_ID_MODULATION,
 	MAINMENU_ID_DELAY,
 	MAINMENU_ID_REVERB,
@@ -167,6 +169,14 @@ static U8 MainmenuCreateButtons(WM_HWIN hParent)
 	BUTTON_SetBitmap(hMainmenuButtons[MAINMENU_DISTORTION],BUTTON_CI_UNPRESSED,&bmDISTORTION_NORMAL);
 	BUTTON_SetBitmap(hMainmenuButtons[MAINMENU_DISTORTION],BUTTON_CI_PRESSED,&bmDISTORTION_PRESSED);
 	x+=bmDISTORTION_NORMAL.XSize;
+	x+=MAINMENU_BUTTONS_XOFFSET;
+
+	hMainmenuButtons[MAINMENU_BITCRUSHER] = BUTTON_CreateAsChild(x,y,bmBITCRUSHER_NORMAL.XSize,bmBITCRUSHER_NORMAL.YSize,
+		hParent,MAINMENU_ID_BITCRUSHER,WM_CF_SHOW | WM_CF_MEMDEV);
+	BUTTON_SetFocussable(hMainmenuButtons[MAINMENU_BITCRUSHER],0);
+	BUTTON_SetBitmap(hMainmenuButtons[MAINMENU_BITCRUSHER],BUTTON_CI_UNPRESSED,&bmBITCRUSHER_NORMAL);
+	BUTTON_SetBitmap(hMainmenuButtons[MAINMENU_BITCRUSHER],BUTTON_CI_PRESSED,&bmBITCRUSHER_PRESSED);
+	x+=bmBITCRUSHER_NORMAL.XSize;
 	x+=MAINMENU_BUTTONS_XOFFSET;
 
 	hMainmenuButtons[MAINMENU_MODULATION] = BUTTON_CreateAsChild(x,y,bmMODULATION_NORMAL.XSize,bmMODULATION_NORMAL.YSize,
@@ -341,6 +351,9 @@ static void MainmenuProc(WM_MESSAGE* pMsg)
 				break;
 			case MAINMENU_ID_DISTORTION:
 				TopDistortionScreen(pMsg->hWin);
+				break;
+			case MAINMENU_ID_BITCRUSHER:
+				TopBitCrusherScreen(pMsg->hWin);
 				break;
 			case MAINMENU_ID_MODULATION:
 				TopModulationScreen(pMsg->hWin);

@@ -50,11 +50,11 @@ MMSOLIB = Mainmenu.so
 QSSOLIB = Quickset.so
 
 OBJS = main.o \
-	ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o DistortionScreen.o CompressionScreen.o \
+	ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o BitcrusherScreen.o DistortionScreen.o CompressionScreen.o \
 	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o \
 	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o KeyboardRes.o PresetSlideList.o\
 	MisaWidget.o MisaAppAssi.o MisamenuConfig.o MisaDialogueBox.o Touchpanel.o
-LIBOBJS = ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o DistortionScreen.o CompressionScreen.o \
+LIBOBJS = ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o BitcrusherScreen.o DistortionScreen.o CompressionScreen.o \
 	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o \
 	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o KeyboardRes.o PresetSlideList.o\
 	MisaWidget.o MisaAppAssi.o MisamenuConfig.o MisaDialogueBox.o

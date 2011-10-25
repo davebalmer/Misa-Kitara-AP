@@ -375,6 +375,30 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Application\BitcrusherScreen.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\Application\BitcrusherScreen.h"
+				>
+			</File>
+			<File
 				RelativePath="Application\CommonRes.cpp"
 				>
 				<FileConfiguration

@@ -1,3 +1,6 @@
+v1.0.5
+- ADDED bit crusher effect
+
 v1.0.4
 - FIXED MIDI incompatibility for synths that use multi key assign (eg. access virus ti)
 

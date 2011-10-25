@@ -87,7 +87,10 @@ enum CONTROLS
 #define PARAM_MIXER_OUTPUT_LEVEL	49
 #define PARAM_MIXER_PAN			50
 #define PARAM_MIXER_REVERB_SEND	51
-
+#define PARAM_BITCRUSHER_ON	52
+#define PARAM_BITCRUSHER_RESOLUTION 	53
+#define PARAM_BITCRUSHER_BRIGHTNESS 	54
+#define PARAM_BITCRUSHER_DOWNSAMPLING 	55
 enum
 {
 	PARAM_VOICE_AMP_ENV_ATTACK	=	60,
@@ -160,6 +163,14 @@ struct eq
 	bool on;
 	struct eq_band lowest, lower, higher, highest;
 	int low_mid_q, high_mid_q;
+};
+
+struct effect_bitcrusher
+{
+	bool on;
+	int bitresolution;
+	int brightness;
+	int downsampling;
 };
 
 struct effect_distortion
@@ -252,6 +263,7 @@ struct mixer_controls
 
 struct fxb
 {
+	struct effect_bitcrusher bitcrusher;
 	struct effect_distortion distortion;
 	struct effect_compressor compressor;
 //	struct effect_wahwah wahwah;
@@ -368,6 +380,12 @@ public:
 		void setMute(int str, int voice_index, bool state);
 
 		void setFxBlockOn(int str, int voice_index, int fxb, bool state);
+
+		void setBitCrusherOn(int fxb, bool state);
+		void setBitcrusherBitResolution(int fxb, int val);
+		void setBitcrusherBrightness(int fxb, int val);
+		void setBitcrusherDownsampling(int fxb, int val);
+
 		void setDistortionOn(int fxb, bool state);
 		void setDistortionType(int fxb, int val);
 		void setDistortionLevel(int fxb, int val);

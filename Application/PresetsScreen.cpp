@@ -32,6 +32,7 @@ using namespace std;
 #include "SynthScreen.h"
 #include "ControlAssignments.h"
 #include "CompressionScreen.h"
+#include "BitcrusherScreen.h"
 #include "DistortionScreen.h"
 #include "ModulationScreen.h"
 #include "DelayScreen.h"
@@ -641,6 +642,12 @@ void UpdateSynthSetting()
 	distortion.noisereduction = synthSetting.fx_block[distortion.Fx].distortion.noise_reduction;
 	distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 	UpdateDistortionInfo(&distortion);
+
+	// Bit Crusher
+TODO : 	GetBitCrusherInfo();
+		...
+		UpdateBitCrusherInfo()
+
 	// Compression
 	GetCompressionInfo(&compression);
 	compression.softhard = synthSetting.fx_block[compression.Fx].compressor.knee;
@@ -722,6 +729,7 @@ void UpdateSynthSetting()
 void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 {
 	SYNTH_INFO synth;
+	BITCRUSHER_INFO bitcrusher;
 	DISTORTION_INFO distortion;
 	COMPRESSION_INFO compression;
 	DELAY_INFO delay;
@@ -841,6 +849,23 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 		distortion.booster = synthSetting.fx_block[distortion.Fx].distortion.booster * 32;
 		UpdateDistortionInfo(&distortion);
 	}
+
+	// Bit Crusher
+	if(MISAMODULE_BITCRUSHER & module)
+	{
+		GetBitCrusherInfo(&bitcrusher);
+		bitcrusher.On = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.on;
+		bitcrusher.bitresolution = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.bitresolution * 127 / 17 + 1;
+		if (bitcrusher.bitresolution == 1)
+			bitcrusher.bitresolution = 0;
+		bitcrusher.brightness = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.brightness;
+		if (synthSetting.fx_block[bitcrusher.Fx].bitcrusher.downsampling == 0)
+			bitcrusher.downsamplingFactor = 0;
+		else
+			bitcrusher.downsamplingFactor = (synthSetting.fx_block[bitcrusher.Fx].bitcrusher.downsampling - 1 )* 8;
+		UpdateBitCrusherInfo(&bitcrusher);
+	}
+
 	// Modulation
 	if(MISAMODULE_MODULATION & module)
 	{

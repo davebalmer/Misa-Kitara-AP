@@ -30,6 +30,7 @@ typedef struct __DISTORTION_INFO
 U8 CreateDistortionScreen(void* pPara);
 U8 DeleteDistortionScreen();
 U8 TopDistortionScreen(WM_HWIN hPreWin);
+U8 TopBitCrusherScreen(WM_HWIN hPreWin);
 U8 UpdateDistortionInfo(PDISTORTION_INFO pInfo);
 U8 GetDistortionInfo(PDISTORTION_INFO pInfo);
 

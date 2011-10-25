@@ -28,6 +28,7 @@
 #include "PresetsScreen.h"
 #include "SynthScreen.h"
 #include "DistortionScreen.h"
+#include "BitcrusherScreen.h"
 #include "CompressionScreen.h"
 #include "DelayScreen.h"
 #include "ModulationScreen.h"
@@ -239,6 +240,7 @@ U32 KitaraInit()
 	CreatePresetsScreen(0);
 	CreateSynthScreen(0);
 	CreateDistortionScreen(0);
+	CreateBitCrusherScreen(0);
 	CreateCompressionScreen(0);
 	CreateDelayScreen(0);
 	CreateModulationScreen(0);
@@ -280,6 +282,8 @@ U32 KitaraExit()
 	DeleteCompressionScreen();
 	RunFramework();
 	DeleteDistortionScreen();
+	RunFramework();
+	DeleteBitCrusherScreen();
 	RunFramework();
 	DeleteSynthScreen();
 	RunFramework();
@@ -492,6 +496,7 @@ U32 ucGuiMain(void* pPara)
 	CreatePresetsScreen(0);
 	CreateSynthScreen(0);
 	CreateDistortionScreen(0);
+	CreateBitCrusherScreen(0);
 	CreateCompressionScreen(0);
 	CreateDelayScreen(0);
 	CreateModulationScreen(0);
@@ -594,6 +599,8 @@ U32 ucGuiMain(void* pPara)
 	DeleteCompressionScreen();
 	RunFramework();
 	DeleteDistortionScreen();
+	RunFramework();
+	DeleteBitCrusherScreen();
 	RunFramework();
 	DeleteSynthScreen();
 	RunFramework();

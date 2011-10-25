@@ -112,9 +112,9 @@ U8 GetBitCrusherInfo(PBITCRUSHER_INFO pInfo)
 {
 	pInfo->Fx = BitCrusherGetFX();
 	pInfo->On = MisaCheckbox_GetStatus(hCOMPcomm.hCheckOn);
-	pInfo->bitresolution = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_ID_BITRESOLUTION]);
-	pInfo->brightness = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_ID_BRIGHTNESS]);
-	pInfo->downsamplingFactor = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_ID_DOWNSAMPLINGFACTOR]);
+	pInfo->bitresolution = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_BITRESOLUTION]);
+	pInfo->brightness = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_BRIGHTNESS]);
+	pInfo->downsamplingFactor = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR]);
 	return 0;
 }
 

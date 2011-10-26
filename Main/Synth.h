@@ -89,7 +89,7 @@ enum CONTROLS
 #define PARAM_MIXER_REVERB_SEND	51
 #define PARAM_BITCRUSHER_ON	52
 #define PARAM_BITCRUSHER_RESOLUTION 	53
-#define PARAM_BITCRUSHER_BRIGHTNESS 	54
+//#define PARAM_BITCRUSHER_BRIGHTNESS 	54
 #define PARAM_BITCRUSHER_DOWNSAMPLING 	55
 enum
 {
@@ -169,7 +169,7 @@ struct effect_bitcrusher
 {
 	bool on;
 	int bitresolution;
-	int brightness;
+//	int brightness;
 	int downsampling;
 };
 
@@ -383,7 +383,7 @@ public:
 
 		void setBitCrusherOn(int fxb, bool state);
 		void setBitcrusherBitResolution(int fxb, int val);
-		void setBitcrusherBrightness(int fxb, int val);
+		//void setBitcrusherBrightness(int fxb, int val);
 		void setBitcrusherDownsampling(int fxb, int val);
 
 		void setDistortionOn(int fxb, bool state);

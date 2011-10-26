@@ -5,7 +5,7 @@
 typedef enum __BITCRUSHER_ID
 {
 	BITCRUSHER_ID_BITRESOLUTION=GUI_ID_BITCRUSHER_BASE,
-	BITCRUSHER_ID_BRIGHTNESS,
+	// BITCRUSHER_ID_BRIGHTNESS,
 	BITCRUSHER_ID_DOWNSAMPLINGFACTOR,
 	BITCRUSHER_ID_MAX
 } BITCRUSHER_ID;
@@ -15,7 +15,7 @@ typedef struct __BITCRUSHER_INFO
 	U8 Fx;
 	U8 On;
 	U8 bitresolution;
-	U8 brightness;		// not implemented
+	// U8 brightness;		// not implemented
 	U8 downsamplingFactor;		// 1-16
 } BITCRUSHER_INFO,*PBITCRUSHER_INFO;
 

@@ -86,8 +86,8 @@
 #define PARAM_MIXER_REVERB_SEND	51
 #define PARAM_BITCRUSHER_ON	52
 #define PARAM_BITCRUSHER_RESOLUTION 	53
-#define PARAM_BITCRUSHER_BRIGHTNESS 	54
-#define PARAM_BITCRUSHER_DOWNSAMPLING 	55
+// #define PARAM_BITCRUSHER_BRIGHTNESS 	54
+#define PARAM_BITCRUSHER_DOWNSAMPLING 	54
 
 // OR : Drag & Drop
 // enumeration of all PARAM_VOICE_XXX parameters
@@ -169,7 +169,7 @@ struct effect_bitcrusher
 {
 	bool on;
 	int bitresolution;
-	int brightness;
+	// int brightness;
 	int downsampling;
 };
 
@@ -371,7 +371,7 @@ void SaveToConfigFile(void);
 ///////////////////////////////////////////////////////////////////////////////
 void BitCrusherOn(int fxb, bool state);
 void BitCrusherSetBitResolution(int fxb, int val);
-void BitCrusherSetBrightness(int fxb, int val);
+// void BitCrusherSetBrightness(int fxb, int val);
 void BitCrusherSetDownsampling(int fxb, int val);
 
 ///////////////////////////////////////////////////////////////////////////////

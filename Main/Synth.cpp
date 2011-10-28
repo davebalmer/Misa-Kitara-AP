@@ -554,7 +554,7 @@ void Synth::loadPresetFromFile(std::string filename)
 				fxb = atoi(e->Attribute("fxblock"));
 				if(e->Attribute("on")) setBitCrusherOn(fxb, atoi(e->Attribute("on")));
 				if(e->Attribute("bitresolution")) setBitcrusherBitResolution(fxb, atoi(e->Attribute("bitresolution")));
-				if(e->Attribute("brightness")) setBitcrusherBrightness(fxb, atoi(e->Attribute("brightness")));
+				//if(e->Attribute("brightness")) setBitcrusherBrightness(fxb, atoi(e->Attribute("brightness")));
 				if(e->Attribute("downsampling")) setBitcrusherDownsampling(fxb, atoi(e->Attribute("downsampling")));
 			}
 		}
@@ -981,7 +981,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 		element->SetAttribute("fxblock", fxb);
 		element->SetAttribute("on", s->fx_block[fxb].bitcrusher.on);
 		element->SetAttribute("bitresolution", s->fx_block[fxb].bitcrusher.bitresolution);
-		element->SetAttribute("brightness", s->fx_block[fxb].bitcrusher.brightness);
+		// element->SetAttribute("brightness", s->fx_block[fxb].bitcrusher.brightness);
 		element->SetAttribute("downsampling", s->fx_block[fxb].bitcrusher.downsampling);
 		root->LinkEndChild(element);
 
@@ -2087,13 +2087,13 @@ void Synth::setBitcrusherBitResolution(int fxb, int val)
 	std::cout << "setBitcrusherBitResolution exit" << std::endl << std::flush;
 }
 
-void Synth::setBitcrusherBrightness(int fxb, int val)
-{
-	std::cout << "setBitcrusherBrightness" << std::endl << std::flush;
-	//midi.sendNRPN(SYNTH, 0, 0x3A+fxb, ??, val);
-	current_setting.fx_block[fxb].bitcrusher.brightness = val;
-	std::cout << "setBitcrusherBrightness exit" << std::endl << std::flush;
-}
+//void Synth::setBitcrusherBrightness(int fxb, int val)
+//{
+//	std::cout << "setBitcrusherBrightness" << std::endl << std::flush;
+//	//midi.sendNRPN(SYNTH, 0, 0x3A+fxb, ??, val);
+//	current_setting.fx_block[fxb].bitcrusher.brightness = val;
+//	std::cout << "setBitcrusherBrightness exit" << std::endl << std::flush;
+//}
 
 void Synth::setBitcrusherDownsampling(int fxb, int val)
 {
@@ -2821,7 +2821,7 @@ void Synth::sendToEffect(struct assignable_effect *ae, int val, int scaler)
 		//hopefully the compiler compiles this to a branch table
 		case PARAM_BITCRUSHER_ON: setBitCrusherOn(ae->fxb, final_val); break;
 		case PARAM_BITCRUSHER_RESOLUTION: setBitcrusherBitResolution(ae->fxb, final_val); break;
-		case PARAM_BITCRUSHER_BRIGHTNESS: setBitcrusherBrightness(ae->fxb, final_val); break;
+		//case PARAM_BITCRUSHER_BRIGHTNESS: setBitcrusherBrightness(ae->fxb, final_val); break;
 		case PARAM_BITCRUSHER_DOWNSAMPLING: setBitcrusherDownsampling(ae->fxb, final_val); break;
 
 		case PARAM_DISTORTION_ON: setDistortionOn(ae->fxb, final_val); break;

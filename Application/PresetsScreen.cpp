@@ -858,7 +858,7 @@ void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem)
 		bitcrusher.bitresolution = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.bitresolution * 127 / 17 + 1;
 		if (bitcrusher.bitresolution == 1)
 			bitcrusher.bitresolution = 0;
-		bitcrusher.brightness = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.brightness;
+		// bitcrusher.brightness = synthSetting.fx_block[bitcrusher.Fx].bitcrusher.brightness;
 		if (synthSetting.fx_block[bitcrusher.Fx].bitcrusher.downsampling == 0)
 			bitcrusher.downsamplingFactor = 0;
 		else

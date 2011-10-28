@@ -38,7 +38,7 @@
 typedef enum __BITCRUSHERITEMS
 {
 	BITCRUSHER_BITRESOLUTION,
-	BITCRUSHER_BRIGHTNESS,
+	// BITCRUSHER_BRIGHTNESS,
 	BITCRUSHER_DOWNSAMPLINGFACTOR,
 	BITCRUSHER_MAX
 } BITCRUSHERITEMS;
@@ -92,18 +92,18 @@ U8 UpdateBitCrusherInfo(PBITCRUSHER_INFO pInfo)
 	}
 	MisaCheckbox_SetStatus(hCOMPcomm.hCheckOn,pInfo->On);
 	MisaProgressbar_SetPercentEx(hBitCrusherItems[BITCRUSHER_BITRESOLUTION],pInfo->bitresolution,0);
-	MisaProgressbar_SetPercentEx(hBitCrusherItems[BITCRUSHER_BRIGHTNESS],pInfo->brightness,0);
+	// MisaProgressbar_SetPercentEx(hBitCrusherItems[BITCRUSHER_BRIGHTNESS],pInfo->brightness,0);
 	MisaProgressbar_SetPercentEx(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR],pInfo->downsamplingFactor,0);
 
 	effect = SynthFindEffect(SynthTranslateEffect(BITCRUSHER_BITRESOLUTION),BitCrusherGetFX());
 	MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_BITRESOLUTION], effect.size()?1:0);
-	effect = SynthFindEffect(SynthTranslateEffect(BITCRUSHER_BRIGHTNESS),BitCrusherGetFX());
-	MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_BRIGHTNESS], effect.size()?1:0);
+	// effect = SynthFindEffect(SynthTranslateEffect(BITCRUSHER_BRIGHTNESS),BitCrusherGetFX());
+	// MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_BRIGHTNESS], effect.size()?1:0);
 	effect = SynthFindEffect(SynthTranslateEffect(BITCRUSHER_DOWNSAMPLINGFACTOR),BitCrusherGetFX());
 	MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR], effect.size()?1:0);
 
 	SynthSetDragCentre(SynthTranslateEffect(BITCRUSHER_BITRESOLUTION),pInfo->Fx,pInfo->bitresolution);
-	SynthSetDragCentre(SynthTranslateEffect(BITCRUSHER_BRIGHTNESS),pInfo->Fx,pInfo->brightness);
+	// SynthSetDragCentre(SynthTranslateEffect(BITCRUSHER_BRIGHTNESS),pInfo->Fx,pInfo->brightness);
 	SynthSetDragCentre(SynthTranslateEffect(BITCRUSHER_DOWNSAMPLINGFACTOR),pInfo->Fx,pInfo->downsamplingFactor);
 	return 0;
 }
@@ -113,7 +113,7 @@ U8 GetBitCrusherInfo(PBITCRUSHER_INFO pInfo)
 	pInfo->Fx = BitCrusherGetFX();
 	pInfo->On = MisaCheckbox_GetStatus(hCOMPcomm.hCheckOn);
 	pInfo->bitresolution = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_BITRESOLUTION]);
-	pInfo->brightness = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_BRIGHTNESS]);
+	// pInfo->brightness = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_BRIGHTNESS]);
 	pInfo->downsamplingFactor = MisaProgressbar_GetPercent(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR]);
 	return 0;
 }
@@ -131,23 +131,21 @@ static void DownsamplingFactorDisplay(int value, char* buf)
 
 static U8 BitCrusherCreateItems(WM_HWIN hParent)
 {
-	int x,y;
+	int y;
 	//MENU_ITEM_DATA menuItem;
 	hCOMPcomm = CreateCommComponent(hParent);
 	memset(hBitCrusherItems,0,sizeof(hBitCrusherItems));
-	x = 4;
 	y = bmEMPTYTITLEBAR.YSize;
 
 	y += bmDISTYPEAREA.YSize;
 	//y += BITCRUSHER_YOFFSET;
-	int xbar = 50;
+	int xbar = 250;
 	hBitCrusherItems[BITCRUSHER_BITRESOLUTION] = MisaProgressbar_CreateEx(xbar,y,0,0,hParent,BITCRUSHER_ID_BITRESOLUTION,"Level", "", MISAPROG_FONT24, BitResolutionDisplay);
 	xbar += (bmSLIDER.XSize + 100);
-	hBitCrusherItems[BITCRUSHER_BRIGHTNESS] = MisaProgressbar_Create(xbar,y,0,0,hParent,BITCRUSHER_ID_BRIGHTNESS,"Fc",MISAPROG_FONT24);
-	xbar += (bmSLIDER.XSize + 100);
+	// hBitCrusherItems[BITCRUSHER_BRIGHTNESS] = MisaProgressbar_Create(xbar,y,0,0,hParent,BITCRUSHER_ID_BRIGHTNESS,"Fc",MISAPROG_FONT24);
+	// xbar += (bmSLIDER.XSize + 100);
 	hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR] = MisaProgressbar_CreateEx(xbar,y,0,0,hParent,BITCRUSHER_ID_DOWNSAMPLINGFACTOR,"Down", "Sampling",MISAPROG_FONT24, DownsamplingFactorDisplay);
 	MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_BITRESOLUTION], 2);		// not assignable to x/y axis
-	MisaProgressbar_SetCheck(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR], 2);		// not assignable to x/y axis
 
 	return 0;
 }
@@ -158,10 +156,10 @@ static U8 BitCrusherDeleteItems()
 	{
 		MisaProgressbar_Delete(hBitCrusherItems[BITCRUSHER_BITRESOLUTION]);
 	}
-	if(hBitCrusherItems[BITCRUSHER_BRIGHTNESS])
-	{
-		MisaProgressbar_Delete(hBitCrusherItems[BITCRUSHER_BRIGHTNESS]);
-	}
+	//if(hBitCrusherItems[BITCRUSHER_BRIGHTNESS])
+	//{
+	//	MisaProgressbar_Delete(hBitCrusherItems[BITCRUSHER_BRIGHTNESS]);
+	//}
 	if(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR])
 	{
 		MisaProgressbar_Delete(hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR]);
@@ -257,10 +255,12 @@ static void BitCrusherProc(WM_MESSAGE* pMsg)
 					x = MisaProgressbar_GetPercent(pMsg->hWinSrc);
 					BitCrusherSetBitResolution(BitCrusherGetFX(), x<127 ? x*17/127 : 16);
 					break;
-				case BITCRUSHER_ID_BRIGHTNESS:
-					x = MisaProgressbar_GetPercent(pMsg->hWinSrc);
-					BitCrusherSetBrightness(BitCrusherGetFX(), x<127?x:127);
-					break;
+
+				//case BITCRUSHER_ID_BRIGHTNESS:
+				//	x = MisaProgressbar_GetPercent(pMsg->hWinSrc);
+				//	BitCrusherSetBrightness(BitCrusherGetFX(), x<127?x:127);
+				//	break;
+
 				case BITCRUSHER_ID_DOWNSAMPLINGFACTOR:
 					x = MisaProgressbar_GetPercent(pMsg->hWinSrc);
 					BitCrusherSetDownsampling(BitCrusherGetFX(), x<127 ? (x>>3) + 1 : 16);
@@ -270,7 +270,7 @@ static void BitCrusherProc(WM_MESSAGE* pMsg)
 				}
 				break;
 			case WM_NOTIFICATION_SEL_CHANGED:
-				if(hBitCrusherItems[BITCRUSHER_BITRESOLUTION]!=pMsg->hWinSrc && hBitCrusherItems[BITCRUSHER_DOWNSAMPLINGFACTOR]!=pMsg->hWinSrc)
+				if(hBitCrusherItems[BITCRUSHER_BITRESOLUTION]!=pMsg->hWinSrc)
 				{
 					std::vector<int> effect;
 					x = WM_GetWindowOrgX(pMsg->hWinSrc)+50;

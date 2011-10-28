@@ -383,7 +383,6 @@ public:
 
 		void setBitCrusherOn(int fxb, bool state);
 		void setBitcrusherBitResolution(int fxb, int val);
-		//void setBitcrusherBrightness(int fxb, int val);
 		void setBitcrusherDownsampling(int fxb, int val);
 
 		void setDistortionOn(int fxb, bool state);

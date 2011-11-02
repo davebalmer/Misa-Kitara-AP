@@ -549,7 +549,6 @@ void Synth::loadPresetFromFile(std::string filename)
 				fxb = atoi(e->Attribute("fxblock"));
 				if(e->Attribute("on")) setBitCrusherOn(fxb, atoi(e->Attribute("on")));
 				if(e->Attribute("bitresolution")) setBitcrusherBitResolution(fxb, atoi(e->Attribute("bitresolution")));
-				//if(e->Attribute("brightness")) setBitcrusherBrightness(fxb, atoi(e->Attribute("brightness")));
 				if(e->Attribute("downsampling")) setBitcrusherDownsampling(fxb, atoi(e->Attribute("downsampling")));
 			}
 		}
@@ -976,7 +975,6 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
 		element->SetAttribute("fxblock", fxb);
 		element->SetAttribute("on", s->fx_block[fxb].bitcrusher.on);
 		element->SetAttribute("bitresolution", s->fx_block[fxb].bitcrusher.bitresolution);
-		// element->SetAttribute("brightness", s->fx_block[fxb].bitcrusher.brightness);
 		element->SetAttribute("downsampling", s->fx_block[fxb].bitcrusher.downsampling);
 		root->LinkEndChild(element);
 
@@ -2061,41 +2059,54 @@ void Synth::setFxBlockOn(int str, int voice_index, int fxb, bool state)
 
 void Synth::setBitCrusherOn(int fxb, bool state)
 {
-	std::cout << "setBitCrusherOn" << std::endl << std::flush;
+	// std::cout << "setBitCrusherOn" << std::endl << std::flush;
 	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x24, state);
 	current_setting.fx_block[fxb].bitcrusher.on = state;
-	std::cout << "setBitCrusherOn exit" << std::endl << std::flush;
 }
 
+// OR : at this level, val is received in range 0-127
 void Synth::setBitcrusherBitResolution(int fxb, int val)
 {
-	std::cout << "setBitcrusherBitResolution" << std::endl << std::flush;
-	current_setting.fx_block[fxb].bitcrusher.bitresolution = val;
+	int ScaledValue = 0;
 
-	if (val > 16)
+	if (val < 0)
 		return;
 
-	if (val > 0)
-		val = 17 - val;
+	if (val < 127)
+		ScaledValue = val * 17 / 127;
+	else
+	{
+		ScaledValue = 16;
+		val = 127;
+	}
 
-	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x25, val);
-	std::cout << "setBitcrusherBitResolution exit" << std::endl << std::flush;
+	if (ScaledValue > 0)
+		ScaledValue = 17 - ScaledValue;
+
+	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x25, ScaledValue);
+	current_setting.fx_block[fxb].bitcrusher.bitresolution = val;
+	// std::cout << "setBitcrusherBitResolution  : " << ScaledValue << std::endl << std::flush;
 }
 
-//void Synth::setBitcrusherBrightness(int fxb, int val)
-//{
-//	std::cout << "setBitcrusherBrightness" << std::endl << std::flush;
-//	//midi.sendNRPN(SYNTH, 0, 0x3A+fxb, ??, val);
-//	current_setting.fx_block[fxb].bitcrusher.brightness = val;
-//	std::cout << "setBitcrusherBrightness exit" << std::endl << std::flush;
-//}
-
+// OR : at this level, val is received in range 0-127
 void Synth::setBitcrusherDownsampling(int fxb, int val)
 {
-	std::cout << "setBitcrusherDownsampling" << std::endl << std::flush;
-	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x26, val);
+	int ScaledValue = 0;
+
+	if (val < 0)
+		return;
+
+	if (val < 127)
+		ScaledValue = (val >> 3) + 1;
+	else
+	{
+		ScaledValue = 16;
+		val = 127;
+	}
+
+	midi.sendNRPN(SYNTH, 0, 0x3A+fxb, 0x26, ScaledValue);
 	current_setting.fx_block[fxb].bitcrusher.downsampling = val;
-	std::cout << "setBitcrusherDownsampling exit" << std::endl << std::flush;
+	// std::cout << "setBitcrusherDownsampling : " << ScaledValue << std::endl << std::flush;
 }
 
 
@@ -2810,7 +2821,6 @@ void Synth::sendToEffect(struct assignable_effect *ae, int val, int scaler)
 		//hopefully the compiler compiles this to a branch table
 		case PARAM_BITCRUSHER_ON: setBitCrusherOn(ae->fxb, final_val); break;
 		case PARAM_BITCRUSHER_RESOLUTION: setBitcrusherBitResolution(ae->fxb, final_val); break;
-		//case PARAM_BITCRUSHER_BRIGHTNESS: setBitcrusherBrightness(ae->fxb, final_val); break;
 		case PARAM_BITCRUSHER_DOWNSAMPLING: setBitcrusherDownsampling(ae->fxb, final_val); break;
 
 		case PARAM_DISTORTION_ON: setDistortionOn(ae->fxb, final_val); break;

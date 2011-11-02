@@ -126,10 +126,11 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 	hSystemItems[SYSTEM_BALLTRAVEL] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_BALLTRAVEL,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
 	x = 2;
 	y = 502;
-	hSystemItems[SYSTEM_UPDATESOUNDBANK] = BUTTON_CreateAsChild(x,y,bmCM_UPWA_UN.XSize,bmCM_UPWA_UN.YSize,hParent,SYSTEM_ID_UPDATESOUNDBANK,WM_CF_SHOW|WM_CF_MEMDEV);
+	/*hSystemItems[SYSTEM_UPDATESOUNDBANK] = BUTTON_CreateAsChild(x,y,bmCM_UPWA_UN.XSize,bmCM_UPWA_UN.YSize,hParent,SYSTEM_ID_UPDATESOUNDBANK,WM_CF_SHOW|WM_CF_MEMDEV);
 	BUTTON_SetFocussable(hSystemItems[SYSTEM_UPDATESOUNDBANK],0);
 	BUTTON_SetBitmap(hSystemItems[SYSTEM_UPDATESOUNDBANK],BUTTON_CI_UNPRESSED,&bmCM_UPWA_UN);
 	BUTTON_SetBitmap(hSystemItems[SYSTEM_UPDATESOUNDBANK],BUTTON_CI_PRESSED,&bmCM_UPWA_SE);
+	*/
 	if(MISA_LEFTHAND_MODE==MisaGetHandMode())
 	{
 		MisaRadio_SetStatus(hSystemItems[SYSTEM_LEFTHANDSWITCH],1);
@@ -155,11 +156,11 @@ static U8 SystemDeleteItems()
 	{
 		TEXT_Delete(hSystemItems[SYSTEM_INFOLABEL]);
 	}
-	if(hSystemItems[SYSTEM_UPDATESOUNDBANK])
+/*	if(hSystemItems[SYSTEM_UPDATESOUNDBANK])
 	{
 		BUTTON_Delete(hSystemItems[SYSTEM_UPDATESOUNDBANK]);
 	}
-	if(hSystemItems[SYSTEM_LEFTHANDSWITCH])
+*/	if(hSystemItems[SYSTEM_LEFTHANDSWITCH])
 	{
 		MisaRadio_Delete(hSystemItems[SYSTEM_LEFTHANDSWITCH]);
 	}
@@ -283,7 +284,7 @@ static void SystemProc(WM_MESSAGE* pMsg)
 						SaveToConfigFile();
 					state_updated = false;
 					break;
-				case SYSTEM_ID_UPDATESOUNDBANK:
+/*				case SYSTEM_ID_UPDATESOUNDBANK:
 					if(GUI_ID_OK == Misa_ConfirmBox("Are you sure?","Delete this voice!",GUI_MESSAGEBOX_CF_MODAL))
 					{
 						Misa_WarningMessageBegin();
@@ -315,7 +316,7 @@ static void SystemProc(WM_MESSAGE* pMsg)
 						}
 					}
 					break;
-				case SYSTEM_ID_LEFTHANDSWITCH:
+*/				case SYSTEM_ID_LEFTHANDSWITCH:
 					state_updated = true;
 					MisaRadio_SetStatus(hSystemItems[SYSTEM_RIGHTHANDSWITCH],0);
 					MisaSetHandMode(MISA_LEFTHAND_MODE);

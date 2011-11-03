@@ -126,11 +126,6 @@ void BitCrusherSetBitResolution(int fxb, int val)
 	SetModified();
 }
 
-//void BitCrusherSetBrightness(int fxb, int val)
-//{
-//	pSynth->setBitcrusherBrightness(fxb, val);
-//	SetModified();
-//}
 
 void BitCrusherSetDownsampling(int fxb, int val)
 {
@@ -1188,12 +1183,6 @@ void BitCrusherSetBitResolution(int fxb, int val)
 	current_setting.fx_block[fxb].bitcrusher.bitresolution = val;
 	SetModified();
 }
-
-//void BitCrusherSetBrightness(int fxb, int val)
-//{
-//	current_setting.fx_block[fxb].bitcrusher.brightness = val;
-//	SetModified();
-//}
 
 void BitCrusherSetDownsampling(int fxb, int val)
 {
@@ -2441,7 +2430,6 @@ void ResetAllEffect()
 	{
 		BitCrusherOn(i, false);
 		BitCrusherSetBitResolution(i, 0);
-		// BitCrusherSetBrightness(i, 0);
 		BitCrusherSetDownsampling(i, 0);
 
 		DistortionOn(i, false);
@@ -2580,7 +2568,6 @@ void SynthLoadPreset(std::string filename)
 				fxb = atoi(e->Attribute("fxblock"));
 				if(e->Attribute("on")) BitCrusherOn(fxb, atoi(e->Attribute("on")));
 				if(e->Attribute("bitresolution")) BitCrusherSetBitResolution(fxb, atoi(e->Attribute("bitresolution")));
-				// if(e->Attribute("brightness")) BitCrusherSetBrightness(fxb, atoi(e->Attribute("brightness")));
 				if(e->Attribute("downsampling")) BitCrusherSetDownsampling(fxb, atoi(e->Attribute("downsampling")));
 			}
 		}
@@ -2946,10 +2933,6 @@ int SynthTranslateEffect(int effect)
 	case BITCRUSHER_ID_BITRESOLUTION:
 		ret = PARAM_BITCRUSHER_RESOLUTION;
 		break;
-
-	//case BITCRUSHER_ID_BRIGHTNESS:
-	//	ret = PARAM_BITCRUSHER_BRIGHTNESS;
-	//	break;
 
 	case BITCRUSHER_ID_DOWNSAMPLINGFACTOR:
 		ret = PARAM_BITCRUSHER_DOWNSAMPLING;

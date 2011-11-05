@@ -1,6 +1,7 @@
 v1.0.5
 - ADDED bit crusher effect
 - UPDATED dsp firmware to version 1.10 (bug fix for when CC7==0)
+- REMOVED update wavetable button
 
 v1.0.4
 - FIXED MIDI incompatibility for synths that use multi key assign (eg. access virus ti)

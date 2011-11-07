@@ -67,6 +67,7 @@ $(MISAAP):
 	cd ap && tar zxvf presets.tar.gz
 	rm ap/presets.tar.gz
 	cp wavetable.txt ap
+	cp dream_version.xml ap
 	cp 3716-FW_MISA.bin ap
 	cp main ap
 	rm -f ap.tar.gz

@@ -44,11 +44,11 @@ static void SlideWindowProc(WM_MESSAGE* pMsg);
 static void IndicatorProc(WM_MESSAGE* pMsg);
 static const GUI_RECT leftsidebutton=
 {
-	0,64,39,498
+	0,2,39,498
 };
 static const GUI_RECT rightsidebutton=
 {
-	760,64,799,498
+	760,2,799,498
 };
 static U8 SlidingBorder;
 
@@ -302,7 +302,7 @@ static void MainmenuProc(WM_MESSAGE* pMsg)
 		}
 
 		y = WM_GetWindowOrgY(hMainmenuItems[MAINMENU_SLIDEWINDOW]);
-		y += 170;
+		y += 230;
 		if(0x02 &SlidingBorder)
 		{
 			x = 4;
@@ -339,14 +339,14 @@ static void MainmenuProc(WM_MESSAGE* pMsg)
 					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
 					{
 						sidebutton = 1;
-						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 						SlidingBorder = SlideGoPreviousPage(hMainmenuItems[MAINMENU_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
-						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 						SlidingBorder = SlideGoNextPage(hMainmenuItems[MAINMENU_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 					}
 				}
 			}

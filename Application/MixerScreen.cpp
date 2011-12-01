@@ -328,14 +328,14 @@ static void MixerProc(WM_MESSAGE* pMsg)
 					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
 					{
 						sidebutton = 1;
-						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 						SlidingBorder = SlideGoPreviousPage(hMixerItems[MIXER_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
-						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 						SlidingBorder = SlideGoNextPage(hMixerItems[MIXER_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 					}
 				}
 			}

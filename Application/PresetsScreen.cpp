@@ -445,10 +445,9 @@ U8 DeletePresetSlidePanel(WM_HWIN hSlidePanel)
 
 U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 {
-	int x,y,i,size;
+	int y,i,size;
 	int lOffsetY = 0;
 
-	x = 0;
 	y = 0;
 	preset_filenames.clear();
 	ReadPresetsDir(preset_filenames);
@@ -468,9 +467,8 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 			{
 				WM_SetFocus(pPresetsItems[i]);
 
-				// OR : Make it visible
-				if (i > 4)
-					lOffsetY = bmSELECT.YSize * (i - 4);
+				// OR : Make the current preset visible
+				lOffsetY = bmSELECT.YSize * i;
 			}
 
 		}
@@ -486,20 +484,26 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 			{
 				WM_SetFocus(pPresetsItems[i]);
 				
-				// OR : Make it visible
-				if (i > 11)
-					lOffsetY = bmSELECT.YSize*(i/3 - 3);
+				// OR : Make the current preset visible
+				lOffsetY = bmSELECT.YSize*(i/3);
 			}
 		}
 		y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	}
-	x = WM_GetWindowSizeX(hParent);
-	WM_SetSize(hParent, x, WM_GetWindowSizeY(hParent)<y?y:WM_GetWindowSizeY(hParent));
-				BUTTON_SetPressed(pPresetsItems[2], int(true));
 
-	// OR : Make it visible
-	if (lOffsetY)
-		WM_MoveWindow(hParent,0, lOffsetY);
+	// OR : Make the current preset visible
+	int lPosY = WM_GetWindowOrgY(hParent);
+	lOffsetY += lPosY;
+	int lFirstLineY = WM_GetWindowOrgY(WM_GetParent(hParent));
+	int lLastLineY = lFirstLineY + WM_GetWindowSizeY(WM_GetParent(hParent)) - bmSELECT.YSize;
+	if (lOffsetY > lLastLineY)
+		lPosY -= lOffsetY - lLastLineY;
+	if (lOffsetY < lFirstLineY)
+		lPosY -= lOffsetY - lFirstLineY;
+
+	WM_SetWindowPos(hParent, WM_GetWindowOrgX(hParent), lPosY, WM_GetWindowSizeX(hParent), WM_GetWindowSizeY(hParent)<y?y:WM_GetWindowSizeY(hParent));
+
+	BUTTON_SetPressed(pPresetsItems[2], int(true));
 
 	return 0;
 }

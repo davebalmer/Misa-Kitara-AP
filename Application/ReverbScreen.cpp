@@ -374,14 +374,14 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
 					{
 						sidebutton = 1;
-						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 						SlidingBorder = SlideGoPreviousPage(hReverbItems[REVERB_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
-						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 						SlidingBorder = SlideGoNextPage(hReverbItems[REVERB_SLIDEWINDOW]);
+						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 					}
 				}
 			}

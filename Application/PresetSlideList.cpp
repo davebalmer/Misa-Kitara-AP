@@ -82,10 +82,10 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 					y = WM_GetWindowOrgY(pMsg->hWin);
 					SlideSizeY = WM_GetWindowSizeY(pMsg->hWin);
 					dy = pPID_State->y - LastY;
-					if(dy > 10)
-					{
-						int n= 5;
-					}
+					//if(dy > 10)
+					//{
+					//	int n= 5;
+					//}
 					if(dy > 0)
 					{
 						if (y + dy > OffsetY)

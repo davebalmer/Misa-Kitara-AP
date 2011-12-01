@@ -28,14 +28,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 
-#define COMPRESSION_LAYOUT_LEVEL2 468
 #define COMPRESSION_XOFFSET 2
 #define COMPRESSION_YOFFSET 2
 
 // No more sliding
-#define PAGE_POSITIVE_FACTOR 175
-#define PAGE_NEGATIVE_FACTOR -175
-
 static const GUI_RECT leftsidebutton=
 {
 	0,64,39,498
@@ -44,9 +40,6 @@ static const GUI_RECT rightsidebutton=
 {
 	760,64,799,498
 };
-
-static void CompSlideGoNextPage();
-static void CompSlideGoPreviousPage();
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -102,7 +95,6 @@ U8 TopCompressionScreen(WM_HWIN hPreWin)
 {
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hCompression);
-	//WM_BringToTop(hDistortion);
 	SetWindowToUpdateIfPresetModified(hCompression);
 	return 0;
 }
@@ -163,32 +155,11 @@ static U8 CompressionCreateItems(WM_HWIN hParent)
 	x = 1;
 	y = bmEMPTYTITLEBAR.YSize;
 	hCompressionItems[COMPRESSION_HARD] = MisaRadio_Create(x, y, bmCOMHARD_UN.XSize, bmCOMHARD_UN.YSize, hParent, COMPRESSION_ID_HARD, WM_CF_SHOW|WM_CF_MEMDEV, &bmCOMHARD_UN, &bmCOMHARD_SE);
-	//hCompressionItems[COMPRESSION_HARD] = BUTTON_CreateAsChild(x,y,bmCOMHARD_UN.XSize,bmCOMHARD_UN.YSize,hParent,COMPRESSION_ID_HARD,WM_CF_SHOW|WM_CF_MEMDEV);
-	//BUTTON_SetFocussable(hCompressionItems[COMPRESSION_HARD],0);
-	//BUTTON_SetBitmap(hCompressionItems[COMPRESSION_HARD],BUTTON_CI_UNPRESSED,&bmCOMHARD_UN);
-	//BUTTON_SetBitmap(hCompressionItems[COMPRESSION_HARD],BUTTON_CI_PRESSED,&bmCOMHARD_SE);
 	x += bmCOMHARD_UN.XSize;
 	hCompressionItems[COMPRESSION_SOFT] = MisaRadio_Create(x, y, bmCOMSOFT_UN.XSize, bmCOMSOFT_UN.YSize, hParent, COMPRESSION_ID_SOFT, WM_CF_SHOW|WM_CF_MEMDEV, &bmCOMSOFT_UN, &bmCOMSOFT_SE);
-	//hCompressionItems[COMPRESSION_SOFT] = BUTTON_CreateAsChild(x,y,bmCOMSOFT_UN.XSize,bmCOMSOFT_UN.YSize,hParent,COMPRESSION_ID_SOFT,WM_CF_SHOW|WM_CF_MEMDEV);
-	//BUTTON_SetFocussable(hCompressionItems[COMPRESSION_SOFT],0);
-	//BUTTON_SetBitmap(hCompressionItems[COMPRESSION_SOFT],BUTTON_CI_UNPRESSED,&bmCOMSOFT_UN);
-	//BUTTON_SetBitmap(hCompressionItems[COMPRESSION_SOFT],BUTTON_CI_PRESSED,&bmCOMSOFT_SE);
 	y += bmCOMHARD_UN.YSize;
 	x = 50;
 	hCompressionItems[COMPRESSION_INDICATOR] = CreateSlidePanel(x,y,WM_GetWindowSizeX(hParent)-100,bmSLIDER.YSize,hParent,WM_CF_SHOW|WM_CF_MEMDEV);
-	/*hCompressionItems[COMPRESSION_PROGATTACK] = MisaProgressbar_Create(x,y,0,0,hParent,COMPRESSION_ID_PROGATTACK,"ATTACT",MISAPROG_FONT16);
-	x += bmSLIDER.XSize;
-	x += 50;
-	hCompressionItems[COMPRESSION_PROGRELEASE] = MisaProgressbar_Create(x,y,0,0,hParent,COMPRESSION_ID_PROGRELEASE,"RELEASE",MISAPROG_FONT16);
-	x += bmSLIDER.XSize;
-	x += 50;
-	hCompressionItems[COMPRESSION_PROGBOOST] = MisaProgressbar_Create(x,y,0,0,hParent,COMPRESSION_ID_PROGBOOST,"BOOST",MISAPROG_FONT16);
-	x += bmSLIDER.XSize;
-	x += 50;
-	hCompressionItems[COMPRESSION_PROGTRES] = MisaProgressbar_Create(x,y,0,0,hParent,COMPRESSION_ID_PROGTRES,"TRESH",MISAPROG_FONT16);
-	x += bmSLIDER.XSize;
-	x += 50;
-	hCompressionItems[COMPRESSION_PROGRATIO] = MisaProgressbar_Create(x,y,0,0,hParent,COMPRESSION_ID_PROGRATIO,"RATIO",MISAPROG_FONT16);*/
 	return 0;
 }
 
@@ -379,13 +350,13 @@ static void CompressionProc(WM_MESSAGE* pMsg)
 					{
 						sidebutton = 1;
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
-						CompSlideGoPreviousPage();
+						SlidingBorder = SlideGoPreviousPage(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
-						CompSlideGoNextPage();
+						SlidingBorder = SlideGoNextPage(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
 					}
 				}
 			}
@@ -666,43 +637,4 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 static void CompressionControlMenuProc(int menuId)
 {
 	AssignEffectControlMenuProc(menuId,CompressionGetFX());
-}
-
-// No more sliding
-static void CompSlideGoNextPage()
-{
-	int x,y;
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hCompressionItems[COMPRESSION_SLIDEWINDOW],hCompression);
-}
-
-static void CompSlideGoPreviousPage()
-{
-	int x;
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hCompressionItems[COMPRESSION_SLIDEWINDOW]);
-	WM_MoveWindow(hCompressionItems[COMPRESSION_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hCompressionItems[COMPRESSION_SLIDEWINDOW],hCompression);
 }

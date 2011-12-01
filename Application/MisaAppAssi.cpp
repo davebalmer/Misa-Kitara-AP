@@ -209,6 +209,32 @@ U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent)
 	return res;
 }
 
+
+U8 SlideGoNextPage(WM_HWIN hSlideWin)
+{
+	int xRight, n;
+	for (n = 0; n < 4; n++)
+	{
+		xRight = WM_GetWindowOrgX(hSlideWin) + WM_GetWindowSizeX(hSlideWin);
+		WM_MoveWindow(hSlideWin, xRight < GUI_GetScreenSizeX()-INDICATORFRAME - PAGE_NEGATIVE_FACTOR ? GUI_GetScreenSizeX()-INDICATORFRAME - xRight : PAGE_NEGATIVE_FACTOR, 0);
+		GUI_Delay(10);
+	}
+
+	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)));
+}
+
+U8 SlideGoPreviousPage(WM_HWIN hSlideWin)
+{
+	int x, n;
+	for (n = 0; n < 4; n++)
+	{
+		x = WM_GetWindowOrgX(hSlideWin);
+		WM_MoveWindow(hSlideWin,PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+		GUI_Delay(10);
+	}
+	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)));
+}
+
 U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp)
 {
 	U8 reBack;

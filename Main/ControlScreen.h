@@ -7,6 +7,10 @@
 #include "Graphics.h"
 #include "Midi.h"
 #include "Synth.h"
+#include "tinyxml/tinyxml.h"
+
+// OR  : Scene memories
+#define SCENES_NUMBER		6
 
 #define UI_NORMAL	 		0
 #define UI_STRINGS			1
@@ -59,11 +63,25 @@ struct control_message_t
 	int touch_id;
 };
 
+struct scene_memory_t
+{
+	std::string preset;
+
+	int volume;
+	int ball_mode;
+	int string_mode;
+	int ball_travel;
+	int sustain_mode;
+	int ringing_mode;
+};
+
 class ControlScreen
 {
 	private:
-		std::stack<unsigned char> screens;
+		// OR  : Scene memories
+		struct scene_memory_t scenes_memory[SCENES_NUMBER];
 
+		std::stack<unsigned char> screens;
 		unsigned int processDrag(unsigned int pos, unsigned int scaler, unsigned int origin);
 		void setDragPointOriginX(unsigned char str, unsigned int o);
 		void setDragPointOriginY(unsigned char str, unsigned int o);
@@ -94,6 +112,7 @@ class ControlScreen
 		std::vector<unsigned int> nt, bt, st[6], ost[6], touch_history;
 
 		bool tap_mode, string_mode, left_handed, sustain_enabled, mode_ringing_notes;
+		bool scene_enabled;		// OR  : Scene memories
 		bool corner_pressed[4], quickset_start, tap_mode_toggle;
 
 		Synth synth;
@@ -117,6 +136,11 @@ class ControlScreen
 	public:
 		ControlScreen(Graphics *g);
 		~ControlScreen(void);
+		// OR  : Scene memories
+		bool loadSceneFromConfig(TiXmlElement *e, int SceneNumber);
+		bool saveSceneInConfig(TiXmlElement *root, int SceneNumber);
+		std::string &getSceneName(int SceneNumber);
+
 		void loadConfigFile(void);
 		void saveConfigFile(void);
 		void draw(Neck *neck, Touchpanel *ts);
@@ -164,6 +188,16 @@ class ControlScreen
 		void setSustainEnabled(bool state);
 		bool isRingingNotes(void);
 		void setRingingNotes(bool state);
+		// OR  : Scene memories
+		bool isScenesEnabled(void);
+		void setScenesEnabled(bool state);
+		bool SwitchToScene(int SceneNumber);
+		bool initScene(int SceneNumber, bool SaveIntoConfigFile = true);
+		bool saveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
+							  int Ball_travel, int Sustain_mode, int Ringing_mode);
+
+
+
 };
 
 #endif

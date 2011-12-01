@@ -35,6 +35,7 @@
 #include "ReverbScreen.h"
 #include "MixerScreen.h"
 #include "EqScreen.h"
+#include "ScenesScreen.h"
 #include "MisaQuickSetScreen.h"
 
 #include "ucGuiMain.h"
@@ -247,6 +248,7 @@ U32 KitaraInit()
 	CreateReverbScreen(0);
 	CreateMixerScreen(0);
 	CreateEqScreen(0);
+	CreateScenesScreen(0);
 	MisaSetcontrolmenu_Create();
 	
 ///////////////////////////////////////////////////////////////////////////////
@@ -268,6 +270,8 @@ U32 KitaraExit()
 ///////////////////////////////////////////////////////////////////////////////
 // Delete menu windows
 	MisaSetcontrolmenu_Delete();
+	RunFramework();
+	DeleteScenesScreen();
 	RunFramework();
 	DeleteMixerScreen();
 	RunFramework();
@@ -304,6 +308,26 @@ U32 KitaraExit()
 	return 0;
 }
 
+U32 KitaraDisplaySceneName(const std::string &Name)
+{
+	MisaSetHandMode(MisaGetHandMode());
+	WM_Activate();
+
+	BeginMisaquicksetScreen();
+	GUI_Delay(1000);
+
+	EndMisaquicksetScreen();
+	GUI_SetColor(GUI_BLACK);
+	GUI_Clear();
+	RunFramework();
+	WM_Deactivate();
+	if(MISA_RIGHTHAND_MODE==MisaGetHandMode())
+	{
+		SetLcdFlip(!MisaGetHandMode());
+	}
+	return 0;
+}
+
 U32 KitaraMenu()
 {
 	static int lastX,lastY;
@@ -316,8 +340,7 @@ U32 KitaraMenu()
 	MisaSetHandMode(MisaGetHandMode());
 	WM_Activate();
 ///////////////////////////////////////////////////////////////////////////////
-// Brgin mainmenu to top
-	//EnterMainMenu();
+
 	BeginMisaquicksetScreen();
 #if defined(Linux) && defined(MISA_MESSAGETHREAD)
 	//pthread_create(&MessageTID,0,KitaraMessage,0);
@@ -387,7 +410,6 @@ U32 KitaraMenu()
 #if defined(Linux) && defined(MISA_MESSAGETHREAD)
 	//pthread_join(MessageTID,NULL);
 #endif // defined(Linux) && defined(MISA_MESSAGETHREAD)
-	ExitMainMenu();
 	EndMisaquicksetScreen();
 	GUI_SetColor(GUI_BLACK);
 	GUI_Clear();
@@ -503,6 +525,7 @@ U32 ucGuiMain(void* pPara)
 	CreateReverbScreen(0);
 	CreateMixerScreen(0);
 	CreateEqScreen(0);
+	CreateScenesScreen(0);
 	MisaSetcontrolmenu_Create();
 ///////////////////////////////////////////////////////////////////////////////
 // Brgin mainmenu to top
@@ -585,6 +608,8 @@ U32 ucGuiMain(void* pPara)
 ///////////////////////////////////////////////////////////////////////////////
 // Delete menu windows
 	MisaSetcontrolmenu_Delete();
+	RunFramework();
+	DeleteScenesScreen();
 	RunFramework();
 	DeleteMixerScreen();
 	RunFramework();

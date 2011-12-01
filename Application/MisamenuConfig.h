@@ -7,9 +7,12 @@
 
 #if defined(Linux) && !defined(MISA_APPLICATION)
 #include <Synth.h>
+#include <ControlScreen.h>
 #endif		// Linux
 
 #if defined(WIN32) || defined(MISA_APPLICATION)
+// OR  : Scene memories
+#define SCENES_NUMBER		6
 
 #define TOUCH_X	0
 #define TOUCH_Y	1
@@ -348,9 +351,9 @@ void ResetAllEffect();
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SynthDeletePreset(std::string filepath);
-void SynthLoadPreset(std::string filename);
-void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename);
+void SynthDeletePreset(std::string &filepath);
+void SynthLoadPreset(std::string &filename);
+void SynthSavePreset(PSYNTH_SETTING pSetting,std::string &filename);
 //bool GetCurrentSetting(PSYNTH_SETTING pSetting);
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -361,6 +364,10 @@ void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename);
 
 void SaveToConfigFile(void);
 
+bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
+							  int Ball_travel, int Sustain_mode, int Ringing_mode);
+bool InitScene(int SceneNumber);
+std::string &Scene_GetName(int SceneNumber);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -619,5 +626,7 @@ int MisaGetEnableSustain();
 int MisaSetEnableSustain(int mode);
 int MisaGetRingingNotes();
 int MisaSetRingingNotes(int mode);
+int MisaGetEnableScenes();
+int MisaSetEnableScenes(int mode);
 
 #endif // __MISA_MENUCONFIG_H__

@@ -27,6 +27,7 @@ class Neck
 		void addToEventQueue(struct neckstate n);	//only the thread should use this
 
 		void getNeckState(struct neckstate *n_state, bool left_handed);
+		void clear();		// OR  : Scene memories
 		int neck_fd, drv_fd;
 };
 

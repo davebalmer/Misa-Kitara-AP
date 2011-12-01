@@ -13,9 +13,6 @@ static bool IsModified();
 #if defined(Linux) && !defined(MISA_APPLICATION)
 #include <iostream>
 
-#include <Synth.h>
-#include <ControlScreen.h>
-
 #include <string>
 
 #include "GUI.h"
@@ -67,19 +64,19 @@ void ResetAllEffect()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SynthLoadPreset(std::string filename)
+void SynthLoadPreset(std::string &filename)
 {
 	pSynth->loadPresetFromFile(filename);
 	ClearModified();
 }
 
-void SynthDeletePreset(std::string filename)
+void SynthDeletePreset(std::string &filename)
 {
 	pSynth->deletePresetFile(filename);
 	ClearModified();
 }
 
-void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename)
+void SynthSavePreset(PSYNTH_SETTING pSetting,std::string &filename)
 {
 	pSynth->savePresetToFile(pSetting, filename);
 	ClearModified();
@@ -1090,6 +1087,18 @@ int MisaSetRingingNotes(int mode)
 	return 0;
 }
 
+// OR  : Scene memories
+int MisaGetEnableScenes()
+{
+	return pcs->isScenesEnabled()?1:0;
+}
+
+int MisaSetEnableScenes(int mode)
+{
+	pcs->setScenesEnabled(mode?true:false);
+	return 0;
+}
+
 const std::string &GetCurrentPresetName()
 {
 	return pSynth->getCurrentPresetName();
@@ -1112,6 +1121,23 @@ void SynthSoloVoice(int string_index, int voice_index, bool Solo)
 {
 	SynthTurnNotesOff();
 	pSynth->SetSoloChannelForString(string_index, voice_index, Solo);
+}
+
+// OR  : Scene memories
+bool InitScene(int SceneNumber)
+{
+	return pcs->initScene(SceneNumber);
+}
+
+bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
+							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+{
+	return pcs->saveScene(SceneNumber, PresetName, Volume, Ball_mode, String_mode, Ball_travel, Sustain_mode, Ringing_mode);
+}
+
+std::string &Scene_GetName(int SceneNumber)
+{
+	return pcs->getSceneName(SceneNumber);
 }
 
 #else		// !Linux || MISA_APPLICATION
@@ -1157,6 +1183,20 @@ const int effect_delay::MODE_MONO = 0;
 const int effect_delay::MODE_STEREO = 1;
 
 string CurrentPresetName;
+
+// OR  : Scene memories
+// for PC simulation
+struct scene_memory_t
+{
+	std::string preset;
+
+	int volume;
+	int ball_mode;
+	int string_mode;
+	int ball_travel;
+	int sustain_mode;
+	int ringing_mode;
+} scenes_memory[SCENES_NUMBER];
 
 // OR 28-06-11 : make it compile with Visual Studio 2008
 std::string working_directory(".");		
@@ -2375,6 +2415,16 @@ int MisaSetRingingNotes(int mode)
 {
 	return 0;
 }
+// OR  : Scene memories
+int MisaGetEnableScenes()
+{
+	return 0;
+}
+
+int MisaSetEnableScenes(int mode)
+{
+	return 0;
+}
 
 int MisaGetShowStrings()
 {
@@ -2476,7 +2526,7 @@ void ResetAllEffect()
 }
 
 // [mz] we must try to avoid code duplication
-void SynthLoadPreset(std::string filename)
+void SynthLoadPreset(std::string &filename)
 {
 	TiXmlDocument doc((working_directory + "/presets/" + filename +".mz").c_str());
 	if(!doc.LoadFile())
@@ -2725,9 +2775,15 @@ void SynthLoadPreset(std::string filename)
 	ClearModified();
 }
 
-void SynthSavePreset(PSYNTH_SETTING pSetting,std::string filename)
+void SynthDeletePreset(std::string &filename)
 {
-	std::string filepath = working_directory + "/presets/" + filename +".mz";
+	string fileToDeletePath = working_directory+"/presets/" + filename + ".mz";
+	DeleteFile(fileToDeletePath.c_str());
+}
+
+void SynthSavePreset(PSYNTH_SETTING pSetting,std::string &filename)
+{
+	std::string filepath = working_directory + "/presets/" + filename + ".mz";
 
 	HANDLE h = CreateFile(filepath.c_str(), FILE_ALL_ACCESS, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
 	if (h)
@@ -2771,6 +2827,49 @@ void SynthSoloVoice(int string_index, int voice_index, bool Solo)
 
 void SaveToConfigFile(void)
 {
+}
+
+bool InitScene(int SceneNumber)
+{
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return false;
+
+	scenes_memory[SceneNumber].preset = "";
+	scenes_memory[SceneNumber].volume = 0;
+	scenes_memory[SceneNumber].ball_mode = 0;
+	scenes_memory[SceneNumber].string_mode = 0;
+	scenes_memory[SceneNumber].ball_travel = 0;
+	scenes_memory[SceneNumber].sustain_mode = 0;
+	scenes_memory[SceneNumber].ringing_mode = 0;
+
+	return true;
+}
+
+bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
+							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+{
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return false;
+
+	scenes_memory[SceneNumber].preset = PresetName;
+	scenes_memory[SceneNumber].volume = Volume;
+	scenes_memory[SceneNumber].ball_mode = Ball_mode;
+	scenes_memory[SceneNumber].string_mode = String_mode;
+	scenes_memory[SceneNumber].ball_travel = Ball_travel;
+	scenes_memory[SceneNumber].sustain_mode = Sustain_mode;
+	scenes_memory[SceneNumber].ringing_mode = Ringing_mode;
+
+	return true;
+}
+
+std::string &Scene_GetName(int SceneNumber)
+{
+	static std::string Scene_EmptyString;
+
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return Scene_EmptyString;
+
+	return scenes_memory[SceneNumber].preset;
 }
 
 #endif // !Linux || MISA_APPLICATION

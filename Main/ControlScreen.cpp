@@ -6,7 +6,6 @@
 #include "Synth.h"
 #include <sys/types.h>
 #include <dirent.h>
-#include "tinyxml/tinyxml.h"
 #include "tinyxml/tinystr.h"
 
 #include "GUI.h"
@@ -23,8 +22,12 @@ ControlScreen::ControlScreen(Graphics *g)
 	string_mode = false;
 	left_handed = false;
 	sustain_enabled = false;
+	scene_enabled = false;		// OR  : Scene memories
 	mode_ringing_notes = false;
 	ball_travel_on = false;
+
+	for(int i = 0; i < 6; i++)
+		initScene(i, false);
 
 	loadConfigFile();
 
@@ -84,13 +87,58 @@ ControlScreen::ControlScreen(Graphics *g)
 	else
 	{
 		//synth.loadPresetFromFile(preset_filenames.at(0));
-		synth.loadPresetFromFile("[default]");
+		std::string defaultPreset("[default]");
+		synth.loadPresetFromFile(defaultPreset);
 	}
 }
 
 ControlScreen::~ControlScreen()
 {
 }
+
+bool ControlScreen::loadSceneFromConfig(TiXmlElement *e, int SceneNumber)
+{
+	// std::cout << "loadSceneFromConfig " << SceneNumber << std::endl << std::flush;
+
+	if (e->Attribute("preset") != NULL && e->Attribute("volume") != NULL && e->Attribute("ball_mode") != NULL &&
+				e->Attribute("string_mode") != NULL && e->Attribute("ball_travel") != NULL && e->Attribute("sustain_mode") != NULL &&
+				e->Attribute("ringing_mode") != NULL)
+	{
+
+		scenes_memory[SceneNumber].preset = e->Attribute("preset");
+		scenes_memory[SceneNumber].volume = atoi(e->Attribute("volume"));
+		scenes_memory[SceneNumber].ball_mode = atoi(e->Attribute("ball_mode"));
+		scenes_memory[SceneNumber].string_mode = atoi(e->Attribute("string_mode"));
+		scenes_memory[SceneNumber].ball_travel = atoi(e->Attribute("ball_travel"));
+		scenes_memory[SceneNumber].sustain_mode = atoi(e->Attribute("sustain_mode"));
+		scenes_memory[SceneNumber].ringing_mode = atoi(e->Attribute("ringing_mode"));
+
+		// std::cout << "loadSceneFromConfig " << SceneNumber << scenes_memory[SceneNumber].preset << std::endl << std::flush;
+		return true;
+	}
+
+	return false;
+}
+
+bool ControlScreen::saveSceneInConfig(TiXmlElement *root, int SceneNumber)
+{
+	TiXmlElement *element;
+
+	std::string ElementName = std::string("scene_") + char('0' + SceneNumber);
+	element = new TiXmlElement(ElementName.c_str());
+	element->SetAttribute("preset", scenes_memory[SceneNumber].preset.c_str());
+	element->SetAttribute("volume", scenes_memory[SceneNumber].volume);
+	element->SetAttribute("ball_mode", scenes_memory[SceneNumber].ball_mode);
+	element->SetAttribute("string_mode", scenes_memory[SceneNumber].string_mode);
+	element->SetAttribute("ball_travel", scenes_memory[SceneNumber].ball_travel);
+	element->SetAttribute("sustain_mode", scenes_memory[SceneNumber].sustain_mode);
+	element->SetAttribute("ringing_mode", scenes_memory[SceneNumber].ringing_mode);
+
+	root->LinkEndChild(element);
+		
+	return true;
+}
+
 
 void ControlScreen::loadConfigFile(void)
 {
@@ -144,6 +192,24 @@ void ControlScreen::loadConfigFile(void)
 				setRingingNotes(mode_ringing_notes);
 			}
 		}
+		// OR  : Scene memories
+		else if(e_str == "scene_enabled")
+		{
+			if(e->Attribute("on") != NULL)
+				scene_enabled = atoi(e->Attribute("on"));
+		}	
+		else if(e_str == "scene_0")
+			loadSceneFromConfig(e, 0);
+		else if(e_str == "scene_1")
+			loadSceneFromConfig(e, 1);
+		else if(e_str == "scene_2")
+			loadSceneFromConfig(e, 2);	
+		else if(e_str == "scene_3")
+			loadSceneFromConfig(e, 3);
+		else if(e_str == "scene_4")
+			loadSceneFromConfig(e, 4);
+		else if(e_str == "scene_5")
+			loadSceneFromConfig(e, 5);		
 	}
 
 	if((update_version) || (!firmware_tag_found))
@@ -181,6 +247,14 @@ void ControlScreen::saveConfigFile(void)
 	element = new TiXmlElement("ringing_notes");
 	element->SetAttribute("on", mode_ringing_notes);
 	root->LinkEndChild(element);
+
+	// OR  : Scene memories
+	element = new TiXmlElement("scene_enabled");
+	element->SetAttribute("on", scene_enabled);
+	root->LinkEndChild(element);
+
+	for (int i = 0; i < 6; i++)
+		saveSceneInConfig(root, i);
 
 	std::string filepath = working_directory + "/config.xml";
 	system("mount -o remount,rw /usr");
@@ -252,6 +326,14 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 
 	static int old_button[6] = {0, 0, 0, 0, 0, 0};
 
+	// OR  : Scene memories
+	bool scene_switch = false;
+	if (scene_enabled && old_button[0] == 1)		// left_handed --> 5 (?)
+	{
+		// std::cout << "scene_switch enabled"  << std::endl << std::flush;
+		scene_switch = true;		//  scene switch is enabled
+	}
+
 	//identify new button presses
 	for(unsigned int s = 0; s < 6; s++)
 	{
@@ -259,11 +341,18 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 		{
 			if(neck_state.string_button[s] == 0)
 				event_queue.push_back(newButtonEvent(EVENT_BUTTON_RELEASED, s, neck_state.string_button[s]));
-			else
-			if(neck_state.string_button[s] > old_button[s])
-				event_queue.push_back(newButtonEvent(EVENT_BUTTON_PRESSED, s, neck_state.string_button[s]));
-			else
-			if(neck_state.string_button[s] < old_button[s])
+			else if (neck_state.string_button[s] > old_button[s])
+			{
+				// OR  : Scene memories
+				if (scene_switch && neck_state.string_button[s] == 24)
+				{
+					SwitchToScene(s);
+					neck->clear();
+				}
+				else
+					event_queue.push_back(newButtonEvent(EVENT_BUTTON_PRESSED, s, neck_state.string_button[s]));
+			}
+			else if (neck_state.string_button[s] < old_button[s])
 				event_queue.push_back(newButtonEvent(EVENT_BUTTON_RELEASED, s, neck_state.string_button[s]));
 
 			old_button[s] = neck_state.string_button[s];
@@ -1375,4 +1464,100 @@ void ControlScreen::setRingingNotes(bool state)
 {
 	mode_ringing_notes = state;
 	synth.setModeRingingNotes(state);
+}
+
+// OR  : Scene memories
+bool ControlScreen::isScenesEnabled(void)
+{
+	return scene_enabled;
+}
+
+void ControlScreen::setScenesEnabled(bool state)
+{
+	scene_enabled = state;
+}
+
+bool ControlScreen::SwitchToScene(int SceneNumber)
+{
+		// DEBUG_STDOUT("SwitchToScene");
+	std::cout << "SwitchToScene " << SceneNumber << "Ball" << scenes_memory[SceneNumber].ball_mode << std::endl << std::flush;
+	
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return false;
+
+	if (scenes_memory[SceneNumber].preset != "")
+	{
+		synth.loadPresetFromFile(scenes_memory[SceneNumber].preset);
+		synth.setMasterVolume(scenes_memory[SceneNumber].volume);
+		showBall(scenes_memory[SceneNumber].ball_mode ? true:false);
+		showStrings(scenes_memory[SceneNumber].string_mode ? true:false);
+		setBallTravelOn(scenes_memory[SceneNumber].ball_travel ? true:false);
+		setSustainEnabled(scenes_memory[SceneNumber].sustain_mode ? true:false);
+		setRingingNotes(scenes_memory[SceneNumber].ringing_mode ? true:false);
+
+		graphics->setPaused(true);
+		usleep(1000*60);
+
+		KitaraDisplaySceneName(scenes_memory[SceneNumber].preset);
+		graphics->setLCDScaled();
+		graphics->setDragOriginIndicator(graphics->getWindow1Width()/2, graphics->getScreenHeight()/2);
+		graphics->setPaused(false);
+	}
+
+	return true;
+}
+
+bool ControlScreen::initScene(int SceneNumber, bool SaveIntoConfigFile /* = true*/)
+{
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return false;
+
+	scenes_memory[SceneNumber].preset = "";
+	scenes_memory[SceneNumber].volume = 0;
+	scenes_memory[SceneNumber].ball_mode = 0;
+	scenes_memory[SceneNumber].string_mode = 0;
+	scenes_memory[SceneNumber].ball_travel = 0;
+	scenes_memory[SceneNumber].sustain_mode = 0;
+	scenes_memory[SceneNumber].ringing_mode = 0;
+
+	// std::cout << "initScene " << SceneNumber << std::endl << std::flush;
+
+	if (SaveIntoConfigFile)
+		saveConfigFile();
+
+	return true;
+}
+
+
+bool ControlScreen::saveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
+							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+{
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return false;
+
+	// std::cout << "saveScene " << SceneNumber <<  PresetName << std::endl << std::flush;
+
+	scenes_memory[SceneNumber].preset = PresetName;
+	scenes_memory[SceneNumber].volume = Volume;
+	scenes_memory[SceneNumber].ball_mode = Ball_mode;
+	scenes_memory[SceneNumber].string_mode = String_mode;
+	scenes_memory[SceneNumber].ball_travel = Ball_travel;
+	scenes_memory[SceneNumber].sustain_mode = Sustain_mode;
+	scenes_memory[SceneNumber].ringing_mode = Ringing_mode;
+	
+	saveConfigFile();
+
+	return true;
+}
+
+
+std::string &ControlScreen::getSceneName(int SceneNumber)
+{
+	static std::string Scene_EmptyString;
+
+	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
+		return Scene_EmptyString;
+
+	// std::cout << "getSceneName " << SceneNumber << scenes_memory[SceneNumber].preset << std::endl << std::flush;
+	return scenes_memory[SceneNumber].preset;
 }

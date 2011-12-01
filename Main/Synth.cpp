@@ -218,7 +218,7 @@ void Synth::resetSettings(void)
 	currentPresetName = "";
 }
 
-/*void Synth::loadPresetFromFile(std::string filename)
+/*void Synth::loadPresetFromFile(std::string &filename)
 {
 	std::ifstream ifs((working_directory + "/presets/" + filename).c_str(), std::ios::binary);
 
@@ -456,7 +456,7 @@ void Synth::resetSettings(void)
 }
 */
 
-void Synth::loadPresetFromFile(std::string filename)
+void Synth::loadPresetFromFile(std::string &filename)
 {
 	std::string file = working_directory + "/presets/" + filename + ".mz";
 	TiXmlDocument doc(file.c_str());
@@ -726,7 +726,7 @@ int Synth::getWavetableIndex(std::string wave)
 	return -1;
 }
 
-void Synth::deletePresetFile(std::string filename)
+void Synth::deletePresetFile(std::string &filename)
 {
 	if(filename == "[default]")
 		std::cout << "Cannot delete [default] preset." << std::endl << std::flush;
@@ -748,7 +748,7 @@ void Synth::deletePresetFile(std::string filename)
 }
 
 /*
-void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
+void Synth::savePresetToFile(struct synth_setting *s, std::string &filepath)
 {
 	std::ofstream ofs(filepath.c_str(), std::ios::binary);
 
@@ -876,7 +876,7 @@ void Synth::savePresetToFile(struct synth_setting *s, std::string filepath)
 	system("sync");
 }
 */
-void Synth::savePresetToFile(struct synth_setting *s, std::string filename)
+void Synth::savePresetToFile(struct synth_setting *s, std::string &filename)
 {
 	if(filename == "[default]")
 	{

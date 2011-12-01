@@ -80,8 +80,6 @@ static COMMCOMPONENT hCOMPcomm;
 
 static WM_HWIN CreateSlidePanel(int x0, int y0, int width, int height, WM_HWIN hParent, U16 Style);
 static U8 DeleteSlidePanel(WM_HWIN hSlidePanel);
-void SlideGoNextPage();
-void SlideGoPreviousPage();
 
 static U8 SlidingBorder;
 
@@ -623,13 +621,13 @@ static void VoiceProc(WM_MESSAGE* pMsg)
 					{
 						sidebutton = 1;
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
-						SlideGoPreviousPage();
+						SlidingBorder = SlideGoPreviousPage(hVoiceItems[VOICE_SLIDEWINDOW]);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
-						SlideGoNextPage();
+						SlidingBorder = SlideGoNextPage(hVoiceItems[VOICE_SLIDEWINDOW]);
 					}
 				}
 			}
@@ -1178,44 +1176,6 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 	default:
 		WM_DefaultProc(pMsg);
 	}
-}
-
-void SlideGoNextPage()
-{
-	int x,y;
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:VOICE_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:VOICE_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:VOICE_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:VOICE_PAGE_NEGATIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hVoiceItems[VOICE_SLIDEWINDOW],hVoice);
-}
-
-void SlideGoPreviousPage()
-{
-	int x;
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:VOICE_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:VOICE_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:VOICE_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hVoiceItems[VOICE_SLIDEWINDOW]);
-	WM_MoveWindow(hVoiceItems[VOICE_SLIDEWINDOW],VOICE_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:VOICE_PAGE_POSITIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hVoiceItems[VOICE_SLIDEWINDOW],hVoice);
 }
 
 static void VoiceControlMenuProc(int menuId)

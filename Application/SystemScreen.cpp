@@ -30,6 +30,8 @@ using namespace std;
 #define SYSTEM_XOFFSET 2
 #define SYSTEM_YOFFSET 2
 
+#define SYSTEM_LABEL_SIZE_X	160
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 
@@ -47,6 +49,9 @@ typedef enum __SYSTEMITEMS
 	SYSTEM_RINGINGNOTES,
 	SYSTEM_ENABLESUSTAINLABEL,
 	SYSTEM_RINGINGNOTESLABEL,
+	SYSTEM_ENABLESCENES,
+	SYSTEM_ENABLESCENESLABEL,
+
 	SYSTEM_MAX
 } SYSTEMITEMS;
 
@@ -59,6 +64,7 @@ typedef enum __SYSTEM_ID
 	SYSTEM_ID_TEXT,
 	SYSTEM_ID_ENABLESUSTAIN,
 	SYSTEM_ID_RINGINGNOTES,
+	SYSTEM_ID_ENABLESCENES,
 	SYSTEM_ID_MAX
 } SYSTEM_ID;
 
@@ -80,50 +86,57 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 	memset(hSystemItems,0,sizeof(hSystemItems));
 	x = 0;
 	y = bmEMPTYTITLEBAR.YSize;
-	hSystemItems[SYSTEM_INFOLABEL] = TEXT_CreateAsChild(x,y,800,250,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"System Information",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	hSystemItems[SYSTEM_INFOLABEL] = TEXT_CreateAsChild(x,y,800,250,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"System Information", GUI_TA_HCENTER|GUI_TA_VCENTER);
 	TEXT_SetFont(hSystemItems[SYSTEM_INFOLABEL],&GUI_Font24B_ASCII);
 	TEXT_SetTextColor(hSystemItems[SYSTEM_INFOLABEL],GUI_WHITE);
-	x = SYSTEM_TYPE_XPOS;
+
+	// first line
 	y += 250;
+	x = SYSTEM_TYPE_XPOS;
 	hSystemItems[SYSTEM_LEFTHANDSWITCH] = MisaRadio_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_LEFTHANDSWITCH,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
-	//hSystemItems[SYSTEM_LEFTHANDSWITCH] = BUTTON_CreateAsChild(x,y,bmFX1_NORMAL.XSize,bmFX1_NORMAL.YSize,hParent,SYSTEM_ID_LEFTHANDSWITCH,WM_CF_SHOW|WM_CF_MEMDEV);
-	//BUTTON_SetFocussable(hSystemItems[SYSTEM_LEFTHANDSWITCH],0);
-	//BUTTON_SetBitmap(hSystemItems[SYSTEM_LEFTHANDSWITCH],BUTTON_CI_UNPRESSED,&bmFX1_NORMAL);
-	//BUTTON_SetBitmap(hSystemItems[SYSTEM_LEFTHANDSWITCH],BUTTON_CI_PRESSED,&bmFX1_PRESSED);
-	x += bmSM_WF_UN.XSize;
-	hSystemItems[SYSTEM_LEFTHANDLABEL] = TEXT_CreateAsChild(x-6,y,150,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Left Handed",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_LEFTHANDLABEL] = TEXT_CreateAsChild(x-6,y, SYSTEM_LABEL_SIZE_X,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Left Handed", GUI_TA_VCENTER);
 	TEXT_SetFont(hSystemItems[SYSTEM_LEFTHANDLABEL],&GUI_Font24B_ASCII);
 	TEXT_SetTextColor(hSystemItems[SYSTEM_LEFTHANDLABEL],GUI_WHITE);
-	x += 150;
+	x += SYSTEM_LABEL_SIZE_X;
+
 	hSystemItems[SYSTEM_RIGHTHANDSWITCH] = MisaRadio_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_RIGHTHANDSWITCH,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
-	//hSystemItems[SYSTEM_RIGHTHANDSWITCH] = BUTTON_CreateAsChild(x,y,bmFX2_NORMAL.XSize,bmFX2_NORMAL.YSize,hParent,SYSTEM_ID_RIGHTHANDSWITCH,WM_CF_SHOW|WM_CF_MEMDEV);
-	//BUTTON_SetFocussable(hSystemItems[SYSTEM_RIGHTHANDSWITCH],0);
-	//BUTTON_SetBitmap(hSystemItems[SYSTEM_RIGHTHANDSWITCH],BUTTON_CI_UNPRESSED,&bmFX2_NORMAL);
-	//BUTTON_SetBitmap(hSystemItems[SYSTEM_RIGHTHANDSWITCH],BUTTON_CI_PRESSED,&bmFX2_PRESSED);
-	x += bmSM_WF_UN.XSize;
-	hSystemItems[SYSTEM_RIGHTHANDLABEL] = TEXT_CreateAsChild(x,y,150,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Right Handed",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_RIGHTHANDLABEL] = TEXT_CreateAsChild(x,y, SYSTEM_LABEL_SIZE_X, bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Right Handed", GUI_TA_VCENTER);
 	TEXT_SetFont(hSystemItems[SYSTEM_RIGHTHANDLABEL],&GUI_Font24B_ASCII);
 	TEXT_SetTextColor(hSystemItems[SYSTEM_RIGHTHANDLABEL],GUI_WHITE);
 
-	x+= 160;
-	hSystemItems[SYSTEM_ENABLESUSTAINLABEL] = TEXT_CreateAsChild(x+50,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Sustain Mode",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	x+= SYSTEM_LABEL_SIZE_X;
+	hSystemItems[SYSTEM_ENABLESUSTAIN] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_ENABLESUSTAIN,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_ENABLESUSTAINLABEL] = TEXT_CreateAsChild(x,y, SYSTEM_LABEL_SIZE_X, bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Sustain Mode", GUI_TA_VCENTER);
 	TEXT_SetFont(hSystemItems[SYSTEM_ENABLESUSTAINLABEL],&GUI_Font24B_ASCII);
 	TEXT_SetTextColor(hSystemItems[SYSTEM_ENABLESUSTAINLABEL],GUI_WHITE);
-	hSystemItems[SYSTEM_ENABLESUSTAIN] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_ENABLESUSTAIN,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
 
-	y += bmSM_WF_UN.YSize;
-	y += 10;
-	hSystemItems[SYSTEM_RINGINGNOTESLABEL] = TEXT_CreateAsChild(x+51,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ringing Notes",GUI_TA_HCENTER|GUI_TA_VCENTER);
-	TEXT_SetFont(hSystemItems[SYSTEM_RINGINGNOTESLABEL],&GUI_Font24B_ASCII);
-	TEXT_SetTextColor(hSystemItems[SYSTEM_RINGINGNOTESLABEL],GUI_WHITE);
-	hSystemItems[SYSTEM_RINGINGNOTES] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_RINGINGNOTES,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+	// second line
+	x = SYSTEM_TYPE_XPOS;
+	y += bmSM_WF_UN.YSize + 10;
 
-	x = SYSTEM_TYPE_XPOS + bmSM_WF_UN.XSize + 110 + bmSM_WF_UN.XSize;
-	hSystemItems[SYSTEM_BALLTRAVELLABEL] = TEXT_CreateAsChild(x,y,200,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ball Travel",GUI_TA_HCENTER|GUI_TA_VCENTER);
+	hSystemItems[SYSTEM_ENABLESCENES] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_ENABLESCENES, WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_ENABLESCENESLABEL] = TEXT_CreateAsChild(x,y, SYSTEM_LABEL_SIZE_X, bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Scenes", GUI_TA_VCENTER);
+	TEXT_SetFont(hSystemItems[SYSTEM_ENABLESCENESLABEL],&GUI_Font24B_ASCII);
+	TEXT_SetTextColor(hSystemItems[SYSTEM_ENABLESCENESLABEL],GUI_WHITE);
+
+	x+= SYSTEM_LABEL_SIZE_X;
+	hSystemItems[SYSTEM_BALLTRAVEL] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_BALLTRAVEL,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_BALLTRAVELLABEL] = TEXT_CreateAsChild(x,y, SYSTEM_LABEL_SIZE_X, bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ball Travel", GUI_TA_VCENTER);
 	TEXT_SetFont(hSystemItems[SYSTEM_BALLTRAVELLABEL],&GUI_Font24B_ASCII);
 	TEXT_SetTextColor(hSystemItems[SYSTEM_BALLTRAVELLABEL],GUI_WHITE);
-	x = SYSTEM_TYPE_XPOS + 222;
-	hSystemItems[SYSTEM_BALLTRAVEL] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_BALLTRAVEL,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+
+	x+= SYSTEM_LABEL_SIZE_X;
+	hSystemItems[SYSTEM_RINGINGNOTES] = MisaCheckbox_Create(x,y,bmSM_WF_UN.XSize,bmSM_WF_UN.YSize,hParent,SYSTEM_ID_RINGINGNOTES,WM_CF_SHOW | WM_CF_MEMDEV,&bmSM_WF_UN,&bmSM_WF_SE);
+	x += bmSM_WF_UN.XSize + 8;
+	hSystemItems[SYSTEM_RINGINGNOTESLABEL] = TEXT_CreateAsChild(x,y, SYSTEM_LABEL_SIZE_X, bmSM_WF_UN.YSize,hParent,SYSTEM_ID_TEXT,WM_CF_SHOW|WM_CF_MEMDEV,"Ringing Notes", GUI_TA_VCENTER);
+	TEXT_SetFont(hSystemItems[SYSTEM_RINGINGNOTESLABEL],&GUI_Font24B_ASCII);
+	TEXT_SetTextColor(hSystemItems[SYSTEM_RINGINGNOTESLABEL],GUI_WHITE);
+
 	x = 2;
 	y = 502;
 	/*hSystemItems[SYSTEM_UPDATESOUNDBANK] = BUTTON_CreateAsChild(x,y,bmCM_UPWA_UN.XSize,bmCM_UPWA_UN.YSize,hParent,SYSTEM_ID_UPDATESOUNDBANK,WM_CF_SHOW|WM_CF_MEMDEV);
@@ -145,6 +158,7 @@ static U8 SystemCreateItems(WM_HWIN hParent)
 	MisaRadio_SetStatus(hSystemItems[SYSTEM_BALLTRAVEL], MisaGetBallTravel());
 	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN], MisaGetEnableSustain());
 	MisaRadio_SetStatus(hSystemItems[SYSTEM_RINGINGNOTES], MisaGetRingingNotes());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESCENES], MisaGetEnableScenes());
 
 	return 0;
 }
@@ -224,6 +238,12 @@ U8 TopSystemScreen(WM_HWIN hPreWin)
 	WM_HideWindow(hPreWin);
 	WM_ShowWindow(hSystem);
 	//WM_BringToTop(hSystem);
+
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_BALLTRAVEL], MisaGetBallTravel());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN], MisaGetEnableSustain());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_RINGINGNOTES], MisaGetRingingNotes());
+	MisaRadio_SetStatus(hSystemItems[SYSTEM_ENABLESCENES], MisaGetEnableScenes());
+
 	return 0;
 }
 
@@ -330,6 +350,12 @@ static void SystemProc(WM_MESSAGE* pMsg)
 					state_updated = true;
 					MisaSetBallTravel(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_BALLTRAVEL]));
 					break;
+
+				case SYSTEM_ID_ENABLESCENES:
+					state_updated = true;
+					MisaSetEnableScenes(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_ENABLESCENES]));
+					break;
+
 				case SYSTEM_ID_ENABLESUSTAIN:
 					state_updated = true;
 					MisaSetEnableSustain(MisaCheckbox_GetStatus(hSystemItems[SYSTEM_ENABLESUSTAIN]));

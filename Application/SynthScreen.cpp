@@ -542,5 +542,5 @@ WM_HWIN SynthScreen_GetStringHWin(int &x, int &y)
 			return hSynthItems[SYNTH_STRINGPANEL1+i];
 		}
 	}
-	return NULL;
+	return 0;
 }

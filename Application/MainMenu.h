@@ -14,8 +14,6 @@ typedef enum __MAINMENU_PAINT_STATUS
 U8 CreateMainMenu(void* pPara);
 U8 DeleteMainMenu();
 U8 TopMainMenu(WM_HWIN hPreWin);
-U8 EnterMainMenu();
-U8 ExitMainMenu();
 
 #endif // __MAINMENU_H__
 

@@ -7,6 +7,7 @@
 
 #include "GUI.h"
 #include "LCDFrameBuffer.h"
+#include <string>
 #include "ucGuiMain.h"
 
 #ifdef _DEBUG

@@ -934,7 +934,7 @@ U8 ControlAssignmentsDelItem(int pos)
 U8 ControlAssignmentsSendLearn(int pos)
 {
 	char buf[32];
-	int x,y;
+	//int x,y;
 	MIDICTRL_INFO midiinfo;
 	WM_HWIN hFocus = WM_GetFocussedWindow();
 	if(WM_GetParent(hFocus) != hControlAssignmentsItems[CONTROLASSIGNMENTS_SLIDEWINDOW])

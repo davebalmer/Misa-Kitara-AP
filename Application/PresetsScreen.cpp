@@ -446,6 +446,8 @@ U8 DeletePresetSlidePanel(WM_HWIN hSlidePanel)
 U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 {
 	int x,y,i,size;
+	int lOffsetY = 0;
+
 	x = 0;
 	y = 0;
 	preset_filenames.clear();
@@ -463,7 +465,13 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
 			// BUTTON_SetTextAlign(pPresetsItems[i], GUI_TA_LEFT | GUI_TA_VCENTER);
 			if (preset_filenames[i] == GetCurrentPresetName())
+			{
 				WM_SetFocus(pPresetsItems[i]);
+
+				// OR : Make it visible
+				if (i > 4)
+					lOffsetY = bmSELECT.YSize * (i - 4);
+			}
 
 		}
 		y = bmSELECT.YSize*size;
@@ -475,13 +483,24 @@ U8 PresetSlideCreateItems(WM_HWIN hParent, bool singleColumn)
 			pPresetsItems[i] = MisaItem_CreateEx(PRESETS_ITEM_POS+(bmSELECT.XSize+PRESETS_ITEMBLANK)*(i%3), bmSELECT.YSize*(i/3), bmSELECT.XSize, bmSELECT.YSize,
 				hParent, PRESETS_ID_ITEMSBASE+i, WM_CF_SHOW|WM_CF_MEMDEV, preset_filenames[i].c_str(),0, &bmSELECT);
 			if (preset_filenames[i] == GetCurrentPresetName())
+			{
 				WM_SetFocus(pPresetsItems[i]);
+				
+				// OR : Make it visible
+				if (i > 11)
+					lOffsetY = bmSELECT.YSize*(i/3 - 3);
+			}
 		}
 		y = size%3?bmSELECT.YSize*((i/3)+1):bmSELECT.YSize*(i/3);
 	}
 	x = WM_GetWindowSizeX(hParent);
 	WM_SetSize(hParent, x, WM_GetWindowSizeY(hParent)<y?y:WM_GetWindowSizeY(hParent));
 				BUTTON_SetPressed(pPresetsItems[2], int(true));
+
+	// OR : Make it visible
+	if (lOffsetY)
+		WM_MoveWindow(hParent,0, lOffsetY);
+
 	return 0;
 }
 
@@ -525,12 +544,7 @@ static bool DeletePreset()
 		if(pos < size)
 		{
 			GetCurrentSetting(&synthSetting);
-#ifdef Linux
 			SynthDeletePreset(preset_filenames[pos]);
-#else	// Win
-			string fileToDeletePath = working_directory+"/presets/" + preset_filenames[pos]+".mz";
-			DeleteFile(fileToDeletePath.c_str());
-#endif	// Win
 			return true;
 
 		}

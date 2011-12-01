@@ -551,7 +551,7 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 
 		if (prop.IsVolumeSlider)
 		{
-			x = prop.percent*1.941;
+			x = (int) (prop.percent*1.941);
 			for(i=0; i < x; i++)
 				GUI_DrawBitmap(&bmQS_VOLUME_FILL, 10, 503 - i*2);
 
@@ -561,7 +561,7 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 		}
 		else
 		{
-			x = prop.percent*1.182;
+			x = (int) (prop.percent*1.182);
 			for(i=0;i<x;i++)
 				GUI_DrawBitmap(&bmSLIDERCENT,10,312-i*2);
 
@@ -602,7 +602,7 @@ static void MisaProgressbarProc(WM_MESSAGE* pMsg)
 					perc = (h-pPID_State->y)/2;
 
 				if(WM_HasCaptured(pMsg->hWin))
-					MisaProgressbar_SetPercent(pMsg->hWin,perc * fFactor);
+					MisaProgressbar_SetPercent(pMsg->hWin,(int) (perc * fFactor));
 
 			}
 			else
@@ -2559,7 +2559,7 @@ void MisaProgressCombo_SetPercent(WM_HWIN hMisaProgcombo, int percent)
 	}
 	changed = percent != prop.percent;
 	prop.percent = percent;
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -2583,7 +2583,7 @@ void MisaProgressCombo_SetPercentEx(WM_HWIN hMisaProgcombo, int percent, U8 upda
 	}
 	changed = percent != prop.percent;
 	prop.percent = percent;
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed && update)
@@ -2613,7 +2613,7 @@ void MisaProgressCombo_Increase(WM_HWIN hMisaProgcombo)
 		prop.percent = prop.max;
 		changed = 0;
 	}
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -2634,7 +2634,7 @@ void MisaProgressCombo_Decrease(WM_HWIN hMisaProgcombo)
 		prop.percent = 0;
 		changed = 0;
 	}
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -2772,7 +2772,7 @@ static void MisaProgressComboProc(WM_MESSAGE* pMsg)
 						perc = (pPID_State->x-prop.progcombo.centre.x0-14);
 					}
 					prop.orgoffset = perc;
-					perc/=prop.scale;
+					perc = (int) (perc / prop.scale);
 					changed = prop.percent!=perc;
 					if(MISAPROGRESSCOMBO_MAX == prop.orgoffset)
 					{
@@ -2957,7 +2957,7 @@ void MisaSmallProgressCombo_SetPercent(WM_HWIN hMisaProgcombo, int percent)
 	}
 	changed = percent != prop.percent;
 	prop.percent = percent;
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -2981,7 +2981,7 @@ void MisaSmallProgressCombo_SetPercentEx(WM_HWIN hMisaProgcombo, int percent, U8
 	}
 	changed = percent != prop.percent;
 	prop.percent = percent;
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed && update)
@@ -3002,7 +3002,7 @@ void MisaSmallProgressCombo_Increase(WM_HWIN hMisaProgcombo)
 		prop.percent = prop.max;
 		changed = 0;
 	}
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -3023,7 +3023,7 @@ void MisaSmallProgressCombo_Decrease(WM_HWIN hMisaProgcombo)
 		prop.percent = 0;
 		changed = 0;
 	}
-	prop.orgoffset = prop.percent*prop.scale;
+	prop.orgoffset = (int) (prop.percent*prop.scale);
 	WM_SetUserData(hMisaProgcombo, &prop, sizeof(MISAPROGCOMBOPROP));
 	WM_InvalidateWindow(hMisaProgcombo);
 	if(changed)
@@ -3167,7 +3167,7 @@ static void MisaSmallProgressComboProc(WM_MESSAGE* pMsg)
 							perc = (pPID_State->x-prop.progcombo.centre.x0-MISASMALLPROGRESSCOMBO_SLIDER_OFFSET);
 						}
 						prop.orgoffset = perc;
-						perc/=prop.scale;
+						perc = (int) (perc / prop.scale);
 						changed = prop.percent!=perc;
 						if(MISASMALLPROGRESSCOMBO_MAX == prop.orgoffset)
 						{

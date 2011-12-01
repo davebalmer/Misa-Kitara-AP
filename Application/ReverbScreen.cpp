@@ -28,9 +28,6 @@
 
 
 // No more sliding
-#define PAGE_POSITIVE_FACTOR 175
-#define PAGE_NEGATIVE_FACTOR -175
-
 static const GUI_RECT leftsidebutton=
 {
 	0,64,39,498
@@ -39,9 +36,6 @@ static const GUI_RECT rightsidebutton=
 {
 	760,64,799,498
 };
-
-static void SlideGoNextPage();
-static void SlideGoPreviousPage();
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -381,13 +375,13 @@ static void ReverbProc(WM_MESSAGE* pMsg)
 					{
 						sidebutton = 1;
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
-						SlideGoPreviousPage();
+						SlidingBorder = SlideGoPreviousPage(hReverbItems[REVERB_SLIDEWINDOW]);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
-						SlideGoNextPage();
+						SlidingBorder = SlideGoNextPage(hReverbItems[REVERB_SLIDEWINDOW]);
 					}
 				}
 			}
@@ -657,44 +651,4 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 static void ReverbControlMenuProc(int menuId)
 {
 	AssignEffectControlMenuProc(menuId,ReverbGetFX());
-}
-
-
-// No more sliding
-static void SlideGoNextPage()
-{
-	int x,y;
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hReverbItems[REVERB_SLIDEWINDOW],hReverb);
-}
-
-static void SlideGoPreviousPage()
-{
-	int x;
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hReverbItems[REVERB_SLIDEWINDOW]);
-	WM_MoveWindow(hReverbItems[REVERB_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hReverbItems[REVERB_SLIDEWINDOW],hReverb);
 }

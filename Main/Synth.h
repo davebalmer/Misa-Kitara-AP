@@ -447,9 +447,9 @@ public:
 	public:
 		Synth(void);
 		~Synth(void);
-		void loadPresetFromFile(std::string filename);
-		void savePresetToFile(struct synth_setting *s, std::string filename);
-		void deletePresetFile(std::string filename);
+		void loadPresetFromFile(std::string &filename);
+		void savePresetToFile(struct synth_setting *s, std::string &filename);
+		void deletePresetFile(std::string &filename);
 
 		void sendNoteOn(unsigned char str, unsigned char btn, bool attack, bool make_sound, bool portamento_off);
 		void sendNoteOff(unsigned char str, unsigned char btn);

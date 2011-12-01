@@ -58,7 +58,7 @@ U8 QuickScreen::CreateItems()
 	int x1 = 2, x2 = 250, x3 = 523;
 	int y = 0;
 
-	hWinMasterVolume = MisaProgressbar_CreateEx(x1, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hQuickWin,MISAQUICKSET_ID_MASTERVOLUME, NULL,"",MISAPROG_FONT32, 0);
+	hWinMasterVolume = MisaProgressbar_CreateEx(x1, y, bmQS_VOLUME_BKG.XSize, bmQS_VOLUME_BKG.YSize, hQuickWin, MISAQUICKSET_ID_MASTERVOLUME, NULL,"",MISAPROG_FONT32, 0);
 
 #ifdef PRESET_IN_LIST
 	hPresetList =  LISTBOX_CreateAsChild (NULL, hQuickWin, 400, 150, 250, 250, WM_CF_SHOW | WM_CF_MEMDEV);
@@ -143,10 +143,13 @@ U8 QuickScreen::DeleteItems()
 void QuickScreen::Show()
 {
 	MisaCheckbox_SetStatus(hWinTapMode, SynthGetTapmode());
+	MisaCheckbox_SetStatus(hWinBallMode, SynthGetBallmode());
+	MisaCheckbox_SetStatus(hWinStringMode, SynthGetStringmode());
+
 #if 0
 	MisaCheckbox_SetStatus(hWinStrings,SynthGetStringmode());
 #endif
-	MisaProgressbar_SetPercentEx(hWinMasterVolume,SynthGetMastervolume(),0);
+	MisaProgressbar_SetPercentEx(hWinMasterVolume, SynthGetMastervolume(),0);
 #ifdef PRESET_IN_LIST
 	FillPresetList();
 #else // PRESET_IN_SLIDEWIN
@@ -154,6 +157,8 @@ void QuickScreen::Show()
 #endif  // PRESET_IN_SLIDEWIN
 
 	WM_ShowWindow(hQuickWin);
+
+	cout << "show QuickScreen" << std::endl << std::flush;
 
 }
 
@@ -165,7 +170,6 @@ void QuickScreen::Hide()
 #else // PRESET_IN_SLIDEWIN
 	PresetSlideDeleteItems();
 #endif  // PRESET_IN_SLIDEWIN
-
 
 }
 

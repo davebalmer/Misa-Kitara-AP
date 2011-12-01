@@ -78,9 +78,6 @@ static const GUI_RECT rightsidebutton=
 	760,64,799,498
 };
 
-static void EqSlideGoNextPage();
-static void EqSlideGoPreviousPage();
-
 #endif // MISA_SMALLPROGRESSBARLAYOUT
 
 static void EqControlMenuProc(int menuId);
@@ -525,13 +522,13 @@ static void EqProc(WM_MESSAGE* pMsg)
 					{
 						sidebutton = 1;
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
-						EqSlideGoPreviousPage();
+						SlidingBorder = SlideGoPreviousPage(hEqItems[EQ_SLIDEWINDOW]);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
-						EqSlideGoNextPage();
+						SlidingBorder = SlideGoNextPage(hEqItems[EQ_SLIDEWINDOW]);
 					}
 				}
 			}
@@ -1251,44 +1248,6 @@ static void SlideWindowProc(WM_MESSAGE* pMsg)
 }
 
 #ifdef MISA_SMALLPROGRESSBARLAYOUT
-
-static void EqSlideGoNextPage()
-{
-	int x,y;
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:EQ_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:EQ_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:EQ_PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:EQ_PAGE_NEGATIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hEqItems[EQ_SLIDEWINDOW],hEq);
-}
-
-static void EqSlideGoPreviousPage()
-{
-	int x;
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:EQ_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:EQ_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:EQ_PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hEqItems[EQ_SLIDEWINDOW]);
-	WM_MoveWindow(hEqItems[EQ_SLIDEWINDOW],EQ_PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:EQ_PAGE_POSITIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hEqItems[EQ_SLIDEWINDOW],hEq);
-}
 
 static void EqControlMenuProc(int menuId)
 {

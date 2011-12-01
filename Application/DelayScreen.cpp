@@ -27,8 +27,6 @@
 #define DELAY_YOFFSET 2
 
 // No more sliding
-#define PAGE_POSITIVE_FACTOR 175
-#define PAGE_NEGATIVE_FACTOR -175
 
 static const GUI_RECT leftsidebutton=
 {
@@ -38,9 +36,6 @@ static const GUI_RECT rightsidebutton=
 {
 	760,64,799,498
 };
-
-static void SlideGoNextPage();
-static void SlideGoPreviousPage();
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -322,13 +317,13 @@ static void DelayProc(WM_MESSAGE* pMsg)
 					{
 						sidebutton = 1;
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
-						SlideGoPreviousPage();
+						SlidingBorder = SlideGoPreviousPage(hDelayItems[DELAY_SLIDEWINDOW]);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
-						SlideGoNextPage();
+						SlidingBorder = SlideGoNextPage(hDelayItems[DELAY_SLIDEWINDOW]);
 					}
 				}
 			}
@@ -596,41 +591,3 @@ static void DelayControlMenuProc(int menuId)
 	AssignEffectControlMenuProc(menuId,DelayGetFX());
 }
 
-// No more sliding
-static void SlideGoNextPage()
-{
-	int x,y;
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	y = WM_GetWindowSizeX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_NEGATIVE_FACTOR<GUI_GetScreenSizeX()-INDICATORFRAME-y-x?GUI_GetScreenSizeX()-INDICATORFRAME-y-x:PAGE_NEGATIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hDelayItems[DELAY_SLIDEWINDOW],hDelay);
-}
-
-static void SlideGoPreviousPage()
-{
-	int x;
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	GUI_Delay(10);
-	x = WM_GetWindowOrgX(hDelayItems[DELAY_SLIDEWINDOW]);
-	WM_MoveWindow(hDelayItems[DELAY_SLIDEWINDOW],PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
-	SlidingBorder = GetSlidingBordercheck(hDelayItems[DELAY_SLIDEWINDOW],hDelay);
-}

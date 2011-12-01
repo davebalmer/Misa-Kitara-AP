@@ -41,6 +41,7 @@ void Debug_stdout(char* content);
 #define GUI_ID_SYSTEM_BASE GUI_ID_USER+800
 #define GUI_ID_QUICKSET_BASE GUI_ID_USER+850
 #define GUI_ID_BITCRUSHER_BASE GUI_ID_USER+900
+#define GUI_ID_SCENE_BASE GUI_ID_USER+950
 
 #define WM_NOTIFICATION_STRINGPANEL_SYNTH WM_NOTIFICATION_USER+1
 #define WM_NOTIFICATION_ADDVOICE WM_NOTIFICATION_USER+2
@@ -97,6 +98,8 @@ U8 DeleteCommComponent(COMMCOMPONENT hComponents);
 U8 ProcessCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
 U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
 U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent);
+U8 SlideGoNextPage(WM_HWIN hWin);
+U8 SlideGoPreviousPage(WM_HWIN hWin);
 void AssignEffectControlMenuProc(int menuId,int fx);
 void AssignEffectControlMenuProc_SPC(int menuId,int fx);
 void AssignVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index);
@@ -115,6 +118,9 @@ void Misa_SmoothlyMoveWindow(WM_HWIN hWin,WM_HWIN hParent,int Dx);
 #define MISAMODULE_BITCRUSHER 0x00000400
 
 #define MISAMODULE_ALL 0xFFFFFFFF
+
+#define PAGE_POSITIVE_FACTOR 175
+#define PAGE_NEGATIVE_FACTOR -175
 
 void UpdateSynthSettingEx(U32 module, U8 reloadFromSystem=1);
 

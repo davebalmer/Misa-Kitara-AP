@@ -129,6 +129,13 @@ Neck::~Neck(void)
 	pthread_mutex_destroy(&neck_mutex);
 }
 
+// OR  : Scene memories
+void Neck::clear()
+{
+	while (neck_events.size() > 0)
+		neck_events.pop();
+}
+
 //this will pop off the queue
 void Neck::getNeckState(struct neckstate *n_state, bool left_handed)
 {

@@ -51,16 +51,16 @@ QSSOLIB = Quickset.so
 
 OBJS = main.o \
 	ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o BitcrusherScreen.o DistortionScreen.o CompressionScreen.o \
-	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o \
-	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o KeyboardRes.o PresetSlideList.o\
+	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o ScenesScreen.o \
+	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o PresetSlideList.o\
 	MisaWidget.o MisaAppAssi.o MisamenuConfig.o MisaDialogueBox.o Touchpanel.o
 LIBOBJS = ucGuiMain.o SystemScreen.o MainMenu.o PresetsScreen.o SynthScreen.o BitcrusherScreen.o DistortionScreen.o CompressionScreen.o \
-	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o \
-	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o KeyboardRes.o PresetSlideList.o\
+	DelayScreen.o ModulationScreen.o ModulationPresets.o ReverbScreen.o MixerScreen.o EqScreen.o ControlAssignments.o ScenesScreen.o \
+	MIDIControlScreen.o VoiceScreen.o MisaQuickSetScreen.o QuickScreen.o Keyboard.o PresetSlideList.o\
 	MisaWidget.o MisaAppAssi.o MisamenuConfig.o MisaDialogueBox.o
 SOBJS = CommonRes.o
 SPEOBJS = SpecialRes.o
-MMSOBJS = MainmenuRes.o
+MMSOBJS = MainmenuRes.o KeyboardRes.o ScenesRes.o
 SYTHMIDIOBJS = SynthMIDIRes.o ControlassignmentsRes.o
 QUICKSETOBJS = QuickMenuRes.o
 

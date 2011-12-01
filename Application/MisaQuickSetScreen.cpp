@@ -136,8 +136,11 @@ void MisaquicksetProc(WM_MESSAGE* pMsg)
 		//	break;
 
 		case WM_NOTIFICATION_VALUE_CHANGED:
-			Vol = MisaProgressbar_GetPercent(pMsg->hWinSrc);
-			SynthSetMastervolume(Vol < 127 ? Vol : 127);
+			if (Id == MISAQUICKSET_ID_MASTERVOLUME)
+			{
+				Vol = MisaProgressbar_GetPercent(pMsg->hWinSrc);
+				SynthSetMastervolume(Vol < 127 ? Vol : 127);
+			}
 			break;
 		}
 		break;

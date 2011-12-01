@@ -23,6 +23,8 @@ extern const GUI_BITMAP bmREVERB_NORMAL;
 extern const GUI_BITMAP bmREVERB_PRESSED;
 extern const GUI_BITMAP bmEQ_NORMAL;
 extern const GUI_BITMAP bmEQ_PRESSED;
+extern const GUI_BITMAP bmSCENES_NORMAL;
+extern const GUI_BITMAP bmSCENES_PRESSED;
 extern const GUI_BITMAP bmMMSYSTEM_NORMAL;
 extern const GUI_BITMAP bmMMSYSTEM_PRESSED;
 
@@ -260,5 +262,14 @@ extern const GUI_BITMAP bm_CHAR_N;
 extern const GUI_BITMAP bm_CHAR_M;
 extern const GUI_BITMAP bm_CHAR_o;
 extern const GUI_BITMAP bm_CHAR_c;
+
+// scenes
+extern const GUI_BITMAP bmSCENEINFO;
+extern const GUI_BITMAP bmSCENENAME;
+extern const GUI_BITMAP bmSCENESAVE_UN;
+extern const GUI_BITMAP bmSCENESAVE_SE;
+extern const GUI_BITMAP bmSCENEDELETE_UN;
+extern const GUI_BITMAP bmSCENEDELETE_SE;
+extern const GUI_BITMAP bmSCENESQUARE[];
 
 #endif // __RESOURCE_H__

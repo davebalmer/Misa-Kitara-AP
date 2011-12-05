@@ -328,7 +328,7 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 
 	// OR  : Scene memories
 	bool scene_switch = false;
-	if (scene_enabled && old_button[0] == 1)		// left_handed --> 5 (?)
+	if (scene_enabled) // && old_button[0] == 1)		// left_handed --> 5 (?)
 	{
 		// std::cout << "scene_switch enabled"  << std::endl << std::flush;
 		scene_switch = true;		//  scene switch is enabled

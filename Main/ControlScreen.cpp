@@ -1487,6 +1487,7 @@ bool ControlScreen::SwitchToScene(int SceneNumber)
 
 	if (scenes_memory[SceneNumber].preset != "")
 	{
+		turnCurrentNotesOff(&neck_state);
 		synth.loadPresetFromFile(scenes_memory[SceneNumber].preset);
 		synth.setMasterVolume(scenes_memory[SceneNumber].volume);
 		showBall(scenes_memory[SceneNumber].ball_mode ? true:false);

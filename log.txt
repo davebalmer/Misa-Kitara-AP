@@ -1,3 +1,6 @@
+v1.1.0
+- ADDED scene functionality
+
 v1.0.5
 - ADDED bit crusher effect
 - UPDATED dsp firmware to version 1.10 (bug fix for when CC7==0)

@@ -365,7 +365,7 @@ void SynthSavePreset(PSYNTH_SETTING pSetting,std::string &filename);
 void SaveToConfigFile(void);
 
 bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
-							  int Ball_travel, int Sustain_mode, int Ringing_mode);
+							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode);
 bool InitScene(int SceneNumber);
 std::string &Scene_GetName(int SceneNumber);
 

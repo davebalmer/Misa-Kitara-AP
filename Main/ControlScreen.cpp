@@ -102,7 +102,7 @@ bool ControlScreen::loadSceneFromConfig(TiXmlElement *e, int SceneNumber)
 
 	if (e->Attribute("preset") != NULL && e->Attribute("volume") != NULL && e->Attribute("ball_mode") != NULL &&
 				e->Attribute("string_mode") != NULL && e->Attribute("ball_travel") != NULL && e->Attribute("sustain_mode") != NULL &&
-				e->Attribute("ringing_mode") != NULL)
+				e->Attribute("ringing_mode") != NULL && e->Attribute("tap_mode") != NULL)
 	{
 
 		scenes_memory[SceneNumber].preset = e->Attribute("preset");
@@ -112,6 +112,7 @@ bool ControlScreen::loadSceneFromConfig(TiXmlElement *e, int SceneNumber)
 		scenes_memory[SceneNumber].ball_travel = atoi(e->Attribute("ball_travel"));
 		scenes_memory[SceneNumber].sustain_mode = atoi(e->Attribute("sustain_mode"));
 		scenes_memory[SceneNumber].ringing_mode = atoi(e->Attribute("ringing_mode"));
+		scenes_memory[SceneNumber].tap_mode = atoi(e->Attribute("tap_mode"));
 
 		// std::cout << "loadSceneFromConfig " << SceneNumber << scenes_memory[SceneNumber].preset << std::endl << std::flush;
 		return true;
@@ -133,6 +134,7 @@ bool ControlScreen::saveSceneInConfig(TiXmlElement *root, int SceneNumber)
 	element->SetAttribute("ball_travel", scenes_memory[SceneNumber].ball_travel);
 	element->SetAttribute("sustain_mode", scenes_memory[SceneNumber].sustain_mode);
 	element->SetAttribute("ringing_mode", scenes_memory[SceneNumber].ringing_mode);
+	element->SetAttribute("tap_mode", scenes_memory[SceneNumber].tap_mode);
 
 	root->LinkEndChild(element);
 		
@@ -1517,6 +1519,7 @@ bool ControlScreen::SwitchToScene(int SceneNumber)
 		setBallTravelOn(scenes_memory[SceneNumber].ball_travel ? true:false);
 		setSustainEnabled(scenes_memory[SceneNumber].sustain_mode ? true:false);
 		setRingingNotes(scenes_memory[SceneNumber].ringing_mode ? true:false);
+		SetTapmode(scenes_memory[SceneNumber].tap_mode ? true:false);
 
 		graphics->flashScreen();
 /*
@@ -1544,6 +1547,7 @@ bool ControlScreen::initScene(int SceneNumber, bool SaveIntoConfigFile /* = true
 	scenes_memory[SceneNumber].ball_travel = 0;
 	scenes_memory[SceneNumber].sustain_mode = 0;
 	scenes_memory[SceneNumber].ringing_mode = 0;
+	scenes_memory[SceneNumber].tap_mode = 0;
 
 	// std::cout << "initScene " << SceneNumber << std::endl << std::flush;
 
@@ -1555,7 +1559,7 @@ bool ControlScreen::initScene(int SceneNumber, bool SaveIntoConfigFile /* = true
 
 
 bool ControlScreen::saveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
-							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode)
 {
 	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
 		return false;
@@ -1569,6 +1573,7 @@ bool ControlScreen::saveScene(int SceneNumber, const std::string &PresetName, in
 	scenes_memory[SceneNumber].ball_travel = Ball_travel;
 	scenes_memory[SceneNumber].sustain_mode = Sustain_mode;
 	scenes_memory[SceneNumber].ringing_mode = Ringing_mode;
+	scenes_memory[SceneNumber].tap_mode = Tap_mode;
 	
 	saveConfigFile();
 

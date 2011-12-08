@@ -179,7 +179,7 @@ static void ScenesProc(WM_MESSAGE* pMsg)
 								break;
 						}
 						SaveScene(rId, GetCurrentPresetName(), SynthGetMastervolume(), SynthGetBallmode(), SynthGetStringmode(),
-							MisaGetBallTravel(), MisaGetEnableSustain(), MisaGetRingingNotes());
+							MisaGetBallTravel(), MisaGetEnableSustain(), MisaGetRingingNotes(), SynthGetTapmode());
 						lUpdateName = true;	
 					}
 					else if (rId < SCENES_MAX)

@@ -1130,9 +1130,9 @@ bool InitScene(int SceneNumber)
 }
 
 bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
-							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode)
 {
-	return pcs->saveScene(SceneNumber, PresetName, Volume, Ball_mode, String_mode, Ball_travel, Sustain_mode, Ringing_mode);
+	return pcs->saveScene(SceneNumber, PresetName, Volume, Ball_mode, String_mode, Ball_travel, Sustain_mode, Ringing_mode, Tap_mode);
 }
 
 std::string &Scene_GetName(int SceneNumber)
@@ -1196,6 +1196,7 @@ struct scene_memory_t
 	int ball_travel;
 	int sustain_mode;
 	int ringing_mode;
+	int tap_mode;
 } scenes_memory[SCENES_NUMBER];
 
 // OR 28-06-11 : make it compile with Visual Studio 2008
@@ -2841,12 +2842,13 @@ bool InitScene(int SceneNumber)
 	scenes_memory[SceneNumber].ball_travel = 0;
 	scenes_memory[SceneNumber].sustain_mode = 0;
 	scenes_memory[SceneNumber].ringing_mode = 0;
+	scenes_memory[SceneNumber].tap_mode = 0;
 
 	return true;
 }
 
 bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
-							  int Ball_travel, int Sustain_mode, int Ringing_mode)
+							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode)
 {
 	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
 		return false;
@@ -2858,6 +2860,7 @@ bool SaveScene(int SceneNumber, const std::string &PresetName, int Volume, int B
 	scenes_memory[SceneNumber].ball_travel = Ball_travel;
 	scenes_memory[SceneNumber].sustain_mode = Sustain_mode;
 	scenes_memory[SceneNumber].ringing_mode = Ringing_mode;
+	scenes_memory[SceneNumber].tap_mode = Tap_mode;
 
 	return true;
 }

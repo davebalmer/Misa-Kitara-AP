@@ -73,6 +73,7 @@ struct scene_memory_t
 	int ball_travel;
 	int sustain_mode;
 	int ringing_mode;
+	int tap_mode;
 };
 
 class ControlScreen
@@ -194,7 +195,7 @@ class ControlScreen
 		bool SwitchToScene(int SceneNumber);
 		bool initScene(int SceneNumber, bool SaveIntoConfigFile = true);
 		bool saveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
-							  int Ball_travel, int Sustain_mode, int Ringing_mode);
+							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode);
 
 
 

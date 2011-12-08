@@ -158,7 +158,7 @@ void QuickScreen::Show()
 
 	WM_ShowWindow(hQuickWin);
 
-	cout << "show QuickScreen" << std::endl << std::flush;
+//	cout << "show QuickScreen" << std::endl << std::flush;
 
 }
 

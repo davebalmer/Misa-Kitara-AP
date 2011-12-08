@@ -673,12 +673,6 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 {
 //	std::cout << "Button pressed." << std::flush;
 
-/*	if (scene_enabled && neck_state.string_button[msg->string_id] == 24)
-	{
-		SwitchToScene(msg->string_id);
-		return;
-	}
-*/
 	if(((screens.top() == UI_NORMAL) && ((nt.size() != 0) || (bt.size() != 0))) ||
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode) || sustained_note[msg->string_id])
@@ -1508,7 +1502,7 @@ void ControlScreen::setScenesEnabled(bool state)
 bool ControlScreen::SwitchToScene(int SceneNumber)
 {
 		// DEBUG_STDOUT("SwitchToScene");
-	std::cout << "SwitchToScene " << SceneNumber << "Ball" << scenes_memory[SceneNumber].ball_mode << std::endl << std::flush;
+	//std::cout << "SwitchToScene " << SceneNumber << "Ball" << scenes_memory[SceneNumber].ball_mode << std::endl << std::flush;
 	
 	if (SceneNumber < 0 || SceneNumber > SCENES_NUMBER)
 		return false;

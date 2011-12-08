@@ -698,6 +698,11 @@ void Graphics::drawDMAImage(int x, int y, struct image_dma_frame *img)
 		id=*(d2d+(0x84>>2));
 }
 
+void Graphics::flashScreen(void)
+{
+	brightness = 255;	
+}
+
 void Graphics::drawAlgorithm(void)
 {
 	unsigned int vx[800/8];

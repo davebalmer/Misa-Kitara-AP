@@ -1496,6 +1496,8 @@ bool ControlScreen::SwitchToScene(int SceneNumber)
 		setSustainEnabled(scenes_memory[SceneNumber].sustain_mode ? true:false);
 		setRingingNotes(scenes_memory[SceneNumber].ringing_mode ? true:false);
 
+		graphics->flashScreen();
+/*
 		graphics->setPaused(true);
 		usleep(1000*60);
 
@@ -1503,7 +1505,7 @@ bool ControlScreen::SwitchToScene(int SceneNumber)
 		graphics->setLCDScaled();
 		graphics->setDragOriginIndicator(graphics->getWindow1Width()/2, graphics->getScreenHeight()/2);
 		graphics->setPaused(false);
-	}
+*/	}
 
 	return true;
 }

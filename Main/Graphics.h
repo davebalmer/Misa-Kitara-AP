@@ -179,5 +179,7 @@ class Graphics
 
 		void showBall(bool state);
 		void showStrings(bool state);
+
+		void flashScreen(void);
 };
 #endif

@@ -362,8 +362,11 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 						nt.clear();
 						bt.clear();
 						for(int i = 0; i < 6; i++)
+						{
 							st[i].clear();
-
+							sustained_note[i] = false;
+							graphics->setSustainIndicator(i, false);
+						}
 						SwitchToScene(s);
 //						neck->clear();
 					}

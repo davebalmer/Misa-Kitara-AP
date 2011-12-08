@@ -706,7 +706,7 @@ void Graphics::flashScreen(void)
 	for(int s = 0; s < 6; s++)
 		setStringPressed(s, false);
 
-	brightness = 255;	
+	brightness = 200;	
 }
 
 void Graphics::drawAlgorithm(void)

@@ -163,7 +163,7 @@ class ControlScreen
 		void processEventButtonReleased(struct control_message_t *msg);
 		void processEventBallPressed(struct control_message_t *msg);
 		void processEventBallDragged(struct control_message_t *msg);
-		void processEventBallReleased(struct control_message_t *msg);
+		void processEventBallReleased(void);
 		void processEventBallPushed(struct control_message_t *msg);
 		void processEventBallMoved(struct control_message_t *msg);
 		void processEventTouchPressed(struct control_message_t *msg);

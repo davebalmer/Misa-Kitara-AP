@@ -700,6 +700,12 @@ void Graphics::drawDMAImage(int x, int y, struct image_dma_frame *img)
 
 void Graphics::flashScreen(void)
 {
+	for(int i = 0; i < 5; i++)
+		hideTouchIndicator(i);
+
+	for(int s = 0; s < 6; s++)
+		setStringPressed(s, false);
+
 	brightness = 255;	
 }
 

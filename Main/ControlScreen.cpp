@@ -344,10 +344,29 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 			else if (neck_state.string_button[s] > old_button[s])
 			{
 				// OR  : Scene memories
-				if (scene_switch && neck_state.string_button[s] == 24)
+				if (scene_switch && neck_state.string_button[s] == 24) // && nt.size() == 0 && bt.size() == 0)
 				{
-					SwitchToScene(s);
-					neck->clear();
+/*					bool str_press = false;
+					for(int i = 0; i < 6; i++)
+					{
+						if(st[i].size() > 0)
+						{
+							str_press = true;
+							break;
+						}
+					}
+					if(!str_press)
+*/					{
+						struct coord temp = {0, 0};
+						event_queue.push_back(newTouchEvent(EVENT_BALL_RELEASED, 0, temp));
+						nt.clear();
+						bt.clear();
+						for(int i = 0; i < 6; i++)
+							st[i].clear();
+
+						SwitchToScene(s);
+//						neck->clear();
+					}
 				}
 				else
 					event_queue.push_back(newButtonEvent(EVENT_BUTTON_PRESSED, s, neck_state.string_button[s]));
@@ -651,6 +670,12 @@ void ControlScreen::processEventButtonPressed(struct control_message_t *msg)
 {
 //	std::cout << "Button pressed." << std::flush;
 
+/*	if (scene_enabled && neck_state.string_button[msg->string_id] == 24)
+	{
+		SwitchToScene(msg->string_id);
+		return;
+	}
+*/
 	if(((screens.top() == UI_NORMAL) && ((nt.size() != 0) || (bt.size() != 0))) ||
 	  ((st[left_handed?5-msg->string_id:msg->string_id].size() != 0)) ||
 	  (tap_mode) || sustained_note[msg->string_id])
@@ -732,7 +757,7 @@ void ControlScreen::processEventBallDragged(struct control_message_t *msg)
 	graphics->setXYControlPosition(xy_control.x, xy_control.y);
 }
 
-void ControlScreen::processEventBallReleased(struct control_message_t *msg)
+void ControlScreen::processEventBallReleased(void)
 {
 //	std::cout << "Ball released." << std::flush;
 
@@ -1060,7 +1085,7 @@ void ControlScreen::processEventQueue(void)
 				break;
 
 			case EVENT_BALL_RELEASED:
-				processEventBallReleased(msg);
+				processEventBallReleased();
 				break;
 
 			case EVENT_BALL_PUSHED:

@@ -52,6 +52,7 @@ static const GUI_RECT rightsidebutton=
 };
 static U8 SlidingBorder;
 
+#define MAINMENU_INDICATORFRAME 48
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -153,11 +154,11 @@ U8 TopMainMenu(WM_HWIN hPreWin)
 static U8 MainmenuCreateItems(WM_HWIN hParent)
 {
 	int x,y;
-	x = INDICATORFRAME;
+	x = MAINMENU_INDICATORFRAME;
 	y = 0;
 
 	// OR 23-11-11 : Several pages
-	hMainmenuItems[MAINMENU_INDICATOR] = WM_CreateWindowAsChild(x, y, WM_GetWindowSizeX(hParent) - 2 * INDICATORFRAME, bmPRESETS_NORMAL.YSize, hParent, WM_CF_SHOW|WM_CF_MEMDEV, IndicatorProc,0);
+	hMainmenuItems[MAINMENU_INDICATOR] = WM_CreateWindowAsChild(x, y, WM_GetWindowSizeX(hParent) - 2 * MAINMENU_INDICATORFRAME, bmPRESETS_NORMAL.YSize, hParent, WM_CF_SHOW|WM_CF_MEMDEV, IndicatorProc,0);
 
 	x = 1;
 	y+=bmSYNTHMIDI_NORMAL.YSize;
@@ -339,13 +340,13 @@ static void MainmenuProc(WM_MESSAGE* pMsg)
 					if(GUI_RectsIntersect(&leftsidebutton,&ptRect))
 					{
 						sidebutton = 1;
-						SlidingBorder = SlideGoPreviousPage(hMainmenuItems[MAINMENU_SLIDEWINDOW]);
+						SlidingBorder = SlideGoPreviousPage(hMainmenuItems[MAINMENU_SLIDEWINDOW], MAINMENU_INDICATORFRAME);
 						WM_InvalidateRect(pMsg->hWin, &leftsidebutton);
 					}
 					else if(GUI_RectsIntersect(&rightsidebutton,&ptRect))
 					{
 						sidebutton = 2;
-						SlidingBorder = SlideGoNextPage(hMainmenuItems[MAINMENU_SLIDEWINDOW]);
+						SlidingBorder = SlideGoNextPage(hMainmenuItems[MAINMENU_SLIDEWINDOW], MAINMENU_INDICATORFRAME);
 						WM_InvalidateRect(pMsg->hWin, &rightsidebutton);
 					}
 				}

@@ -11,6 +11,12 @@
 #define DEBUG_STDOUT(content)
 #endif
 
+///////////////////////////////////////////////////////////////////////////////
+// Misa Sliding window support
+///////////////////////////////////////////////////////////////////////////////
+#define INDICATORFRAME 50
+
+
 void Debug_stdout(char* content);
 
 #define WM_CUST_CHANGE_TEXT WM_USER+1
@@ -97,9 +103,9 @@ COMMCOMPONENT CreateCommComponentEx(WM_HWIN hParent,U32 items);
 U8 DeleteCommComponent(COMMCOMPONENT hComponents);
 U8 ProcessCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
 U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp);
-U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent);
-U8 SlideGoNextPage(WM_HWIN hWin);
-U8 SlideGoPreviousPage(WM_HWIN hWin);
+U8 GetSlidingBordercheck(WM_HWIN hSlide, WM_HWIN hParent, int IndicatorFrame = INDICATORFRAME);
+U8 SlideGoNextPage(WM_HWIN hWin, int IndicatorFrame = INDICATORFRAME);
+U8 SlideGoPreviousPage(WM_HWIN hWin, int IndicatorFrame = INDICATORFRAME);
 void AssignEffectControlMenuProc(int menuId,int fx);
 void AssignEffectControlMenuProc_SPC(int menuId,int fx);
 void AssignVoiceControlMenuProc(int menuId, unsigned char str, unsigned char voice_index);

@@ -170,7 +170,7 @@ U8 ProcessCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp)
 	return 0;
 }
 
-U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent)
+U8 GetSlidingBordercheck(WM_HWIN hSlide, WM_HWIN hParent, int IndicatorFrame /* = INDICATORFRAME */)
 {
 	U8 res;
 	int x,y;
@@ -178,15 +178,15 @@ U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent)
 	x = WM_GetWindowOrgX(hSlide);
 	y = WM_GetWindowSizeX(hSlide);
 	res = 0;
-	if(INDICATORFRAME <= x)
+	if(IndicatorFrame <= x)
 	{
 		res = 1;
 	}
-	else if(x < INDICATORFRAME && x+y > 800-INDICATORFRAME)
+	else if(x < IndicatorFrame && x+y > 800 - IndicatorFrame)
 	{
 		res = 3;
 	}
-	else if(x+y <= 800-INDICATORFRAME)
+	else if(x+y <= 800 - IndicatorFrame)
 	{
 		res = 2;
 	}
@@ -210,29 +210,31 @@ U8 GetSlidingBordercheck(WM_HWIN hSlide,WM_HWIN hParent)
 }
 
 
-U8 SlideGoNextPage(WM_HWIN hSlideWin)
+U8 SlideGoNextPage(WM_HWIN hSlideWin, int IndicatorFrame /* = INDICATORFRAME */)
 {
 	int xRight, n;
 	for (n = 0; n < 4; n++)
 	{
 		xRight = WM_GetWindowOrgX(hSlideWin) + WM_GetWindowSizeX(hSlideWin);
-		WM_MoveWindow(hSlideWin, xRight < GUI_GetScreenSizeX()-INDICATORFRAME - PAGE_NEGATIVE_FACTOR ? GUI_GetScreenSizeX()-INDICATORFRAME - xRight : PAGE_NEGATIVE_FACTOR, 0);
+		int shiftValue = xRight < GUI_GetScreenSizeX()-IndicatorFrame - PAGE_NEGATIVE_FACTOR ? GUI_GetScreenSizeX()-IndicatorFrame - xRight : PAGE_NEGATIVE_FACTOR;
+		WM_MoveWindow(hSlideWin, shiftValue, 0);
 		GUI_Delay(10);
 	}
 
-	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)));
+	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)), IndicatorFrame);
 }
 
-U8 SlideGoPreviousPage(WM_HWIN hSlideWin)
+U8 SlideGoPreviousPage(WM_HWIN hSlideWin, int IndicatorFrame /* = INDICATORFRAME */)
 {
 	int x, n;
 	for (n = 0; n < 4; n++)
 	{
 		x = WM_GetWindowOrgX(hSlideWin);
-		WM_MoveWindow(hSlideWin,PAGE_POSITIVE_FACTOR>INDICATORFRAME-x?INDICATORFRAME-x:PAGE_POSITIVE_FACTOR,0);
+		int shiftValue = PAGE_POSITIVE_FACTOR > IndicatorFrame-x ? IndicatorFrame-x : PAGE_POSITIVE_FACTOR;
+		WM_MoveWindow(hSlideWin, shiftValue, 0);
 		GUI_Delay(10);
 	}
-	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)));
+	return GetSlidingBordercheck(hSlideWin, WM_GetParent(WM_GetParent(hSlideWin)), IndicatorFrame);
 }
 
 U8 DispatchCommComponent(WM_MESSAGE* pMsg, LPCOMMCOMPONENT pCommComp)

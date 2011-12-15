@@ -401,7 +401,7 @@ static void PresetsProc(WM_MESSAGE* pMsg)
 					break;
 			}
 
-
+			GetCurrentSetting(&synthSetting);
 			SynthSavePreset(&synthSetting, fileName);
 			presetSlideList.CreateSlideItem();		 //update the list
 			GUI_RECT RectToInvalidate ={0, 0, 800, 62};

@@ -102,6 +102,11 @@ Graphics::Graphics(int argc, char **argv)
 	show_ball = false;
 	show_strings = false;
 
+	// String spacing   (OR 16-01-12)
+	// string_Spacing_Factor = 2;
+	string_Spacing = int (600/8/6);
+	string_Offset = (600/8 - 5 * string_Spacing) / 2;
+
 	window1_width = 550;
 	window2_width = screen_width - window1_width;
 
@@ -709,6 +714,24 @@ void Graphics::flashScreen(void)
 	brightness = 200;	
 }
 
+
+	// String spacing   (OR 16-01-12)
+int Graphics::setStringSpacing(int str_space) 
+{
+	// std::cout << "setStringSpacing("  << str_space << ") ";
+
+	if (str_space > 600/8/6) 
+		str_space = 600/8/6; 
+	if (str_space < 600/8/6/2) 
+		str_space = 600/8/6/2; 
+	string_Spacing = str_space; 
+	string_Offset = (600/8 - 5 * string_Spacing) / 2;
+	
+	// std::cout << " string_Spacing : " << string_Spacing << " string_Offset : " << string_Offset << std::endl << std::flush;
+
+	return str_space;
+}
+
 void Graphics::drawAlgorithm(void)
 {
 	unsigned int vx[800/8];
@@ -752,13 +775,16 @@ void Graphics::drawAlgorithm(void)
 
 	if(show_strings)
 	{
+		// String spacing   (OR 16-01-12)
+		//unsigned int string_Spacing = int (600/8/6/2 * string_Spacing_Factor);		// string_Spacing_Factor is a factor bw 1 and 2
+
 		for(int s = 0; s < 6; s++)
 		{
 			for(int x = 0; x < 800/8; x++)
 				sx[s][x] = (96 - x) * (96 - x);
 
 			for(int y = 0; y < 600/8; y++)
-				sy[s][y] = ((600/6/8/2+1)+(600/6/8)*s-y) * ((600/6/8/2+1)+(600/6/8)*s-y) * (string_pressed[5-s]?5:100);
+				sy[s][y] = (getStringY(s) - y) * (getStringY(s) - y) * (string_pressed[5-s]?5:100);	// String spacing   (OR 16-01-12)
 		}
 	}
 

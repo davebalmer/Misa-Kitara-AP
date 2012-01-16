@@ -29,6 +29,7 @@ ControlScreen::ControlScreen(Graphics *g)
 	for(int i = 0; i < 6; i++)
 		initScene(i, false);
 
+	setStringSpacing(600/8/6);		// default (overwritten in loadConfigFile)
 	loadConfigFile();
 
 	show_ball = false;
@@ -44,10 +45,6 @@ ControlScreen::ControlScreen(Graphics *g)
 
 	for(int i = 0; i < 6; i++)
 	{
-		int new_y = 50 + (100 * (5-i)) - 1;
-		graphics->setStringPosition(i, new_y);
-		string_box[i].y_start = new_y - 49;
-		string_box[i].y_end = new_y + 50;
 		current_note[i] = -1;
 		ringing_note[i] = -1;
 		sustained_note[i] = false;
@@ -159,6 +156,7 @@ void ControlScreen::loadConfigFile(void)
 	for(TiXmlElement *e = root->FirstChildElement(); e != NULL; e = e->NextSiblingElement())
 	{
 		std::string e_str = e->Value();
+		// std::cout << "config : " << e_str << std::endl << std::flush;
 
 		if(e_str == "firmware")
 		{
@@ -211,7 +209,14 @@ void ControlScreen::loadConfigFile(void)
 		else if(e_str == "scene_4")
 			loadSceneFromConfig(e, 4);
 		else if(e_str == "scene_5")
-			loadSceneFromConfig(e, 5);		
+			loadSceneFromConfig(e, 5);	
+		
+		// String spacing  (OR 16-01-12)
+		else if (e_str == "string_spacing")
+		{
+			if (e->Attribute("space") != NULL)
+				setStringSpacing(atoi(e->Attribute("space")));
+		}
 	}
 
 	if((update_version) || (!firmware_tag_found))
@@ -257,6 +262,11 @@ void ControlScreen::saveConfigFile(void)
 
 	for (int i = 0; i < 6; i++)
 		saveSceneInConfig(root, i);
+
+	// String spacing  (OR 16-01-12)
+	element = new TiXmlElement("string_spacing");
+	element->SetAttribute("space", string_spacing);
+	root->LinkEndChild(element);
 
 	std::string filepath = working_directory + "/config.xml";
 	system("mount -o remount,rw /usr");
@@ -417,10 +427,16 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 		case UI_NORMAL:
 			updateBallWindow();
 
+			// String spacing  (OR 16-01-12)
+			if (testForCornerSwitches())
+				update_string_spacing = true;
+			else if (touch_state.num_touches != 2)
+				update_string_spacing = false;
+
+
 			if(show_strings)
 				updateStringWindow();
 
-			testForCornerSwitches();
 			break;
 	}
 
@@ -429,7 +445,8 @@ unsigned char ControlScreen::update(Neck *neck, Touchpanel *ts)
 	return 0;
 }
 
-void ControlScreen::testForCornerSwitches(void)
+// String spacing  (OR 16-01-12) : return true if update the string spacing 
+bool ControlScreen::testForCornerSwitches(void)
 {
 	corner_pressed[0] = false;
 	corner_pressed[1] = false;
@@ -453,6 +470,10 @@ void ControlScreen::testForCornerSwitches(void)
 				corner_pressed[3] = true;
 		}
 	}
+
+	// String spacing  (OR 16-01-12)
+	if(corner_pressed[0] && corner_pressed[1])
+		return true;
 
 	if(corner_pressed[2] && corner_pressed[3])
 		quickset_start = true;
@@ -508,10 +529,39 @@ void ControlScreen::testForCornerSwitches(void)
 			quickset_start = false;
 		}
 	}
+	return false;
 }
 
-unsigned char ControlScreen::updateStringWindow(void)
+void ControlScreen::setStringSpacing(int space)
 {
+	string_spacing = graphics->setStringSpacing(space);
+
+	for(int i = 0; i < 6; i++)
+	{	
+		string_box[i].y_start = graphics->getStringY(5 - i) * 8 - string_spacing * (8 / 2) + 1;
+		string_box[i].y_end = graphics->getStringY(5 - i) * 8 + string_spacing * (8 / 2);
+	}
+}
+			
+
+
+// String spacing  (OR 16-01-12)
+unsigned char ControlScreen::updateStringWindow()
+{
+	static bool lSaveIntoConfigFile = false;
+	if (update_string_spacing)
+	{
+		int diff = touch_state_w2.y[0] - touch_state_w2.y[1];
+		setStringSpacing((diff >= 0 ? diff : -diff) / 5 / 8);
+		lSaveIntoConfigFile = true;
+		return 0;
+	}
+	if (lSaveIntoConfigFile)
+	{
+		saveConfigFile();
+		lSaveIntoConfigFile = false;
+	}
+
 	for(int s = 0; s < 6; s++)
 	{
 		for(int i = 0; i < 5; i++)

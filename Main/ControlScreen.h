@@ -133,6 +133,10 @@ class ControlScreen
 		bool sustained_note[6];
 
 		bool show_ball, show_strings;
+		
+		// String spacing  (OR 16-01-12)
+		bool update_string_spacing; 
+		int string_spacing;
 
 	public:
 		ControlScreen(Graphics *g);
@@ -147,7 +151,7 @@ class ControlScreen
 		void draw(Neck *neck, Touchpanel *ts);
 		unsigned char update(Neck *neck, Touchpanel *ts);
 		unsigned char updateBallWindow(void);
-		unsigned char updateStringWindow(void);
+		unsigned char updateStringWindow();
 		unsigned char convertButtonToNote(unsigned char button);
 		unsigned int scalePitchWheel(unsigned char c);
 		unsigned char midiScale(int val, int scaler);
@@ -174,7 +178,7 @@ class ControlScreen
 		void processEventStringDragged(struct control_message_t *msg);
 		void processEventStringReleased(struct control_message_t *msg);
 		void setDragPointOrigin(int touch_id, struct coord *c);
-		void testForCornerSwitches(void);
+		bool testForCornerSwitches(void);
 		bool getBallTravelOn();
 		void setBallTravelOn(bool state);
 		void setLeftHandMode(bool state);
@@ -197,7 +201,8 @@ class ControlScreen
 		bool saveScene(int SceneNumber, const std::string &PresetName, int Volume, int Ball_mode, int String_mode,
 							  int Ball_travel, int Sustain_mode, int Ringing_mode, int Tap_mode);
 
-
+		// String spacing  (OR 16-01-12)
+		void setStringSpacing(int space);
 
 };
 

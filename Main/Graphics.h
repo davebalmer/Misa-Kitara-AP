@@ -120,6 +120,9 @@ class Graphics
 		struct colour screen_colour, background;
 		bool stringed_mode, tap_mode, paused;
 		bool show_ball, show_strings;
+		//float string_Spacing_Factor;
+		unsigned int string_Spacing;
+		unsigned int string_Offset;
 
 	public:
 		Graphics(int argc, char **argv);
@@ -179,7 +182,10 @@ class Graphics
 
 		void showBall(bool state);
 		void showStrings(bool state);
-
+		// String spacing
+		//void setStringSpacing(float spacing_Factor) {if (spacing_Factor >= 1 && spacing_Factor <= 2) string_Spacing_Factor = spacing_Factor;}
+		int setStringSpacing(int str_space);
+		int getStringY(int str) {return string_Offset + string_Spacing * str;}
 		void flashScreen(void);
 };
 #endif

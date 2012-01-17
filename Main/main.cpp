@@ -21,8 +21,8 @@
 #include "GUI.h"
 #include "ucGuiMain.h"
 
-char *VERSION_STRING = "1.1.0";
-char *VERSION_ID = "Misa Kitara Control System v1.1.0";
+char *VERSION_STRING = "1.1.1";
+char *VERSION_ID = "Misa Kitara Control System v1.1.1";
 
 Touchpanel* pts;
 Neck* pnk;

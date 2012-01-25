@@ -472,7 +472,7 @@ bool ControlScreen::testForCornerSwitches(void)
 	}
 
 	// String spacing  (OR 16-01-12)
-	if(corner_pressed[0] && corner_pressed[1])
+	if(show_strings && corner_pressed[0] && corner_pressed[1])
 		return true;
 
 	if(corner_pressed[2] && corner_pressed[3])
@@ -546,14 +546,44 @@ void ControlScreen::setStringSpacing(int space)
 
 
 // String spacing  (OR 16-01-12)
+enum STRINGSPACE_STATE
+{
+	STRINGSPACE_IDLE,
+	STRINGSPACE_TOUCHING,
+	STRINGSPACE_UPDATING
+};
+
 unsigned char ControlScreen::updateStringWindow()
 {
 	static bool lSaveIntoConfigFile = false;
+	static int update_string_state = STRINGSPACE_IDLE;	// state machine
+
+	static time_t lt_starttime;		// long touch management
 	if (update_string_spacing)
 	{
-		int diff = touch_state_w2.y[0] - touch_state_w2.y[1];
-		setStringSpacing((diff >= 0 ? diff : -diff) / 5 / 8);
-		lSaveIntoConfigFile = true;
+		if (update_string_state == STRINGSPACE_IDLE)
+		{
+			lt_starttime = time(NULL);		// start touching the 2 corners
+			update_string_state = STRINGSPACE_TOUCHING;
+		}
+		else if (update_string_state == STRINGSPACE_TOUCHING)
+		{
+			time_t lt_currenttime = time(NULL);		// still touching the 2 corners
+		
+			// std::cout << "update pressed : " << lt_currenttime << " start : " << lt_starttime << std::endl << std::flush;
+
+			if (lt_currenttime > lt_starttime + 4)
+			{
+				graphics->flashScreen();
+				update_string_state = STRINGSPACE_UPDATING;
+			}
+		}
+		else if (update_string_state == STRINGSPACE_UPDATING)
+		{
+			int diff = touch_state_w2.y[0] - touch_state_w2.y[1];
+			setStringSpacing((diff >= 0 ? diff : -diff) / 5 / 8);
+			lSaveIntoConfigFile = true;
+		}
 		return 0;
 	}
 	if (lSaveIntoConfigFile)
@@ -561,6 +591,7 @@ unsigned char ControlScreen::updateStringWindow()
 		saveConfigFile();
 		lSaveIntoConfigFile = false;
 	}
+	update_string_state = STRINGSPACE_IDLE;
 
 	for(int s = 0; s < 6; s++)
 	{
